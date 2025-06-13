@@ -3,8 +3,8 @@ package com.example.showmethemoney.ui.screens.sections
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
@@ -40,8 +40,8 @@ fun IncomeScreen(viewModel: MainViewModel){
                 trail = (item.amount + " " + item.accountCurrency) to {
                     IconButton(
                         onClick = { /* TODO: Добавить обработчик */ },
-                        modifier = Modifier.size(48.dp)
-                            .padding(0.dp)
+                        modifier = Modifier.size(24.dp)
+                            .wrapContentSize()
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_more_vert),

@@ -30,7 +30,7 @@ fun CategoryScreen(viewModel: MainViewModel) {
                 trail = null to {
                     IconButton(
                         onClick = { /* TODO: Добавить обработчик */ },
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.size(24.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_find),
