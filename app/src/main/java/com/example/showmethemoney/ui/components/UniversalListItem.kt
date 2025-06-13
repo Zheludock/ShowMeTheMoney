@@ -47,14 +47,13 @@ fun UniversalListItem(
             ) {
                 if (lead != null) {
                     Box(
-                        modifier = Modifier.size(40.dp)
-                            .padding(end = 16.dp),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier.padding(end = 16.dp),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = lead,
                             fontSize = 24.sp,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
                 }

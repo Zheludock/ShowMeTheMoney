@@ -1,6 +1,8 @@
 package com.example.showmethemoney.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -11,9 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.showmethemoney.navigation.BottomNavItem
-import com.example.showmethemoney.ui.theme.*
+import com.example.showmethemoney.ui.theme.AppFontFamily
+import com.example.showmethemoney.ui.theme.BackgroundBottomBar
+import com.example.showmethemoney.ui.theme.IconsGray
+import com.example.showmethemoney.ui.theme.IconsGreen
+import com.example.showmethemoney.ui.theme.Indicator
+import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
+import com.example.showmethemoney.ui.theme.TextUnderIcons
 
 @Composable
 fun AppBottomNavigation(
@@ -22,7 +31,9 @@ fun AppBottomNavigation(
     onItemClick: (String) -> Unit
 ) {
     NavigationBar(
-        modifier = Modifier.background(color = BackgroundBottomBar),
+        modifier = Modifier.background(color = BackgroundBottomBar)
+            .padding(0.dp)
+            .fillMaxWidth(),
         containerColor = BackgroundBottomBar // Цвет фона всей панели
     ) {
         navItems.forEach { item ->
@@ -43,11 +54,12 @@ fun AppBottomNavigation(
                 label = {
                     Text(
                         text = item.label,
-                        style = if (selected) {TextStyle(fontWeight = FontWeight.Medium,
+                        style = if (selected) { TextStyle(fontWeight = FontWeight.Medium,
                             color = SelectedTextUnderIcons)}
                         else {TextStyle(fontWeight = FontWeight.Normal,
                             color = SelectedTextUnderIcons)},
-                        fontSize = 16.sp,
+                        fontSize = 12.sp,
+                        fontFamily = AppFontFamily,
                         maxLines = 1,
                     )
                 },

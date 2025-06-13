@@ -36,7 +36,7 @@ fun AccountScreen(){
                 trail = "₽" to {
                     IconButton(
                         onClick = { /* TODO: Добавить обработчик */ },
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.size(24.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_more_vert),
