@@ -42,7 +42,6 @@ fun UniversalListItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Lead and content section
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
@@ -82,8 +81,6 @@ fun UniversalListItem(
                     }
                 }
             }
-
-            // Trail section
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
@@ -93,7 +90,7 @@ fun UniversalListItem(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(end = 8.dp) // Отступ между текстом и иконкой
+                        modifier = Modifier.padding(end = 8.dp)
                     )
                 }
                 trail.second?.invoke()
