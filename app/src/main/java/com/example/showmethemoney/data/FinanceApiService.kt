@@ -8,7 +8,6 @@ import com.example.showmethemoney.data.dto.account.CreateAccountRequest
 import com.example.showmethemoney.data.dto.account.UpdateAccountRequest
 import com.example.showmethemoney.data.dto.category.CategoryResponse
 import com.example.showmethemoney.data.dto.transaction.CreateTransactionRequest
-import com.example.showmethemoney.data.dto.transaction.TransactionDetailsResponse
 import com.example.showmethemoney.data.dto.transaction.TransactionResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -69,18 +68,18 @@ interface FinanceApiService {
     @POST("transactions")
     suspend fun createTransaction(
         @Body request: CreateTransactionRequest
-    ): TransactionDetailsResponse
+    ): TransactionResponse
 
     @GET("transactions/{id}")
     suspend fun getTransactionDetails(
         @Path("id") transactionId: Int
-    ): TransactionDetailsResponse
+    ): TransactionResponse
 
     @PUT("transactions/{id}")
     suspend fun updateTransaction(
         @Path("id") transactionId: Int,
         @Body request: CreateTransactionRequest
-    ): TransactionDetailsResponse
+    ): TransactionResponse
 
     @DELETE("transactions/{id}")
     suspend fun deleteTransaction(

@@ -4,23 +4,23 @@ sealed class Screen(val route: String,
     val title: String) {
     object Expenses : Screen(
         "expenses",
-            title = "Расходы сегодня"
+        "Расходы сегодня"
     )
     object Income : Screen(
         "income",
-        title = "Доходы сегодня"
+        "Доходы сегодня"
     )
     object Account : Screen(
         "account",
-        title = "Мой счет"
+        "Мой счет"
     )
     object Category : Screen(
         "category",
-        title = "Мои статьи"
+        "Мои статьи"
     )
     object Settings : Screen(
         "settings",
-        title = "Настройки"
+        "Настройки"
     )
     object History: Screen(
         "history",

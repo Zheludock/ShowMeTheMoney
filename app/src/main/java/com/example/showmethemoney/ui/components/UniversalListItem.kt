@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.example.showmethemoney.ui.theme.DividerGray
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
@@ -100,7 +101,8 @@ fun UniversalListItem(
         }
         HorizontalDivider(
             thickness = 1.dp,
-            color = DividerGray
+            color = DividerGray,
+            modifier = Modifier.zIndex(1f)
         )
     }
 }

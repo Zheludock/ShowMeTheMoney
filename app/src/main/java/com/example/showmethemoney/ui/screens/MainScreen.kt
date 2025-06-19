@@ -28,12 +28,13 @@ import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Expenses.route
 
-    val showFab = BottomNavItems.items.first { it.route == currentRoute }.showFab
+    val currentNavItem = BottomNavItems.items.firstOrNull { it.route == currentRoute }
+    val showFab = currentNavItem?.showFab ?: false
     val currentTitle = Screen.fromRoute(currentRoute).title
 
     Scaffold(
@@ -88,7 +89,7 @@ fun MainScreen(viewModel: MainViewModel) {
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-            AppNavHost(navController = navController, viewModel)
+            AppNavHost(navController = navController)
         }
     }
 }

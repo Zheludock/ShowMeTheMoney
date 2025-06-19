@@ -10,18 +10,34 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.showmethemoney.R
+import com.example.showmethemoney.data.safecaller.ApiResult
+import com.example.showmethemoney.ui.components.IncomeItem
 import com.example.showmethemoney.ui.components.UniversalListItem
-import com.example.showmethemoney.ui.screens.MainViewModel
 import com.example.showmethemoney.ui.theme.Indicator
 
 @Composable
-fun IncomeScreen(viewModel: MainViewModel){
-    val incomeItems = viewModel.incomeItems
+fun IncomeScreen(viewModel: ExpensesViewModel = hiltViewModel()) {
+    viewModel.loadTransactions(startDate = viewModel.currentDate, isIncome = true)
+    val incomesState by viewModel.incomes.collectAsState()
 
+    when (val state = incomesState) {
+        is ApiResult.Loading -> LoadingIndicator()
+        is ApiResult.Success -> IncomeList(state.data)
+        is ApiResult.Error -> ErrorView(state.error) {
+            viewModel.loadTransactions(isIncome = true)
+        }
+    }
+}
+
+@Composable
+private fun IncomeList(incomes: List<IncomeItem>){
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -34,7 +50,7 @@ fun IncomeScreen(viewModel: MainViewModel){
                     .height(56.dp)
             )
         }
-        items(incomeItems) { item ->
+        items(incomes) { item ->
             UniversalListItem(
                 content = item.categoryName to item.comment,
                 trail = (item.amount + " " + item.accountCurrency) to {

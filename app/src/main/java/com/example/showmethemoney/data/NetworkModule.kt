@@ -1,21 +1,33 @@
 package com.example.showmethemoney.data
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
-object RetrofitClient {
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
     private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
     private const val TOKEN = "AALqE9czebsipeTL4BJaTxCn"
 
-    private val gson = GsonBuilder()
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = GsonBuilder()
         .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         .create()
 
-    private val okHttpClient = OkHttpClient.Builder()
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $TOKEN")
@@ -27,13 +39,19 @@ object RetrofitClient {
         })
         .build()
 
-    private val retrofit = Retrofit.Builder()
+    @Provides
+    @Singleton
+    fun provideRetrofit(
+        gson: Gson,
+        okHttpClient: OkHttpClient
+    ): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
-    val apiService: FinanceApiService by lazy {
+    @Provides
+    @Singleton
+    fun provideFinanceApiService(retrofit: Retrofit): FinanceApiService =
         retrofit.create(FinanceApiService::class.java)
-    }
 }

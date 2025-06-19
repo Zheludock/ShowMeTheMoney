@@ -2,8 +2,7 @@ package com.example.showmethemoney.domain.utils
 
 import com.example.showmethemoney.domain.AccountDomain
 import com.example.showmethemoney.domain.CategoryDomain
-import com.example.showmethemoney.domain.ExpensesDomain
-import com.example.showmethemoney.domain.IncomeDomain
+import com.example.showmethemoney.domain.TransactionDomain
 
 val mockCategoryDomains = listOf(
     CategoryDomain(
@@ -55,7 +54,7 @@ val mockAccountDomains = listOf(
 )
 
 //Моковые доходы
-val mockIncomeDomains = listOf(
+/*val mockIncomeDomains = listOf(
     IncomeDomain(
         id = 0.toString(),
         accountId = "acc1",
@@ -76,11 +75,11 @@ val mockIncomeDomains = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-)
+)*/
 
 // Моковые расходы
 val mockExpens = listOf(
-    ExpensesDomain(
+    TransactionDomain(
         id = "exp1",
         accountId = "acc1",
         categoryId = "art1",
@@ -90,7 +89,7 @@ val mockExpens = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-    ExpensesDomain(
+    TransactionDomain(
         id = "exp2",
         accountId = "acc1",
         categoryId = "art2",
@@ -100,7 +99,7 @@ val mockExpens = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-    ExpensesDomain(
+    TransactionDomain(
         id = "exp3",
         accountId = "acc2",
         categoryId = "art3",

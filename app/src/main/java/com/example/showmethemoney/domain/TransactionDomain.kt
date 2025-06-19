@@ -1,6 +1,6 @@
 package com.example.showmethemoney.domain
 
-data class ExpensesDomain(
+data class TransactionDomain(
     val id: String,
     val accountId: String,
     val categoryId: String,

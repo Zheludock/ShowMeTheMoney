@@ -7,12 +7,11 @@ import com.example.showmethemoney.data.dto.account.CreateAccountRequest
 import com.example.showmethemoney.data.dto.account.UpdateAccountRequest
 import com.example.showmethemoney.data.dto.category.CategoryResponse
 import com.example.showmethemoney.data.dto.transaction.CreateTransactionRequest
-import com.example.showmethemoney.data.dto.transaction.TransactionDetailsResponse
 import com.example.showmethemoney.data.dto.transaction.TransactionResponse
+import javax.inject.Inject
 
-class FinanceRepository {
+class FinanceRepository @Inject constructor(private val apiService: FinanceApiService) {
 
-    private val apiService = RetrofitClient.apiService
 
     suspend fun getAccounts(): List<AccountResponse> {
         return apiService.getAccounts()
@@ -67,7 +66,7 @@ class FinanceRepository {
         amount: String,
         transactionDate: String,
         comment: String? = null
-    ): TransactionDetailsResponse {
+    ): TransactionResponse {
         val request = CreateTransactionRequest(
             accountId = accountId,
             categoryId = categoryId,
@@ -78,7 +77,7 @@ class FinanceRepository {
         return apiService.createTransaction(request)
     }
 
-    suspend fun getTransactionDetails(transactionId: Int): TransactionDetailsResponse {
+    suspend fun getTransactionDetails(transactionId: Int): TransactionResponse {
         return apiService.getTransactionDetails(transactionId)
     }
 
@@ -89,7 +88,7 @@ class FinanceRepository {
         amount: String,
         transactionDate: String,
         comment: String? = null
-    ): TransactionDetailsResponse {
+    ): TransactionResponse {
         val request = CreateTransactionRequest(
             accountId = accountId,
             categoryId = categoryId,

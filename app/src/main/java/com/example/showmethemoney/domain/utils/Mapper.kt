@@ -2,13 +2,12 @@ package com.example.showmethemoney.domain.utils
 
 import com.example.showmethemoney.domain.AccountDomain
 import com.example.showmethemoney.domain.CategoryDomain
-import com.example.showmethemoney.domain.ExpensesDomain
-import com.example.showmethemoney.domain.IncomeDomain
+import com.example.showmethemoney.domain.TransactionDomain
 import com.example.showmethemoney.ui.components.CategoryItem
 import com.example.showmethemoney.ui.components.ExpenseItem
 import com.example.showmethemoney.ui.components.IncomeItem
 
-fun ExpensesDomain.toExpenseItem(
+fun TransactionDomain.toExpenseItem(
     categoryDomain: CategoryDomain,
     accountDomain: AccountDomain
 ): ExpenseItem {
@@ -22,7 +21,7 @@ fun ExpensesDomain.toExpenseItem(
     )
 }
 
-fun IncomeDomain.toIncomeItem(
+fun TransactionDomain.toIncomeItem(
     categoryDomain: CategoryDomain,
     accountDomain: AccountDomain
 ): IncomeItem {
