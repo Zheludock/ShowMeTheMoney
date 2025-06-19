@@ -1,30 +1,30 @@
 package com.example.showmethemoney.domain.utils
 
-import com.example.showmethemoney.domain.Account
-import com.example.showmethemoney.domain.Category
-import com.example.showmethemoney.domain.Expenses
-import com.example.showmethemoney.domain.Income
+import com.example.showmethemoney.domain.AccountDomain
+import com.example.showmethemoney.domain.CategoryDomain
+import com.example.showmethemoney.domain.ExpensesDomain
+import com.example.showmethemoney.domain.IncomeDomain
 
-val mockCategory = listOf(
-    Category(
+val mockCategoryDomains = listOf(
+    CategoryDomain(
         categoryId = "art1",
         categoryName = "Продукты",
         emoji = "🛒",
         isIncome = false
     ),
-    Category(
+    CategoryDomain(
         categoryId = "art2",
         categoryName = "Транспорт",
         emoji = "🚕",
         isIncome = false
     ),
-    Category(
+    CategoryDomain(
         categoryId = "art3",
         categoryName = "Развлечения",
         emoji = "🎮",
         isIncome = false
     ),
-    Category(
+    CategoryDomain(
         categoryId = "art4",
         categoryName = "Зарплата",
         emoji = "🎮",
@@ -33,8 +33,8 @@ val mockCategory = listOf(
 )
 
 // Моковые счета
-val mockAccounts = listOf(
-    Account(
+val mockAccountDomains = listOf(
+    AccountDomain(
         id = "acc1",
         userId = "user1",
         name = "Основной счет",
@@ -43,7 +43,7 @@ val mockAccounts = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-    Account(
+    AccountDomain(
         id = "acc2",
         userId = "user1",
         name = "Долларовый счет",
@@ -55,8 +55,8 @@ val mockAccounts = listOf(
 )
 
 //Моковые доходы
-val mockIncomes = listOf(
-    Income(
+val mockIncomeDomains = listOf(
+    IncomeDomain(
         id = 0.toString(),
         accountId = "acc1",
         categoryId = "art4",
@@ -66,7 +66,7 @@ val mockIncomes = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-    Income(
+    IncomeDomain(
         id = 1.toString(),
         accountId = "acc2",
         categoryId = "art4",
@@ -79,8 +79,8 @@ val mockIncomes = listOf(
 )
 
 // Моковые расходы
-val mockExpenses = listOf(
-    Expenses(
+val mockExpens = listOf(
+    ExpensesDomain(
         id = "exp1",
         accountId = "acc1",
         categoryId = "art1",
@@ -90,7 +90,7 @@ val mockExpenses = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-    Expenses(
+    ExpensesDomain(
         id = "exp2",
         accountId = "acc1",
         categoryId = "art2",
@@ -100,7 +100,7 @@ val mockExpenses = listOf(
         createdAt = "",
         updatedAt = ""
     ),
-    Expenses(
+    ExpensesDomain(
         id = "exp3",
         accountId = "acc2",
         categoryId = "art3",

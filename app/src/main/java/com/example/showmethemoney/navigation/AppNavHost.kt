@@ -10,6 +10,7 @@ import com.example.showmethemoney.ui.screens.sections.CategoryScreen
 import com.example.showmethemoney.ui.screens.sections.ExpensesScreen
 import com.example.showmethemoney.ui.screens.sections.IncomeScreen
 import com.example.showmethemoney.ui.screens.sections.SettingsScreen
+import com.example.showmethemoney.ui.screens.sections.subsections.HistoryScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController, viewModel: MainViewModel) {
@@ -22,5 +23,6 @@ fun AppNavHost(navController: NavHostController, viewModel: MainViewModel) {
         composable(Screen.Category.route) { CategoryScreen(viewModel) }
         composable(Screen.Account.route) { AccountScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }
+        composable(Screen.History.route) { HistoryScreen(viewModel) }
     }
 }

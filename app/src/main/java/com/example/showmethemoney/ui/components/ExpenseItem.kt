@@ -2,8 +2,8 @@ package com.example.showmethemoney.ui.components
 
 data class ExpenseItem(
     val id: String,
-    val articleEmoji: String,
-    val articleName: String,
+    val categoryEmoji: String,
+    val categoryName: String,
     val comment: String?,
     val amount: String,
     val accountCurrency: String

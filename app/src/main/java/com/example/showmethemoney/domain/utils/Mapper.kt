@@ -1,41 +1,41 @@
 package com.example.showmethemoney.domain.utils
 
-import com.example.showmethemoney.domain.Account
-import com.example.showmethemoney.domain.Category
-import com.example.showmethemoney.domain.Expenses
-import com.example.showmethemoney.domain.Income
+import com.example.showmethemoney.domain.AccountDomain
+import com.example.showmethemoney.domain.CategoryDomain
+import com.example.showmethemoney.domain.ExpensesDomain
+import com.example.showmethemoney.domain.IncomeDomain
 import com.example.showmethemoney.ui.components.CategoryItem
 import com.example.showmethemoney.ui.components.ExpenseItem
 import com.example.showmethemoney.ui.components.IncomeItem
 
-fun Expenses.toExpenseItem(
-    category: Category,
-    account: Account
+fun ExpensesDomain.toExpenseItem(
+    categoryDomain: CategoryDomain,
+    accountDomain: AccountDomain
 ): ExpenseItem {
     return ExpenseItem(
         id = this.id,
-        articleEmoji = category.emoji,
-        articleName = category.categoryName,
+        categoryEmoji = categoryDomain.emoji,
+        categoryName = categoryDomain.categoryName,
         comment = this.comment,
         amount = this.amount,
-        accountCurrency = account.currency
+        accountCurrency = accountDomain.currency
     )
 }
 
-fun Income.toIncomeItem(
-    category: Category,
-    account: Account
+fun IncomeDomain.toIncomeItem(
+    categoryDomain: CategoryDomain,
+    accountDomain: AccountDomain
 ): IncomeItem {
     return IncomeItem(
         id = this.id,
-        articleName = category.categoryName,
+        categoryName = categoryDomain.categoryName,
         comment = this.comment,
         amount = this.amount,
-        accountCurrency = account.currency,
+        accountCurrency = accountDomain.currency,
     )
 }
 
-fun Category.toCategoryItem(): CategoryItem {
+fun CategoryDomain.toCategoryItem(): CategoryItem {
     return CategoryItem(
         id = this.categoryId,
         emoji = this.emoji,

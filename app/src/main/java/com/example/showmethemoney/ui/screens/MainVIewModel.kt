@@ -3,10 +3,10 @@ package com.example.showmethemoney.ui.screens
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.showmethemoney.domain.utils.mockAccounts
-import com.example.showmethemoney.domain.utils.mockCategory
-import com.example.showmethemoney.domain.utils.mockExpenses
-import com.example.showmethemoney.domain.utils.mockIncomes
+import com.example.showmethemoney.domain.utils.mockAccountDomains
+import com.example.showmethemoney.domain.utils.mockCategoryDomains
+import com.example.showmethemoney.domain.utils.mockExpens
+import com.example.showmethemoney.domain.utils.mockIncomeDomains
 import com.example.showmethemoney.domain.utils.toCategoryItem
 import com.example.showmethemoney.domain.utils.toExpenseItem
 import com.example.showmethemoney.domain.utils.toIncomeItem
@@ -31,7 +31,7 @@ open class MainViewModel : ViewModel() {
 
     private fun loadCategory() {
         viewModelScope.launch {
-            val categoryItems = mockCategory.map { category ->
+            val categoryItems = mockCategoryDomains.map { category ->
                 category.toCategoryItem()
             }
             _categoryItems.clear()
@@ -41,14 +41,13 @@ open class MainViewModel : ViewModel() {
 
     private fun loadExpenses() {
         viewModelScope.launch {
-            val expenseItems = mockExpenses.map { expense ->
-                // Ищем соответствующие данные по ID
-                val category = mockCategory.find { it.categoryId == expense.categoryId }
+            val expenseItems = mockExpens.map { expense ->
+                val category = mockCategoryDomains.find { it.categoryId == expense.categoryId }
                     ?: throw IllegalStateException("Article not found")
-                val account = mockAccounts.find { it.id == expense.accountId }
-                    ?: throw IllegalStateException("Account not found")
+                val accountDomain = mockAccountDomains.find { it.id == expense.accountId }
+                    ?: throw IllegalStateException("AccountDomain not found")
 
-                expense.toExpenseItem(category, account)
+                expense.toExpenseItem(category, accountDomain)
             }
             _expenseItems.clear()
             _expenseItems.addAll(expenseItems)
@@ -57,13 +56,13 @@ open class MainViewModel : ViewModel() {
 
     private fun loadIncomes(){
         viewModelScope.launch {
-            val incomeItems = mockIncomes.map{ income ->
-                val category = mockCategory.find { it.categoryId == income.categoryId }
+            val incomeItems = mockIncomeDomains.map{ income ->
+                val category = mockCategoryDomains.find { it.categoryId == income.categoryId }
                     ?: throw IllegalStateException("Article not found")
-                val account = mockAccounts.find { it.id ==  income.accountId }
-                    ?: throw IllegalStateException("Account not found")
+                val accountDomain = mockAccountDomains.find { it.id ==  income.accountId }
+                    ?: throw IllegalStateException("AccountDomain not found")
 
-                income.toIncomeItem(category, account)
+                income.toIncomeItem(category, accountDomain)
             }
             _incomeItems.clear()
             _incomeItems.addAll(incomeItems)

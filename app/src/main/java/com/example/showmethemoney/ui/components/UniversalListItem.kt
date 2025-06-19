@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,7 +31,7 @@ fun UniversalListItem(
     content: Pair<String, String?>,
     trail: Pair<String?, @Composable (() -> Unit)?> = null to null,
     onClick: () -> Unit = {},
-    modifier: Modifier
+    modifier: Modifier = Modifier.background(Color.Transparent)
 ) {
     Column(modifier = modifier) {
         Row(
@@ -81,6 +82,7 @@ fun UniversalListItem(
                     }
                 }
             }
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,

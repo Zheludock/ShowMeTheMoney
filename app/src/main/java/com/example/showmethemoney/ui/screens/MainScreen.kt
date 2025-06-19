@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -16,13 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.AppNavHost
 import com.example.showmethemoney.navigation.BottomNavItems
 import com.example.showmethemoney.navigation.Screen
@@ -38,10 +34,21 @@ fun MainScreen(viewModel: MainViewModel) {
     val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Expenses.route
 
     val showFab = BottomNavItems.items.first { it.route == currentRoute }.showFab
-    val currentTitle = BottomNavItems.items.first { it.route == currentRoute }.title
+    val currentTitle = Screen.fromRoute(currentRoute).title
 
     Scaffold(
-        topBar = { AppTopBar(title = currentTitle) },
+        topBar = {
+            AppTopBar(
+                title = currentTitle,
+                onActionIconClick = {
+                    when (currentTitle) {
+                        "Расходы сегодня", "Доходы сегодня" -> navController.navigate(Screen.History.route)
+                        "Мой счет" -> { /* TODO */ }
+                        else -> {}
+                    }},
+                navController = navController
+                )
+            },
         bottomBar = {
             AppBottomNavigation(
                 navItems = BottomNavItems.items,
@@ -65,8 +72,8 @@ fun MainScreen(viewModel: MainViewModel) {
                         .shadow(8.dp, CircleShape)
                         .size(56.dp),
                     shape = CircleShape,
-                    containerColor = IconsGreen, // Зеленый
-                    contentColor = White, // Цвет плюса
+                    containerColor = IconsGreen,
+                    contentColor = White,
                     elevation = FloatingActionButtonDefaults.elevation(
                         defaultElevation = 6.dp,
                         pressedElevation = 12.dp

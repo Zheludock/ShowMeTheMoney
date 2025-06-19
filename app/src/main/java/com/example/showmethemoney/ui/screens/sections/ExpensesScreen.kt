@@ -28,7 +28,7 @@ fun ExpensesScreen(viewModel: MainViewModel) {
         item {
             UniversalListItem(
                 content = "Всего" to null,
-                trail = "500000 ₽" to null,
+                trail = "500 000 ₽" to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -36,11 +36,11 @@ fun ExpensesScreen(viewModel: MainViewModel) {
         }
         items(expenseItems) { item ->
             UniversalListItem(
-                lead = item.articleEmoji,
-                content = item.articleName to item.comment,
+                lead = item.categoryEmoji,
+                content = item.categoryName to item.comment,
                 trail = (item.amount + " " + item.accountCurrency) to {
                     IconButton(
-                        onClick = { /* TODO: Добавить обработчик */ },
+                        onClick = { /* TODO */ },
                         modifier = Modifier.size(24.dp)
                     ) {
                         Icon(

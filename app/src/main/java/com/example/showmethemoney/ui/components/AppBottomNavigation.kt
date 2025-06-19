@@ -34,7 +34,7 @@ fun AppBottomNavigation(
         modifier = Modifier.background(color = BackgroundBottomBar)
             .padding(0.dp)
             .fillMaxWidth(),
-        containerColor = BackgroundBottomBar // Цвет фона всей панели
+        containerColor = BackgroundBottomBar
     ) {
         navItems.forEach { item ->
             val selected = currentRoute == item.route
@@ -66,7 +66,7 @@ fun AppBottomNavigation(
                 selected = selected,
                 onClick = { onItemClick(item.route) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = IconsGreen, // Дублирование для совместимости
+                    selectedIconColor = IconsGreen,
                     unselectedIconColor = IconsGray,
                     selectedTextColor = SelectedTextUnderIcons,
                     unselectedTextColor = TextUnderIcons,

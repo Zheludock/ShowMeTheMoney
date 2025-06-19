@@ -36,10 +36,10 @@ fun IncomeScreen(viewModel: MainViewModel){
         }
         items(incomeItems) { item ->
             UniversalListItem(
-                content = item.articleName to item.comment,
+                content = item.categoryName to item.comment,
                 trail = (item.amount + " " + item.accountCurrency) to {
                     IconButton(
-                        onClick = { /* TODO: Добавить обработчик */ },
+                        onClick = { /* TODO */ },
                         modifier = Modifier.size(24.dp)
                             .wrapContentSize()
                     ) {

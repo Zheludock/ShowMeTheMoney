@@ -29,7 +29,7 @@ fun CategoryScreen(viewModel: MainViewModel) {
                 content = "Найти статью" to null,
                 trail = null to {
                     IconButton(
-                        onClick = { /* TODO: Добавить обработчик */ },
+                        onClick = { /* TODO */ },
                         modifier = Modifier.size(24.dp)
                     ) {
                         Icon(

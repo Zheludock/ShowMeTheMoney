@@ -25,11 +25,10 @@ fun SplashScreen(
 ) {
     var visible by remember { mutableStateOf(true) }
 
-    // Запускаем таймер для перехода на основной экран
     LaunchedEffect(Unit) {
         delay(2000)
         visible = false
-        delay(300) // дождаться окончания анимации
+        delay(300)
         onSplashFinished()
     }
 
@@ -38,7 +37,6 @@ fun SplashScreen(
         enter = fadeIn(animationSpec = tween(durationMillis = 700)),
         exit = fadeOut(animationSpec = tween(durationMillis = 300))
     ) {
-        // Здесь любой ваш контент: логотип, текст, и т.д.
         Image(
             painter = painterResource(id = R.drawable.show),
             contentDescription = null,
