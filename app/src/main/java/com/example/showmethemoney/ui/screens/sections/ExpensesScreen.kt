@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.showmethemoney.R
 import com.example.showmethemoney.data.safecaller.ApiError
 import com.example.showmethemoney.data.safecaller.ApiResult
 import com.example.showmethemoney.ui.components.ExpenseItem
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
+import com.example.showmethemoney.ui.utils.formatAmount
 
 
 @Composable
@@ -51,8 +52,7 @@ fun ExpenseList(expenses: List<ExpenseItem>) {
         item {
             UniversalListItem(
                 content = "Всего" to null,
-                trail = expenses.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }
-                    .let { "%,.2f ₽".format(it) } to null,
+                trail = formatAmount(expenses.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }, expenses.first().accountCurrency) to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -62,7 +62,7 @@ fun ExpenseList(expenses: List<ExpenseItem>) {
             UniversalListItem(
                 lead = item.categoryEmoji,
                 content = item.categoryName to item.comment,
-                trail = ("${item.amount} ${item.accountCurrency}") to {
+                trail = formatAmount(item.amount.toDoubleOrNull() ?: 0.0, item.accountCurrency) to {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert),
                         contentDescription = "Подробнее",
@@ -98,3 +98,4 @@ internal fun ErrorView(error: ApiError, onRetry: () -> Unit) {
         )
     }
 }
+

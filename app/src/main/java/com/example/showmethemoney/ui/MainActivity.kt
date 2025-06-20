@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.showmethemoney.ui.components.SplashScreen
 import com.example.showmethemoney.ui.screens.MainScreen
 import com.example.showmethemoney.ui.theme.BackgroundMainColor

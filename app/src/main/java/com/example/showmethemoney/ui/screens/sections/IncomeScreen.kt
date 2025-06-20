@@ -21,6 +21,7 @@ import com.example.showmethemoney.data.safecaller.ApiResult
 import com.example.showmethemoney.ui.components.IncomeItem
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
+import com.example.showmethemoney.ui.utils.formatAmount
 
 @Composable
 fun IncomeScreen(viewModel: ExpensesViewModel = hiltViewModel()) {
@@ -37,14 +38,15 @@ fun IncomeScreen(viewModel: ExpensesViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun IncomeList(incomes: List<IncomeItem>){
+private fun IncomeList(incomes: List<IncomeItem>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
         item {
             UniversalListItem(
                 content = "Всего" to null,
-                trail = "50000 ₽" to null,
+                trail = incomes.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }
+                    .let { formatAmount(it, "RUB") } to null, // Предполагаем RUB для общей суммы
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -53,7 +55,7 @@ private fun IncomeList(incomes: List<IncomeItem>){
         items(incomes) { item ->
             UniversalListItem(
                 content = item.categoryName to item.comment,
-                trail = (item.amount + " " + item.accountCurrency) to {
+                trail = formatAmount(item.amount.toDoubleOrNull() ?: 0.0, item.accountCurrency) to {
                     IconButton(
                         onClick = { /* TODO */ },
                         modifier = Modifier.size(24.dp)

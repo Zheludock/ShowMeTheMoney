@@ -56,7 +56,6 @@ fun AddTransactionScreen(
     }
 
     var showDatePicker by remember { mutableStateOf(false) }
-    var showTimePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.createTransactionResult.collect { result ->
