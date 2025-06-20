@@ -30,8 +30,8 @@ import com.example.showmethemoney.ui.theme.Indicator
 
 @Composable
 fun HistoryScreen(
+    navController: NavController,
     viewModel: ExpensesViewModel = hiltViewModel(),
-    navController: NavController
 ) {
     val isIncome = when (navController.previousBackStackEntry?.destination?.route) {
         Screen.Expenses.route -> false

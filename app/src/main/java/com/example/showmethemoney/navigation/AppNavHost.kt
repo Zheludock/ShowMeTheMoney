@@ -1,7 +1,6 @@
 package com.example.showmethemoney.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,6 +9,7 @@ import com.example.showmethemoney.ui.screens.sections.CategoryScreen
 import com.example.showmethemoney.ui.screens.sections.ExpensesScreen
 import com.example.showmethemoney.ui.screens.sections.IncomeScreen
 import com.example.showmethemoney.ui.screens.sections.SettingsScreen
+import com.example.showmethemoney.ui.screens.sections.subsections.AddTransactionScreen
 import com.example.showmethemoney.ui.screens.sections.subsections.HistoryScreen
 
 @Composable
@@ -19,10 +19,12 @@ fun AppNavHost(navController: NavHostController) {
         startDestination = Screen.Expenses.route
     ) {
         composable(Screen.Expenses.route) { ExpensesScreen()}
-        composable(Screen.Income.route) { IncomeScreen(viewModel()) }
-        composable(Screen.Category.route) { CategoryScreen(viewModel()) }
+        composable(Screen.Income.route) { IncomeScreen() }
+        composable(Screen.Category.route) { CategoryScreen() }
         composable(Screen.Account.route) { AccountScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }
-        composable(Screen.History.route) { HistoryScreen(navController = navController) }
+        composable(Screen.History.route) { HistoryScreen(navController) }
+        composable(Screen.AddIncome.route) { AddTransactionScreen(navController) }
+        composable(Screen.AddExpense.route) { AddTransactionScreen(navController) }
     }
 }

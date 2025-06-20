@@ -8,15 +8,34 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.showmethemoney.R
+import com.example.showmethemoney.data.safecaller.ApiResult
+import com.example.showmethemoney.domain.AccountHistoryDomain
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
 
 @Composable
-fun AccountScreen(){
+fun AccountScreen(viewModel: AccountViewModel = hiltViewModel()) {
+    viewModel.loadAccountHistory()
+    val accountHistoryState by viewModel.accountHistory.collectAsState()
+
+    when (val state = accountHistoryState) {
+        is ApiResult.Loading -> LoadingIndicator()
+        is ApiResult.Success -> AccountContent(state.data)
+        is ApiResult.Error -> ErrorView(state.error) {
+            viewModel.loadAccountHistory()
+        }
+    }
+}
+
+@Composable
+private fun AccountContent(history: AccountHistoryDomain) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -24,7 +43,7 @@ fun AccountScreen(){
             UniversalListItem(
                 lead = "💰",
                 content = "Баланс" to null,
-                trail = "500000 ₽" to null,
+                trail = "${history.currentBalance} ${history.currency}" to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -33,7 +52,7 @@ fun AccountScreen(){
         item {
             UniversalListItem(
                 content = "Валюта" to null,
-                trail = "₽" to {
+                trail = history.currency to {
                     IconButton(
                         onClick = { /* TODO */ },
                         modifier = Modifier.size(24.dp)

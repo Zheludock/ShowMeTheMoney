@@ -17,10 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.showmethemoney.ui.screens.MainScreen
-import com.example.showmethemoney.ui.screens.MainViewModel
 import com.example.showmethemoney.ui.components.SplashScreen
+import com.example.showmethemoney.ui.screens.MainScreen
 import com.example.showmethemoney.ui.theme.BackgroundMainColor
 import com.example.showmethemoney.ui.theme.ShowMeTheMoneyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +37,6 @@ class MainActivity : ComponentActivity() {
                         .background(color = BackgroundMainColor),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    val viewModel: MainViewModel = hiltViewModel()
                     if (showSplash) {
                         SplashScreen { showSplash = false }
                     } else {

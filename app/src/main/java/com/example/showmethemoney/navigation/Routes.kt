@@ -26,6 +26,14 @@ sealed class Screen(val route: String,
         "history",
         "Моя история"
     )
+    object AddExpense: Screen(
+        "add_expense",
+        "Мои расходы"
+    )
+    object AddIncome: Screen(
+        "add_income",
+        "Мои доходы"
+    )
 
     companion object {
         fun fromRoute(route: String?): Screen {

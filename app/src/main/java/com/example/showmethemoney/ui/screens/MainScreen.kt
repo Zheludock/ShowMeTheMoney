@@ -12,7 +12,9 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,9 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Expenses.route
 
-    val currentNavItem = BottomNavItems.items.firstOrNull { it.route == currentRoute }
+    val currentNavItem by remember(currentRoute) {
+        derivedStateOf { BottomNavItems.items.firstOrNull { it.route == currentRoute } }
+    }
     val showFab = currentNavItem?.showFab ?: false
     val currentTitle = Screen.fromRoute(currentRoute).title
 
@@ -68,7 +72,11 @@ fun MainScreen() {
         floatingActionButton = {
             if (showFab) {
                 FloatingActionButton(
-                    onClick = { /* Действие при клике */ },
+                    onClick = { when (currentRoute) {
+                        Screen.Expenses.route -> navController.navigate("add_expense")
+                        Screen.Income.route -> navController.navigate("add_income")
+                        else -> {}
+                    } },
                     modifier = Modifier
                         .shadow(8.dp, CircleShape)
                         .size(56.dp),
