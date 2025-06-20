@@ -1,5 +1,7 @@
 package com.example.showmethemoney.data.safecaller
 
+import kotlinx.coroutines.flow.Flow
+
 interface NetworkMonitor {
-    fun isOnline(): Boolean
+    val isOnline: Flow<Boolean>
 }

@@ -7,30 +7,29 @@ import com.example.showmethemoney.data.FinanceRepository
 import com.example.showmethemoney.data.dto.account.toDomain
 import com.example.showmethemoney.data.dto.category.toDomain
 import com.example.showmethemoney.data.dto.transaction.toDomain
+import com.example.showmethemoney.data.safecaller.ApiCallHelper
 import com.example.showmethemoney.data.safecaller.ApiError
 import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.data.safecaller.NetworkMonitor
-import com.example.showmethemoney.data.safecaller.safeApiCall
 import com.example.showmethemoney.domain.utils.toExpenseItem
 import com.example.showmethemoney.domain.utils.toIncomeItem
-import com.example.showmethemoney.ui.components.ExpenseItem
-import com.example.showmethemoney.ui.components.IncomeItem
+import com.example.showmethemoney.ui.utils.ExpenseItem
+import com.example.showmethemoney.ui.utils.IncomeItem
+import com.example.showmethemoney.ui.utils.formatDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
     private val repository: FinanceRepository,
-    private val networkMonitor: NetworkMonitor,
+    private val apiCallHelper: ApiCallHelper,
     private val accountManager: AccountManager
-) : ViewModel() {
+): ViewModel() {
 
     private val _expenses = MutableStateFlow<ApiResult<List<ExpenseItem>>>(ApiResult.Loading)
     val expenses: StateFlow<ApiResult<List<ExpenseItem>>> = _expenses
@@ -40,7 +39,13 @@ class ExpensesViewModel @Inject constructor(
 
     val currentDate = formatCurrentDate()
 
-    fun loadTransactions(startDate: String? = null, endDate: String? = null, isIncome: Boolean) {
+    private val _startDateForUI = MutableStateFlow(getFirstDayOfCurrentMonth())
+    val startDateForUI: StateFlow<String> = _startDateForUI.asStateFlow()
+
+    private val _endDateForUI = MutableStateFlow(currentDate)
+    val endDateForUI: StateFlow<String> = _endDateForUI.asStateFlow()
+
+    fun loadTransactions(isIncome: Boolean) {
         viewModelScope.launch {
             val accountId = accountManager.selectedAccountId
             if (accountId == -1) {
@@ -50,13 +55,12 @@ class ExpensesViewModel @Inject constructor(
                 return@launch
             }
 
-            val finalStartDate = startDate ?: getFirstDayOfCurrentMonth()
-            val finalEndDate = endDate ?: getLastDayOfCurrentMonth()
+            val finalStartDate = _startDateForUI.value
+            val finalEndDate = _endDateForUI.value
 
             if (isIncome) {
                 _incomes.value = ApiResult.Loading
-                _incomes.value = safeApiCall(
-                    networkMonitor = networkMonitor,
+                _incomes.value = apiCallHelper.safeApiCall(
                     block = {
                         repository.getTransactions(accountId, finalStartDate, finalEndDate)
                             .filter { it.category.isIncome }
@@ -67,12 +71,12 @@ class ExpensesViewModel @Inject constructor(
                                         transaction.account.toDomain()
                                     )
                             }
-                    }
+                            .sortedByDescending { it.createdAt }
+                    },
                 )
             } else {
                 _expenses.value = ApiResult.Loading
-                _expenses.value = safeApiCall(
-                    networkMonitor = networkMonitor,
+                _expenses.value = apiCallHelper.safeApiCall(
                     block = {
                         repository.getTransactions(accountId, finalStartDate, finalEndDate)
                             .filter { !it.category.isIncome }
@@ -83,11 +87,13 @@ class ExpensesViewModel @Inject constructor(
                                         transaction.account.toDomain()
                                     )
                             }
-                    }
+                            .sortedByDescending { it.createdAt }
+                    },
                 )
             }
         }
     }
+
 
     private fun getFirstDayOfCurrentMonth(): String {
         val calendar = Calendar.getInstance()
@@ -98,13 +104,12 @@ class ExpensesViewModel @Inject constructor(
     private fun formatCurrentDate(): String {
         return formatDate(Date())
     }
-    private fun formatDate(date: Date): String {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+
+    fun updateStartDate(dateString: String) {
+        _startDateForUI.value = dateString
     }
-    private fun getLastDayOfCurrentMonth(): String {
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
-        }
-        return formatDate(calendar.time)
+
+    fun updateEndDate(dateString: String) {
+        _endDateForUI.value = dateString
     }
 }

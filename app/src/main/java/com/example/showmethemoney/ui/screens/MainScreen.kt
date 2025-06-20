@@ -11,26 +11,41 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.showmethemoney.navigation.AppNavHost
 import com.example.showmethemoney.navigation.BottomNavItems
 import com.example.showmethemoney.navigation.Screen
+import com.example.showmethemoney.ui.NetworkAwareViewModel
 import com.example.showmethemoney.ui.components.AppBottomNavigation
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen() {
+    val networkViewModel: NetworkAwareViewModel = hiltViewModel()
+    val isOnline by networkViewModel.isOnline.collectAsState()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Expenses.route
@@ -73,8 +88,8 @@ fun MainScreen() {
             if (showFab) {
                 FloatingActionButton(
                     onClick = { when (currentRoute) {
-                        Screen.Expenses.route -> navController.navigate("add_expense")
-                        Screen.Income.route -> navController.navigate("add_income")
+                        Screen.Expenses.route -> navController.navigate(Screen.AddExpense.route)
+                        Screen.Income.route -> navController.navigate(Screen.AddExpense.route)
                         else -> {}
                     } },
                     modifier = Modifier
@@ -94,10 +109,25 @@ fun MainScreen() {
                     )
                 }
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
             AppNavHost(navController = navController)
+        }
+        LaunchedEffect(isOnline) {
+            if (!isOnline) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Нет подключения к интернету",
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
+            } else {
+                scope.launch {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                }
+            }
         }
     }
 }

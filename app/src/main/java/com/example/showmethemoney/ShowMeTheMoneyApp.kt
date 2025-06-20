@@ -14,7 +14,8 @@ import javax.inject.Inject
 class ShowMeTheMoneyApp : Application() {
     @Inject
     lateinit var accountManager: AccountManager
-    @Inject lateinit var apiService: FinanceApiService
+    @Inject
+    lateinit var apiService: FinanceApiService
 
     override fun onCreate() {
         super.onCreate()

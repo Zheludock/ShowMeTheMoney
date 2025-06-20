@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.showmethemoney.data.AccountManager
 import com.example.showmethemoney.data.FinanceRepository
 import com.example.showmethemoney.data.dto.account.toDomain
+import com.example.showmethemoney.data.safecaller.ApiCallHelper
 import com.example.showmethemoney.data.safecaller.ApiError
 import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.data.safecaller.NetworkMonitor
-import com.example.showmethemoney.data.safecaller.safeApiCall
 import com.example.showmethemoney.domain.AccountHistoryDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     private val repository: FinanceRepository,
-    private val networkMonitor: NetworkMonitor,
+    private val apiCallHelper: ApiCallHelper,
     private val accountManager: AccountManager
 ) : ViewModel() {
 
@@ -35,9 +34,10 @@ class AccountViewModel @Inject constructor(
             }
 
             _accountHistory.value = ApiResult.Loading
-            _accountHistory.value = safeApiCall(
-                networkMonitor = networkMonitor,
-                block = { repository.getAccountHistory(accountId).toDomain() }
+            _accountHistory.value = apiCallHelper.safeApiCall(
+                block = {
+                    repository.getAccountHistory(accountId).toDomain()
+                },
             )
         }
     }

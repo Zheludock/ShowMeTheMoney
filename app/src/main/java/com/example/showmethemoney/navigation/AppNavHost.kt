@@ -2,8 +2,10 @@ package com.example.showmethemoney.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.showmethemoney.ui.screens.sections.AccountScreen
 import com.example.showmethemoney.ui.screens.sections.CategoryScreen
 import com.example.showmethemoney.ui.screens.sections.ExpensesScreen
@@ -18,13 +20,17 @@ fun AppNavHost(navController: NavHostController) {
         navController = navController,
         startDestination = Screen.Expenses.route
     ) {
-        composable(Screen.Expenses.route) { ExpensesScreen()}
+        composable(Screen.Expenses.route) { ExpensesScreen() }
         composable(Screen.Income.route) { IncomeScreen() }
         composable(Screen.Category.route) { CategoryScreen() }
         composable(Screen.Account.route) { AccountScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }
         composable(Screen.History.route) { HistoryScreen(navController) }
-        composable(Screen.AddIncome.route) { AddTransactionScreen(navController) }
-        composable(Screen.AddExpense.route) { AddTransactionScreen(navController) }
+        composable(Screen.AddExpense.route) {
+            AddTransactionScreen(navController, isIncome = false)
+        }
+        composable(Screen.AddIncome.route) {
+            AddTransactionScreen(navController, isIncome = true)
+        }
     }
 }

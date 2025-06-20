@@ -62,14 +62,14 @@ class FinanceRepository @Inject constructor(private val apiService: FinanceApiSe
 
     suspend fun createTransaction(
         accountId: Int,
-        categoryId: Int,
+        categoryId: String,
         amount: String,
         transactionDate: String,
         comment: String? = null
     ): TransactionResponse {
         val request = CreateTransactionRequest(
             accountId = accountId,
-            categoryId = categoryId,
+            categoryId = categoryId.toInt(),
             amount = amount,
             transactionDate = transactionDate,
             comment = comment

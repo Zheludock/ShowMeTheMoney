@@ -5,12 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.showmethemoney.data.AccountManager
 import com.example.showmethemoney.data.FinanceRepository
 import com.example.showmethemoney.data.dto.category.toDomain
+import com.example.showmethemoney.data.safecaller.ApiCallHelper
 import com.example.showmethemoney.data.safecaller.ApiError
 import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.data.safecaller.NetworkMonitor
-import com.example.showmethemoney.data.safecaller.safeApiCall
 import com.example.showmethemoney.domain.utils.toCategoryItem
-import com.example.showmethemoney.ui.components.CategoryItem
+import com.example.showmethemoney.ui.utils.CategoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     private val repository: FinanceRepository,
-    private val networkMonitor: NetworkMonitor,
+    private val apiCallHelper: ApiCallHelper,
     private val accountManager: AccountManager
 ) : ViewModel() {
 
@@ -40,14 +39,14 @@ class CategoryViewModel @Inject constructor(
             }
 
             _categories.value = ApiResult.Loading
-            _categories.value = safeApiCall(
-                networkMonitor = networkMonitor,
+            _categories.value = apiCallHelper.safeApiCall(
                 block = {
                     repository.getCategoriesByType(false)
                         .map { category ->
                             category.toDomain().toCategoryItem()
                         }
-                }
+                        .sortedBy { it.name } // Сортировка по имени
+                },
             )
         }
     }

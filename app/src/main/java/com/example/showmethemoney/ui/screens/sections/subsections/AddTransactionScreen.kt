@@ -1,6 +1,5 @@
 package com.example.showmethemoney.ui.screens.sections.subsections
 
-import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,10 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,22 +34,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
 import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.UniversalListItem
+import com.example.showmethemoney.ui.utils.TransactionUiState
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionScreen(
     navController: NavController,
+    isIncome: Boolean,
     currentTransactionId: String? = null,
     viewModel: TransactionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val isIncome = when (navController.previousBackStackEntry?.destination?.route) {
-        Screen.Expenses.route -> false
-        Screen.Income.route -> true
-        else -> false
-    }
+    val categories by viewModel.categories.collectAsState()
+    val showCategoryDialog by viewModel.showCategoryDialog.collectAsState()
 
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -69,29 +64,60 @@ fun AddTransactionScreen(
         }
     }
 
+    /*if (showCategoryDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.showCategoryDialog(false) },
+            title = { Text("Выберите категорию") },
+            text = {
+                LazyColumn {
+                    items(categories) { category ->
+                        ListItem(
+                            headlineText = { Text(category.name) },
+                            modifier = Modifier.clickable {
+                                viewModel.updateSelectedCategory(category)
+                            }
+                        )
+                        HorizontalDivider()
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.showCategoryDialog(false) }) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }*/
+
     if (showDatePicker) {
         val calendar = Calendar.getInstance()
         calendar.time = uiState.transactionDate
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = calendar.timeInMillis
+        )
+
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
-                TextButton(onClick = {
-                    showDatePicker = false
-                }) {
+                Button(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val newDate = Date(millis)
+                            viewModel.updateTransactionDate(newDate)
+                        }
+                        showDatePicker = false
+                    }
+                ) {
                     Text("OK")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
+                Button(onClick = { showDatePicker = false }) {
                     Text("Cancel")
                 }
             }
         ) {
-            DatePicker(
-                state = rememberDatePickerState(
-                    initialSelectedDateMillis = calendar.timeInMillis
-                )
-            )
+            DatePicker(state = datePickerState)
         }
     }
 
@@ -99,20 +125,22 @@ fun AddTransactionScreen(
         isIncome = isIncome,
         state = uiState,
         onAccountClick = { /* Открыть выбор счета */ },
-        onCategoryClick = { /* Открыть выбор категории */ },
+        onCategoryClick = { viewModel.showCategoryDialog(true) },
         onAmountChange = viewModel::updateAmount,
         onDateClick = { showDatePicker = true },
         onCommentChange = viewModel::updateComment,
         onCreateClick = {
             viewModel.createTransaction(
                 categoryId = uiState.selectedCategoryId,
+                accountId = uiState.selectedAccountId,
                 amount = uiState.amount,
-                transactionDate = viewModel.getFormattedDate(),
+                transactionDate = viewModel.getBackendFormattedDate(),
                 comment = uiState.comment
             )
         }
     )
 }
+
 
 @Composable
 fun TransactionList(
@@ -153,10 +181,10 @@ fun TransactionList(
                             painter = painterResource(R.drawable.ic_more_vert),
                             contentDescription = "Выбрать категорию",
                             modifier = Modifier
-                                .size(24.dp)
-                                .clickable(onClick = onCategoryClick)
+                                .size(24.dp),
                         )
-                    }
+                    },
+                    onClick = onCategoryClick
                 )
             }
             item {

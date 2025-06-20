@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,12 +18,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.showmethemoney.R
 import com.example.showmethemoney.data.safecaller.ApiResult
 import com.example.showmethemoney.domain.AccountHistoryDomain
+import com.example.showmethemoney.ui.components.ErrorView
+import com.example.showmethemoney.ui.components.LoadingIndicator
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
 
 @Composable
 fun AccountScreen(viewModel: AccountViewModel = hiltViewModel()) {
-    viewModel.loadAccountHistory()
+    LaunchedEffect(Unit) {
+        viewModel.loadAccountHistory()
+    }
     val accountHistoryState by viewModel.accountHistory.collectAsState()
 
     when (val state = accountHistoryState) {

@@ -3,9 +3,9 @@ package com.example.showmethemoney.domain.utils
 import com.example.showmethemoney.domain.AccountDomain
 import com.example.showmethemoney.domain.CategoryDomain
 import com.example.showmethemoney.domain.TransactionDomain
-import com.example.showmethemoney.ui.components.CategoryItem
-import com.example.showmethemoney.ui.components.ExpenseItem
-import com.example.showmethemoney.ui.components.IncomeItem
+import com.example.showmethemoney.ui.utils.CategoryItem
+import com.example.showmethemoney.ui.utils.ExpenseItem
+import com.example.showmethemoney.ui.utils.IncomeItem
 
 fun TransactionDomain.toExpenseItem(
     categoryDomain: CategoryDomain,
@@ -17,7 +17,8 @@ fun TransactionDomain.toExpenseItem(
         categoryName = categoryDomain.categoryName,
         comment = this.comment,
         amount = this.amount,
-        accountCurrency = accountDomain.currency
+        accountCurrency = accountDomain.currency,
+        createdAt = this.createdAt
     )
 }
 
@@ -31,6 +32,7 @@ fun TransactionDomain.toIncomeItem(
         comment = this.comment,
         amount = this.amount,
         accountCurrency = accountDomain.currency,
+        createdAt = this.createdAt
     )
 }
 
@@ -38,6 +40,7 @@ fun CategoryDomain.toCategoryItem(): CategoryItem {
     return CategoryItem(
         id = this.categoryId,
         emoji = this.emoji,
-        name = this.categoryName
+        name = this.categoryName,
+        isIncome = this.isIncome
     )
 }

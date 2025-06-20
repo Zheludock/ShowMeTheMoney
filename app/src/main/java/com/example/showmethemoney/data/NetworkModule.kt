@@ -1,10 +1,15 @@
 package com.example.showmethemoney.data
 
+import android.content.Context
+import com.example.showmethemoney.data.safecaller.AndroidNetworkMonitor
+import com.example.showmethemoney.data.safecaller.ApiCallHelper
+import com.example.showmethemoney.data.safecaller.NetworkMonitor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,6 +20,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor {
+        return AndroidNetworkMonitor(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiCallHelper(networkMonitor: NetworkMonitor): ApiCallHelper {
+        return ApiCallHelper(networkMonitor)
+    }
 
     private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
     private const val TOKEN = "AALqE9czebsipeTL4BJaTxCn"
