@@ -1,6 +1,6 @@
 package com.example.showmethemoney.domain
 
-data class Category(
+data class CategoryDomain(
     val categoryId: String,
     val categoryName: String,
     val emoji: String,

@@ -1,6 +1,6 @@
 package com.example.showmethemoney.domain
 
-data class Account(
+data class AccountDomain(
     val id: String,
     val userId: String,
     var name: String,

@@ -36,7 +36,7 @@ fun SettingsScreen() {
                 } else {
                     null to {
                         IconButton(
-                            onClick = { /* TODO: Добавить обработчик */ },
+                            onClick = { /* TODO */ },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(

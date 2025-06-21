@@ -1,10 +1,11 @@
-package com.example.showmethemoney
+package com.example.showmethemoney.ui
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -16,13 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.showmethemoney.ui.screens.MainScreen
-import com.example.showmethemoney.ui.screens.MainViewModel
 import com.example.showmethemoney.ui.components.SplashScreen
+import com.example.showmethemoney.ui.screens.MainScreen
 import com.example.showmethemoney.ui.theme.BackgroundMainColor
 import com.example.showmethemoney.ui.theme.ShowMeTheMoneyTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +37,10 @@ class MainActivity : ComponentActivity() {
                         .background(color = BackgroundMainColor),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    val viewModel: MainViewModel = viewModel()
                     if (showSplash) {
                         SplashScreen { showSplash = false }
                     } else {
-                        MainScreen(viewModel)
+                        MainScreen()
                     }
                 }
             }
@@ -51,6 +51,5 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    val viewModel: MainViewModel = viewModel()
-    MainScreen(viewModel)
+    MainScreen()
 }

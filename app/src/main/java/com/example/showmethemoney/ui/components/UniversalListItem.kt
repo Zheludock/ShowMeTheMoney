@@ -17,9 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.example.showmethemoney.ui.theme.DividerGray
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
@@ -30,7 +33,7 @@ fun UniversalListItem(
     content: Pair<String, String?>,
     trail: Pair<String?, @Composable (() -> Unit)?> = null to null,
     onClick: () -> Unit = {},
-    modifier: Modifier
+    modifier: Modifier = Modifier.background(Color.Transparent)
 ) {
     Column(modifier = modifier) {
         Row(
@@ -42,7 +45,6 @@ fun UniversalListItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Lead and content section
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
@@ -83,7 +85,6 @@ fun UniversalListItem(
                 }
             }
 
-            // Trail section
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
@@ -93,7 +94,8 @@ fun UniversalListItem(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(end = 8.dp) // Отступ между текстом и иконкой
+                        modifier = Modifier.padding(end = 8.dp),
+                        textAlign = TextAlign.End
                     )
                 }
                 trail.second?.invoke()
@@ -101,7 +103,8 @@ fun UniversalListItem(
         }
         HorizontalDivider(
             thickness = 1.dp,
-            color = DividerGray
+            color = DividerGray,
+            modifier = Modifier.zIndex(1f)
         )
     }
 }
