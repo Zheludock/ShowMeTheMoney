@@ -50,7 +50,9 @@ class ExpensesViewModel @Inject constructor(
                 endDate = _endDateForUI.value
             )) {
                 is ApiResult.Success -> {
-                    val mappedItems = result.data.map { it.toTransactionItem() }.filter { it.isIncome == isIncome }
+                    val mappedItems = result.data.map { it.toTransactionItem() }
+                        .filter { it.isIncome == isIncome }
+                        .sortedByDescending { it.createdAt }
                     if (isIncome) {
                         _incomes.value = ApiResult.Success(mappedItems)
                     } else {
