@@ -19,7 +19,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,10 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
-import com.example.showmethemoney.data.safecaller.ApiResult
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.utils.TransactionUiState
 import java.util.Date
@@ -44,7 +41,7 @@ fun AddTransactionScreen(
     navController: NavController,
     isIncome: Boolean,
     currentTransactionId: String? = null,
-    viewModel: TransactionViewModel = hiltViewModel()
+    viewModel: TransactionViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -52,17 +49,17 @@ fun AddTransactionScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         viewModel.createTransactionResult.collect { result ->
             when (result) {
-                is ApiResult.Success<*> -> navController.popBackStack()
-                is ApiResult.Error -> {
+                is com.example.data.safecaller.ApiResult.Success<*> -> navController.popBackStack()
+                is com.example.data.safecaller.ApiResult.Error -> {
                     println("Error: ${result.error}")
                 }
                 else -> {}
             }
         }
-    }
+    }*/
 
     /*if (showCategoryDialog) {
         AlertDialog(
@@ -132,7 +129,7 @@ fun AddTransactionScreen(
         onCreateClick = {
             viewModel.createTransaction(
                 categoryId = uiState.selectedCategoryId,
-                accountId = uiState.selectedAccountId,
+                accountId = uiState.selectedAccountId.toString(),
                 amount = uiState.amount,
                 transactionDate = viewModel.getBackendFormattedDate(),
                 comment = uiState.comment

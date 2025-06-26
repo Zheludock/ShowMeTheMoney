@@ -2,25 +2,17 @@ package com.example.showmethemoney.ui.screens.sections
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.showmethemoney.data.AccountManager
-import com.example.showmethemoney.data.FinanceRepository
-import com.example.showmethemoney.data.dto.category.toDomain
-import com.example.showmethemoney.data.safecaller.ApiCallHelper
-import com.example.showmethemoney.data.safecaller.ApiError
-import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.domain.utils.toCategoryItem
+import com.example.domain.ApiResult
+import com.example.domain.usecase.GetAllCategoriesUseCase
 import com.example.showmethemoney.ui.utils.CategoryItem
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.showmethemoney.ui.utils.toCategoryItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val repository: FinanceRepository,
-    private val apiCallHelper: ApiCallHelper,
-    private val accountManager: AccountManager
+    private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {
 
     private val _categories = MutableStateFlow<ApiResult<List<CategoryItem>>>(ApiResult.Loading)
@@ -32,22 +24,17 @@ class CategoryViewModel @Inject constructor(
 
     fun loadCategories() {
         viewModelScope.launch {
-            val accountId = accountManager.selectedAccountId
-            if (accountId == -1) {
-                _categories.value = ApiResult.Error(ApiError.UnknownError("Account not selected"))
-                return@launch
-            }
-
             _categories.value = ApiResult.Loading
-            _categories.value = apiCallHelper.safeApiCall(
-                block = {
-                    repository.getCategoriesByType(false)
-                        .map { category ->
-                            category.toDomain().toCategoryItem()
-                        }
-                        .sortedBy { it.name } // Сортировка по имени
-                },
-            )
+            when (val result = getAllCategoriesUseCase.execute()) {
+                is ApiResult.Success -> {
+                    val mappedItems = result.data.map { it.toCategoryItem() }
+                    _categories.value = ApiResult.Success(mappedItems)
+                }
+                is ApiResult.Error -> {
+                    _categories.value = result
+                }
+                ApiResult.Loading -> Unit
+            }
         }
     }
 }

@@ -24,14 +24,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.showmethemoney.navigation.AppNavHost
 import com.example.showmethemoney.navigation.BottomNavItems
 import com.example.showmethemoney.navigation.Screen
-import com.example.showmethemoney.ui.NetworkAwareViewModel
+import com.example.showmethemoney.network.NetworkAwareViewModel
 import com.example.showmethemoney.ui.components.AppBottomNavigation
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.theme.IconsGreen
@@ -39,8 +38,7 @@ import com.example.showmethemoney.ui.theme.White
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen() {
-    val networkViewModel: NetworkAwareViewModel = hiltViewModel()
+fun MainScreen(networkViewModel: NetworkAwareViewModel) {
     val isOnline by networkViewModel.isOnline.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }

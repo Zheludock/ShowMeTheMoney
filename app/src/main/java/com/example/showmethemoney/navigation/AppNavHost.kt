@@ -2,17 +2,15 @@ package com.example.showmethemoney.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.showmethemoney.ui.screens.sections.AccountScreen
 import com.example.showmethemoney.ui.screens.sections.CategoryScreen
 import com.example.showmethemoney.ui.screens.sections.ExpensesScreen
 import com.example.showmethemoney.ui.screens.sections.IncomeScreen
 import com.example.showmethemoney.ui.screens.sections.SettingsScreen
 import com.example.showmethemoney.ui.screens.sections.subsections.AddTransactionScreen
-import com.example.showmethemoney.ui.screens.sections.subsections.HistoryScreen
+import com.example.showmethemoney.ui.screens.sections.HistoryScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {

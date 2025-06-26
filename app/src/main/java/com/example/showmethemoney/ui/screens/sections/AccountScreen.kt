@@ -14,17 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.domain.ApiResult
+import com.example.domain.model.AccountHistoryDomain
 import com.example.showmethemoney.R
-import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.domain.AccountHistoryDomain
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
 
 @Composable
-fun AccountScreen(viewModel: AccountViewModel = hiltViewModel()) {
+fun AccountScreen(viewModel: AccountViewModel) {
     LaunchedEffect(Unit) {
         viewModel.loadAccountHistory()
     }

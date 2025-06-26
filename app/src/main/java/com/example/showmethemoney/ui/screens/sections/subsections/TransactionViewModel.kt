@@ -2,16 +2,8 @@ package com.example.showmethemoney.ui.screens.sections.subsections
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.showmethemoney.data.AccountManager
-import com.example.showmethemoney.data.FinanceRepository
-import com.example.showmethemoney.data.dto.category.toDomain
-import com.example.showmethemoney.data.dto.transaction.TransactionResponse
-import com.example.showmethemoney.data.safecaller.ApiCallHelper
-import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.domain.utils.toCategoryItem
 import com.example.showmethemoney.ui.utils.CategoryItem
 import com.example.showmethemoney.ui.utils.TransactionUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,17 +15,10 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 
-@HiltViewModel
-class TransactionViewModel @Inject constructor(
-    private val repository: FinanceRepository,
-    private val apiCallHelper: ApiCallHelper,
-    private val accountManager: AccountManager
-) : ViewModel() {
+class TransactionViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 
-    private val _createTransactionResult = MutableStateFlow<ApiResult<TransactionResponse>?>(null)
-    val createTransactionResult: StateFlow<ApiResult<TransactionResponse>?> = _createTransactionResult
 
     private val _categories = MutableStateFlow<List<CategoryItem>>(emptyList())
     val categories: StateFlow<List<CategoryItem>> = _categories.asStateFlow()
@@ -47,7 +32,7 @@ class TransactionViewModel @Inject constructor(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            _categories.value = repository.getAllCategories().map { it.toDomain().toCategoryItem() }
+            //_categories.value = repository.getAllCategories().map { it.toDomain().toCategoryItem() }
         }
     }
 
@@ -64,24 +49,14 @@ class TransactionViewModel @Inject constructor(
     }
 
     fun createTransaction(
-        accountId: Int = accountManager.selectedAccountId,
+        accountId: String = "67",
         categoryId: String,
         amount: String,
         transactionDate: String,
         comment: String? = null
     ) {
         viewModelScope.launch {
-            _createTransactionResult.value = apiCallHelper.safeApiCall(
-                block = {
-                    repository.createTransaction(
-                        accountId = accountId,
-                        categoryId = categoryId,
-                        amount = amount,
-                        transactionDate = transactionDate,
-                        comment = comment
-                    )
-                }
-            )
+            //_createTransactionResult.value =
         }
     }
 

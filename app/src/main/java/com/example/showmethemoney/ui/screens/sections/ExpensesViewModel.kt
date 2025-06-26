@@ -2,98 +2,70 @@ package com.example.showmethemoney.ui.screens.sections
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.showmethemoney.data.AccountManager
-import com.example.showmethemoney.data.FinanceRepository
-import com.example.showmethemoney.data.dto.account.toDomain
-import com.example.showmethemoney.data.dto.category.toDomain
-import com.example.showmethemoney.data.dto.transaction.toDomain
-import com.example.showmethemoney.data.safecaller.ApiCallHelper
-import com.example.showmethemoney.data.safecaller.ApiError
-import com.example.showmethemoney.data.safecaller.ApiResult
-import com.example.showmethemoney.domain.utils.toExpenseItem
-import com.example.showmethemoney.domain.utils.toIncomeItem
-import com.example.showmethemoney.ui.utils.ExpenseItem
-import com.example.showmethemoney.ui.utils.IncomeItem
+import com.example.domain.ApiResult
+import com.example.domain.usecase.GetTransactionsUseCase
+import com.example.showmethemoney.ui.utils.TransactionItem
 import com.example.showmethemoney.ui.utils.formatDate
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.showmethemoney.ui.utils.toTransactionItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
-@HiltViewModel
 class ExpensesViewModel @Inject constructor(
-    private val repository: FinanceRepository,
-    private val apiCallHelper: ApiCallHelper,
-    private val accountManager: AccountManager
-): ViewModel() {
+    private val getTransactionsUseCase: GetTransactionsUseCase
+) : ViewModel() {
 
-    private val _expenses = MutableStateFlow<ApiResult<List<ExpenseItem>>>(ApiResult.Loading)
-    val expenses: StateFlow<ApiResult<List<ExpenseItem>>> = _expenses
+    private val _expenses = MutableStateFlow<ApiResult<List<TransactionItem>>>(ApiResult.Loading)
+    val expenses: StateFlow<ApiResult<List<TransactionItem>>> = _expenses
 
-    private val _incomes = MutableStateFlow<ApiResult<List<IncomeItem>>>(ApiResult.Loading)
-    val incomes: StateFlow<ApiResult<List<IncomeItem>>> = _incomes
+    private val _incomes = MutableStateFlow<ApiResult<List<TransactionItem>>>(ApiResult.Loading)
+    val incomes: StateFlow<ApiResult<List<TransactionItem>>> = _incomes
 
     val currentDate = formatCurrentDate()
 
     private val _startDateForUI = MutableStateFlow(getFirstDayOfCurrentMonth())
-    val startDateForUI: StateFlow<String> = _startDateForUI.asStateFlow()
+    val startDateForUI: StateFlow<String> = _startDateForUI
 
     private val _endDateForUI = MutableStateFlow(currentDate)
-    val endDateForUI: StateFlow<String> = _endDateForUI.asStateFlow()
+    val endDateForUI: StateFlow<String> = _endDateForUI
 
     fun loadTransactions(isIncome: Boolean) {
         viewModelScope.launch {
-            val accountId = accountManager.selectedAccountId
-            if (accountId == -1) {
-                val error = ApiError.UnknownError("Account not selected")
-                _expenses.value = ApiResult.Error(error)
-                _incomes.value = ApiResult.Error(error)
-                return@launch
-            }
-
-            val finalStartDate = _startDateForUI.value
-            val finalEndDate = _endDateForUI.value
+            val accountId = "67" // Пока что харкод, ИСПРАВИТЬ!!!
 
             if (isIncome) {
                 _incomes.value = ApiResult.Loading
-                _incomes.value = apiCallHelper.safeApiCall(
-                    block = {
-                        repository.getTransactions(accountId, finalStartDate, finalEndDate)
-                            .filter { it.category.isIncome }
-                            .map { transaction ->
-                                transaction.toDomain()
-                                    .toIncomeItem(
-                                        transaction.category.toDomain(),
-                                        transaction.account.toDomain()
-                                    )
-                            }
-                            .sortedByDescending { it.createdAt }
-                    },
-                )
             } else {
                 _expenses.value = ApiResult.Loading
-                _expenses.value = apiCallHelper.safeApiCall(
-                    block = {
-                        repository.getTransactions(accountId, finalStartDate, finalEndDate)
-                            .filter { !it.category.isIncome }
-                            .map { transaction ->
-                                transaction.toDomain()
-                                    .toExpenseItem(
-                                        transaction.category.toDomain(),
-                                        transaction.account.toDomain()
-                                    )
-                            }
-                            .sortedByDescending { it.createdAt }
-                    },
-                )
+            }
+
+            when (val result = getTransactionsUseCase.execute(
+                accountId = accountId,
+                startDate = _startDateForUI.value,
+                endDate = _endDateForUI.value
+            )) {
+                is ApiResult.Success -> {
+                    val mappedItems = result.data.map { it.toTransactionItem() }.filter { it.isIncome == isIncome }
+                    if (isIncome) {
+                        _incomes.value = ApiResult.Success(mappedItems)
+                    } else {
+                        _expenses.value = ApiResult.Success(mappedItems)
+                    }
+                }
+                is ApiResult.Error -> {
+                    if (isIncome) {
+                        _incomes.value = result
+                    } else {
+                        _expenses.value = result
+                    }
+                }
+                ApiResult.Loading -> Unit
             }
         }
     }
-
 
     private fun getFirstDayOfCurrentMonth(): String {
         val calendar = Calendar.getInstance()

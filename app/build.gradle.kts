@@ -2,8 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.android.hilt)
-    alias(libs.plugins.kotlin.kapt)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,6 +38,10 @@ android {
     buildFeatures {
         compose = true
     }
+    dynamicFeatures += setOf(
+        ":domain",
+        ":data"
+    )
 }
 
 dependencies {
@@ -52,13 +55,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose.android)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.gson)
     implementation(libs.logging.interceptor)
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     implementation(libs.kotlinx.coroutines.core)
@@ -67,7 +64,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
-kapt {
-    correctErrorTypes = true
+    implementation(project(":domain"))
+    implementation (libs.dagger)
+    ksp(libs.dagger.compiler)
 }

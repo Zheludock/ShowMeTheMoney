@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.showmethemoney.data.safecaller.ApiError
+import com.example.domain.ApiError
 import com.example.showmethemoney.ui.theme.Indicator
 
 @Composable

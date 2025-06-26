@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.showmethemoney.R
-import com.example.showmethemoney.domain.listSettins
+import com.example.domain.model.listSettins
 import com.example.showmethemoney.ui.components.UniversalListItem
 
 @Composable
