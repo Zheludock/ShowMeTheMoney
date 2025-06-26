@@ -18,7 +18,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -38,10 +37,6 @@ android {
     buildFeatures {
         compose = true
     }
-    dynamicFeatures += setOf(
-        ":domain",
-        ":data"
-    )
 }
 
 dependencies {
@@ -64,7 +59,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(project(":domain"))
+    api(project(":domain"))
     implementation (libs.dagger)
     ksp(libs.dagger.compiler)
+    implementation(project(":data"))
 }

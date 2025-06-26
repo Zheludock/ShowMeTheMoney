@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
 }
 
@@ -9,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = 29
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -22,10 +23,16 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
     buildFeatures {
         compose = true
     }
@@ -36,7 +43,9 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.gson)
     implementation(libs.logging.interceptor)
-    implementation (libs.dagger)
+    implementation(libs.dagger)
     ksp(libs.dagger.compiler)
-    implementation (project(":domain"))
+    implementation(project(":domain"))
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.runtime)
 }

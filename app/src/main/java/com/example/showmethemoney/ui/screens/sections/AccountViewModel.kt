@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AccountViewModel @Inject constructor(
-) : ViewModel() {
+class AccountViewModel @Inject constructor() : ViewModel() {
 
     private val _accountHistory = MutableStateFlow<ApiResult<AccountHistoryDomain>>(ApiResult.Loading)
     val accountHistory: StateFlow<ApiResult<AccountHistoryDomain>> = _accountHistory

@@ -1,17 +1,12 @@
 package com.example.showmethemoney
 
 import android.app.Application
-import com.example.showmethemoney.di.AppModule
-import com.example.showmethemoney.di.NetworkModule
+import com.example.showmethemoney.di.DaggerAppComponent
 
 class ShowMeTheMoneyApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        val appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule())
-            .networkModule(NetworkModule())
-            .build()
+        val appComponent = DaggerAppComponent.create()
 
-        appComponent.inject(this)
     }
 }

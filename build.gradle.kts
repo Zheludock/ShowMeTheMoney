@@ -7,3 +7,8 @@ plugins {
     alias(libs.plugins.android.library) apply false
     id("com.google.devtools.ksp") version "2.1.21-2.0.1" apply false
 }
+buildscript {
+    dependencies {
+        classpath ("com.android.tools.build:gradle:8.11.0") // ← версия AGP
+    }
+}
