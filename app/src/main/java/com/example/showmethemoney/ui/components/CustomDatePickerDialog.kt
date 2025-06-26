@@ -26,7 +26,15 @@ import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+/**
+ * Кастомный диалог выбора даты с кнопками "Clear", "Cancel" и "OK".
+ *
+ * @param initialDate Начальная выбранная дата.
+ * @param selectableDates Ограничения на выбираемые даты (если null — все даты доступны).
+ * @param onClear Колбэк при нажатии на "Clear" (сброс выбора).
+ * @param onCancel Колбэк при нажатии на "Cancel" или закрытии диалога.
+ * @param onConfirm Колбэк при нажатии на "OK" (передает выбранную дату).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDatePickerDialog(

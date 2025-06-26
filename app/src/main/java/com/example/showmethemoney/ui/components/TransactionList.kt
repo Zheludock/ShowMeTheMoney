@@ -15,7 +15,7 @@ import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.utils.TransactionItem
 import com.example.showmethemoney.ui.utils.formatAmount
-
+//Доработать
 @Composable
 fun TransactionList(transactions: List<TransactionItem>) {
     LazyColumn(

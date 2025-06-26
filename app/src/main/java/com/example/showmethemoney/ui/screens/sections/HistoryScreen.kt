@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.domain.ApiResult
-import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.CustomDatePickerDialog
 import com.example.showmethemoney.ui.components.ErrorView
+import com.example.showmethemoney.ui.components.IsIncomeFromNavigation
 import com.example.showmethemoney.ui.components.LoadingIndicator
 import com.example.showmethemoney.ui.components.TransactionHistoryList
 import com.example.showmethemoney.ui.utils.formatDateForDisplay
@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+//Подумать о доработке
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
@@ -32,11 +33,7 @@ fun HistoryScreen(
 ) {
     val viewModel: ExpensesViewModel = viewModel(factory = viewModelFactory)
 
-    val isIncome = when (navController.previousBackStackEntry?.destination?.route) {
-        Screen.Expenses.route -> false
-        Screen.Income.route -> true
-        else -> false
-    }
+    val isIncome = IsIncomeFromNavigation(navController.previousBackStackEntry?.destination?.route)
 
     LaunchedEffect(isIncome) {
         viewModel.loadTransactions(isIncome = isIncome)
@@ -112,7 +109,8 @@ fun HistoryScreen(
         )
     }
 
-    val state = if (isIncome) viewModel.incomes.collectAsState().value else viewModel.expenses.collectAsState().value
+    val state = if (isIncome) viewModel.incomes.collectAsState().value
+    else viewModel.expenses.collectAsState().value
     val noDataText = if (isIncome) "Нет данных о доходах" else "Нет данных о расходах"
     val onRetry = { viewModel.loadTransactions(isIncome = isIncome) }
 

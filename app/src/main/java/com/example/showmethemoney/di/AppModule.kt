@@ -11,21 +11,11 @@ import javax.inject.Singleton
  * Dagger-модуль для предоставления зависимостей уровня приложения.
  *
  * Предоставляет:
- * - Экземпляр [Application] (как singleton).
  * - Контекст приложения ([Context]).
  * - [ConnectivityManager] для мониторинга состояния сети.
- *
- * @param application Экземпляр приложения, используемый для предоставления зависимостей.
  */
 @Module
-class AppModule(private val application: Application) {
-    /**
-     * Предоставляет singleton-экземпляр [Application].
-     */
-    @Provides
-    @Singleton
-    fun provideApplication(): Application = application
-
+class AppModule {
     /**
      * Предоставляет контекст приложения ([Context]) как singleton.
      * Альтернатива прямому использованию [provideApplication], если нужен именно контекст.

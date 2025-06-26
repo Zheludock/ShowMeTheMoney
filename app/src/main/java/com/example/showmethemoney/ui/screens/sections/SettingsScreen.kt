@@ -16,7 +16,14 @@ import androidx.compose.ui.unit.dp
 import com.example.showmethemoney.R
 import com.example.domain.model.listSettings
 import com.example.showmethemoney.ui.components.UniversalListItem
-
+/**
+ * Экран настроек приложения.
+ *
+ * Отображает список настроек, включая переключатель для темы
+ * и кнопки навигации (например, "О приложении").
+ *
+ * @param listSettings Список настроек для отображения.
+ */
 @Composable
 fun SettingsScreen() {
     LazyColumn(

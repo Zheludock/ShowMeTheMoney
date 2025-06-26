@@ -21,7 +21,7 @@ import com.example.showmethemoney.ui.utils.formatDateForDisplay
 import com.example.showmethemoney.ui.utils.formatTime
 import com.example.showmethemoney.ui.utils.stringToDate
 
-
+//Доработать
 @Composable
 fun TransactionHistoryList(
     transactions: List<TransactionItem>,

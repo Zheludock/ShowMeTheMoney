@@ -12,8 +12,9 @@ class ShowMeTheMoneyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         appComponent = DaggerAppComponent.factory()
-            .create(application = this, appModule = AppModule(this))
+            .create(application = this, appModule = AppModule())
     }
 
 }

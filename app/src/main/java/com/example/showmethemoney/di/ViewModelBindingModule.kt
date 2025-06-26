@@ -9,6 +9,7 @@ import com.example.showmethemoney.ui.screens.sections.subsections.AddTransaction
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+
 /**
  * Dagger модуль для привязки ViewModel к мультибиндингу.
  *

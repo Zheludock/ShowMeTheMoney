@@ -35,7 +35,9 @@ import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.utils.TransactionUiState
 import java.util.Date
-
+/**
+ * Не оценивать, в процессе. В ТЗ пока не фигурирует
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionScreen(

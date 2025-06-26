@@ -13,7 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.domain.ApiError
 import com.example.showmethemoney.ui.theme.Indicator
-
+/**
+ * Компонент для отображения ошибки API с возможностью повтора действия.
+ *
+ * @param error Ошибка API для отображения (должен быть sealed class/interface)
+ * @param onRetry Колбэк при нажатии на кнопку повтора
+ */
 @Composable
 fun ErrorView(error: ApiError, onRetry: () -> Unit) {
     Box(

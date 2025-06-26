@@ -23,12 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.AppNavHost
 import com.example.showmethemoney.navigation.BottomNavItems
 import com.example.showmethemoney.navigation.Screen
@@ -41,7 +43,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
+
     val viewModel: NetworkAwareViewModel = viewModel(factory = viewModelFactory)
+
     val isOnline by viewModel.isOnline.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -60,11 +64,11 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
     Scaffold(
         topBar = {
             AppTopBar(
-                title = currentTitle,
                 onActionIconClick = {
                     when (currentTitle) {
-                        "Расходы сегодня", "Доходы сегодня" -> navController.navigate(Screen.History.route)
-                        "Мой счет" -> { /* TODO */ }
+                        R.string.incomes_today, R.string.expenses_today ->
+                            navController.navigate(Screen.History.route)
+                        R.string.my_account -> { /* TODO */ }
                         else -> {}
                     }},
                 navController = navController
@@ -73,7 +77,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         bottomBar = {
             AppBottomNavigation(
                 navItems = BottomNavItems.items,
-                currentRoute = currentRoute,
+                currentRoute = currentRoute.toString(),
                 onItemClick = { route ->
                     navController.navigate(route) {
                         launchSingleTop = true
@@ -89,8 +93,10 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
             if (showFab) {
                 FloatingActionButton(
                     onClick = { when (currentRoute) {
-                        Screen.Expenses.route -> navController.navigate(Screen.AddExpense.route)
-                        Screen.Income.route -> navController.navigate(Screen.AddExpense.route)
+                        Screen.Expenses.route -> navController
+                            .navigate(Screen.AddExpense.route.toString())
+                        Screen.Income.route -> navController
+                            .navigate(Screen.AddExpense.route.toString())
                         else -> {}
                     } },
                     modifier = Modifier

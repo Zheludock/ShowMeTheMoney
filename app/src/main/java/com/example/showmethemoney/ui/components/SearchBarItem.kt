@@ -18,7 +18,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.theme.IconsGray
-
+/**
+ * Кастомный компонент строки поиска с возможностью очистки.
+ *
+ * @param searchText Текущий текст поиска
+ * @param onSearchTextChanged Обработчик изменения текста поиска
+ * @param modifier Modifier для кастомизации расположения и размера
+ */
 @Composable
 fun SearchBarItem(
     searchText: String,
@@ -57,21 +63,17 @@ fun SearchBarItem(
                 .padding(end = 4.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
-            if (searchText.isNotEmpty()) {
-                IconButton(
-                    onClick = { onSearchTextChanged("") },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_close),
-                        contentDescription = "Очистить",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            } else {
-                Icon(
-                    painter = painterResource(R.drawable.ic_find),
-                    contentDescription = "Поиск",
+            IconButton(
+                onClick = { onSearchTextChanged("") },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(painter =
+                    painterResource(
+                        if (searchText.isEmpty()) R.drawable.ic_find
+                        else R.drawable.ic_close),
+                    contentDescription =
+                        if (searchText.isEmpty()) "Поиск"
+                        else "Очистить",
                     modifier = Modifier.size(24.dp)
                 )
             }

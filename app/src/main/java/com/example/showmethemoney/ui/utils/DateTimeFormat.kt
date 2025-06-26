@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-
+//Рефакторить!!
 fun formatDate(date: Date): String {
     return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
 }
@@ -22,13 +22,6 @@ fun stringToDate(
 fun formatDateForDisplay(dateString: String): String {
     val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val outputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    val date = inputFormat.parse(dateString)
-    return outputFormat.format(date)
-}
-
-fun formatDateForBackend(dateString: String): String{
-    val inputFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val date = inputFormat.parse(dateString)
     return outputFormat.format(date)
 }

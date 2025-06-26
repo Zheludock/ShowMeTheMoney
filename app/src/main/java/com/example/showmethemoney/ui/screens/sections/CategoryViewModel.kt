@@ -10,7 +10,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+/**
+ * ViewModel для управления состоянием категорий и их загрузки.
+ *
+ * @param getAllCategoriesUseCase UseCase для получения списка категорий.
+ *
+ * @property categories StateFlow с состоянием загрузки категорий (Loading, Success, Error).
+ *
+ * @method loadCategories Загружает категории и обновляет состояние [_categories].
+ *                       Автоматически вызывается при инициализации ViewModel.
+ */
 class CategoryViewModel @Inject constructor(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {

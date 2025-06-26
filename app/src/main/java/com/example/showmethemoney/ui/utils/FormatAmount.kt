@@ -1,5 +1,5 @@
 package com.example.showmethemoney.ui.utils
-
+//Рефакторить!!
 fun formatAmount(amount: Double, currency: String): String {
     val formattedAmount = if (amount % 1 == 0.0) {
         "%,d".format(amount.toLong()).replace(',', ' ')

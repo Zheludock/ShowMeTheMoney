@@ -26,7 +26,17 @@ import androidx.compose.ui.zIndex
 import com.example.showmethemoney.ui.theme.DividerGray
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
-
+/**
+ * Универсальный компонент элемента списка с поддержкой:
+ * - Обработки кликов
+ * - Кастомизации через Modifier
+ *
+ * @param lead Текст/эмодзи в круглом фоне (опционально)
+ * @param content Пара основного и дополнительного текста (второй элемент опционален)
+ * @param trail Пара текста и composable-иконки справа (оба опциональны)
+ * @param onClick Обработчик клика по элементу
+ * @param modifier Modifier для кастомизации внешнего вида
+ */
 @Composable
 fun UniversalListItem(
     lead: String? = null,

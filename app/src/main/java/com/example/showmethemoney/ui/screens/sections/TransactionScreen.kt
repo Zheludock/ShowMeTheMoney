@@ -10,23 +10,32 @@ import com.example.domain.ApiResult
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
 import com.example.showmethemoney.ui.components.TransactionList
-
+//Подумать о доработке
 @Composable
-fun IncomeScreen(viewModelFactory: ViewModelProvider.Factory) {
+fun TransactionScreen(viewModelFactory: ViewModelProvider.Factory, isIncome: Boolean) {
+
     val viewModel: ExpensesViewModel = viewModel(factory = viewModelFactory)
 
     LaunchedEffect(Unit) {
         viewModel.updateStartDate(viewModel.currentDate)
         viewModel.updateEndDate(viewModel.currentDate)
-        viewModel.loadTransactions(isIncome = true)
+        viewModel.loadTransactions(isIncome)
     }
-    val incomesState by viewModel.incomes.collectAsState()
 
-    when (val state = incomesState) {
+    val transactionState by if (isIncome) {
+        viewModel.incomes.collectAsState()
+    } else {
+        viewModel.expenses.collectAsState()
+    }
+
+    when (val state = transactionState) {
         is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> TransactionList(state.data)
+        is ApiResult.Success-> TransactionList(state.data)
         is ApiResult.Error -> ErrorView(state.error) {
-            viewModel.loadTransactions(isIncome = true)
+            viewModel.loadTransactions(isIncome)
         }
     }
 }
+
+
+
