@@ -5,7 +5,7 @@ data class SettingsDomain(
     val title: String,
     val isSwitch: Boolean = false
 )
-    val listSettins = listOf<SettingsDomain>(
+    val listSettings = listOf<SettingsDomain>(
         SettingsDomain("darkTheme", "Тёмная тема", true),
         SettingsDomain("mainColor", "Основной цвет"),
         SettingsDomain("sounds", "Звуки"),
