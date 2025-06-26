@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetAccountsUseCase @Inject constructor(
     private val repository: AccountRepository
 ){
-    suspend operator fun invoke(): ApiResult<List<AccountDomain>> {
+    suspend fun execute(): ApiResult<List<AccountDomain>> {
         return repository.getAccounts()
     }
 }

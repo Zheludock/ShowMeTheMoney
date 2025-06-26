@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.ApiResult
 import com.example.domain.usecase.GetTransactionsUseCase
+import com.example.showmethemoney.ui.utils.AccountManager
 import com.example.showmethemoney.ui.utils.TransactionItem
 import com.example.showmethemoney.ui.utils.formatDate
 import com.example.showmethemoney.ui.utils.toTransactionItem
@@ -26,6 +27,7 @@ class ExpensesViewModel @Inject constructor(
 
     val currentDate = formatCurrentDate()
 
+
     private val _startDateForUI = MutableStateFlow(getFirstDayOfCurrentMonth())
     val startDateForUI: StateFlow<String> = _startDateForUI
 
@@ -34,7 +36,7 @@ class ExpensesViewModel @Inject constructor(
 
     fun loadTransactions(isIncome: Boolean) {
         viewModelScope.launch {
-            val accountId = "67" // Пока что харкод, ИСПРАВИТЬ!!!
+            val accountId = AccountManager.selectedAccountId.toString()
 
             if (isIncome) {
                 _incomes.value = ApiResult.Loading

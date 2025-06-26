@@ -15,4 +15,5 @@ class ShowMeTheMoneyApp : Application() {
         appComponent = DaggerAppComponent.factory()
             .create(application = this, appModule = AppModule(this))
     }
+
 }
