@@ -5,11 +5,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
-class AppModule @Inject constructor (private val application: Application) {
+class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
@@ -23,7 +22,5 @@ class AppModule @Inject constructor (private val application: Application) {
     @Singleton
     fun provideConnectivityManager(
         context: Context
-    ): ConnectivityManager {
-        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
+    ): ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 }

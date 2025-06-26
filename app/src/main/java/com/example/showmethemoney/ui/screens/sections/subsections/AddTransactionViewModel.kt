@@ -15,7 +15,7 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 
-class TransactionViewModel @Inject constructor() : ViewModel() {
+class AddTransactionViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 

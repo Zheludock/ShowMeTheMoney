@@ -29,7 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.utils.TransactionUiState
@@ -38,11 +39,12 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionScreen(
-    navController: NavController,
     isIncome: Boolean,
     currentTransactionId: String? = null,
-    viewModel: TransactionViewModel
+    viewModelFactory: ViewModelProvider.Factory
 ) {
+    val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
+
     val uiState by viewModel.uiState.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val showCategoryDialog by viewModel.showCategoryDialog.collectAsState()

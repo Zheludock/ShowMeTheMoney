@@ -24,6 +24,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -38,8 +40,9 @@ import com.example.showmethemoney.ui.theme.White
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(networkViewModel: NetworkAwareViewModel) {
-    val isOnline by networkViewModel.isOnline.collectAsState()
+fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
+    val viewModel: NetworkAwareViewModel = viewModel(factory = viewModelFactory)
+    val isOnline by viewModel.isOnline.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -111,7 +114,7 @@ fun MainScreen(networkViewModel: NetworkAwareViewModel) {
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-            AppNavHost(navController = navController)
+            AppNavHost(navController = navController, viewModelFactory = viewModelFactory)
         }
         LaunchedEffect(isOnline) {
             if (!isOnline) {

@@ -32,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.Screen
@@ -53,8 +55,9 @@ import java.util.Locale
 @Composable
 fun HistoryScreen(
     navController: NavController,
-    viewModel: ExpensesViewModel,
-) {
+    viewModelFactory: ViewModelProvider.Factory) {
+    val viewModel: ExpensesViewModel = viewModel(factory = viewModelFactory)
+
     val isIncome = when (navController.previousBackStackEntry?.destination?.route) {
         Screen.Expenses.route -> false
         Screen.Income.route -> true
@@ -83,7 +86,7 @@ fun HistoryScreen(
 
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = initialStartDate.time,
-            yearRange = IntRange(2000, 2100),
+            yearRange = IntRange(2024, 2026),
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                     return utcTimeMillis <= currentEndDate.time

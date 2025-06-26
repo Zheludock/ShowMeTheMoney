@@ -6,7 +6,7 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class NetworkModule {
+abstract class NetworkMonitorModule {
     @Binds
     abstract fun bindNetworkMonitor(
         monitor: AndroidNetworkMonitor

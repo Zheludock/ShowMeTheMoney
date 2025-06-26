@@ -15,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.domain.ApiResult
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
@@ -24,7 +26,10 @@ import com.example.showmethemoney.ui.theme.ItemGray
 import com.example.showmethemoney.ui.utils.CategoryItem
 
 @Composable
-fun CategoryScreen(viewModel: CategoryViewModel) {
+fun CategoryScreen(viewModelFactory: ViewModelProvider.Factory) {
+
+    val viewModel: CategoryViewModel = viewModel(factory = viewModelFactory)
+
     LaunchedEffect(Unit) {
         viewModel.loadCategories()
     }
