@@ -22,8 +22,36 @@ import com.example.showmethemoney.ui.utils.DateUtils
 import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation
 import java.text.SimpleDateFormat
 import java.util.Locale
-
-//Подумать о доработке
+/**
+ * Экран истории транзакций (доходов/расходов) с возможностью выбора периода.
+ *
+ * Этот экран:
+ * 1. Определяет тип транзакций (доходы/расходы) на основе предыдущего маршрута навигации
+ * 2. Загружает и отображает список транзакций за выбранный период
+ * 3. Позволяет выбирать даты начала и конца периода через диалоговые окна
+ * 4. Обрабатывает различные состояния загрузки данных
+ *
+ * @param navController Контроллер навигации для определения типа транзакций
+ * @param viewModelFactory Фабрика для создания [TransactionViewModel]
+ *
+ * ## Логика работы
+ * - При запуске автоматически загружает транзакции:
+ *   - С датой начала = первый день текущего месяца
+ *   - С датой конца = текущая дата
+ * - Обновляет данные при изменении типа транзакций или периода
+ * - Показывает индикатор загрузки во время запроса данных
+ *
+ * ## Состояния экрана
+ * - [ApiResult.Loading] - отображает индикатор загрузки
+ * - [ApiResult.Success] - показывает список транзакций или сообщение об отсутствии данных
+ * - [ApiResult.Error] - отображает ошибку с возможностью повтора
+ *
+ * ## Особенности
+ * - Использует [ShowDatePickerDialog] для выбора дат
+ * - Форматирует даты через [DateUtils]
+ * - Динамически меняет текст при отсутствии данных в зависимости от типа транзакций
+ * - Поддерживает повторную загрузку при ошибках
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionHistoryScreen(
@@ -55,8 +83,6 @@ fun TransactionHistoryScreen(
     ShowDatePickerDialog(
         showDialog = showStartDatePicker,
         onDismissRequest = { showStartDatePicker = false },
-        initialDateForUI = startDateForUI,
-        boundaryDateForUI = endDateForUI,
         dateFormat = dateFormat,
         isStartDatePicker = true,
         viewModel = viewModel,
@@ -65,8 +91,6 @@ fun TransactionHistoryScreen(
     ShowDatePickerDialog(
         showDialog = showEndDatePicker,
         onDismissRequest = { showEndDatePicker = false },
-        initialDateForUI = endDateForUI,
-        boundaryDateForUI = startDateForUI,
         dateFormat = dateFormat,
         isStartDatePicker = false,
         viewModel = viewModel,

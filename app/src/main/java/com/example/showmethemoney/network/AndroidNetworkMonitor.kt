@@ -27,10 +27,8 @@ import javax.inject.Inject
 class AndroidNetworkMonitor @Inject constructor(
     context: Context
 ) : NetworkMonitor  {
-
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
     /**
      * Поток (Flow), содержащий текущее состояние интернет-соединения.
      * Возвращает true, если устройство подключено к интернету, false - если нет.

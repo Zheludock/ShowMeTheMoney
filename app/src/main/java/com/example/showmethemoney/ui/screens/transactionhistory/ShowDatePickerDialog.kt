@@ -14,19 +14,21 @@ import java.util.Date
 fun ShowDatePickerDialog(
     showDialog: Boolean,
     onDismissRequest: () -> Unit,
-    initialDateForUI: String,
-    boundaryDateForUI: String,
     dateFormat: SimpleDateFormat,
     isStartDatePicker: Boolean,
     viewModel: TransactionViewModel
 ) {
     if (!showDialog) return
 
+    val initialDateForUI = if(isStartDatePicker) viewModel.startDateForUI
+        else viewModel.endDateForUI
     val initialDate = remember(initialDateForUI) {
-        dateFormat.parse(initialDateForUI) ?: Date()
+        dateFormat.parse(initialDateForUI.value) ?: Date()
     }
+    val boundaryDateForUI = if(isStartDatePicker) viewModel.endDateForUI
+        else viewModel.startDateForUI
     val boundaryDate = remember(boundaryDateForUI) {
-        dateFormat.parse(boundaryDateForUI) ?: Date()
+        dateFormat.parse(boundaryDateForUI.value) ?: Date()
     }
 
     CustomDatePickerDialog(
