@@ -1,7 +1,6 @@
 package com.example.showmethemoney.ui.screens.transactionhistory
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,14 +15,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.R
-import com.example.showmethemoney.ui.components.CustomDatePickerDialog
 import com.example.showmethemoney.ui.components.ErrorView
-import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation
 import com.example.showmethemoney.ui.components.LoadingIndicator
 import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
 import com.example.showmethemoney.ui.utils.DateUtils
+import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 //Подумать о доработке
@@ -55,83 +52,34 @@ fun TransactionHistoryScreen(
     val startDateForUI by viewModel.startDateForUI.collectAsState()
     val endDateForUI by viewModel.endDateForUI.collectAsState()
 
-    if (showStartDatePicker) {
-        val currentEndDate = remember(endDateForUI) {
-            dateFormat.parse(endDateForUI) ?: Date()
-        }
-        val initialStartDate = remember(startDateForUI) {
-            dateFormat.parse(startDateForUI) ?: Date()
-        }
+    ShowDatePickerDialog(
+        showDialog = showStartDatePicker,
+        onDismissRequest = { showStartDatePicker = false },
+        initialDateForUI = startDateForUI,
+        boundaryDateForUI = endDateForUI,
+        dateFormat = dateFormat,
+        isStartDatePicker = true,
+        viewModel = viewModel,
+    )
 
-        CustomDatePickerDialog(
-            initialDate = initialStartDate,
-            selectableDates = object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    return utcTimeMillis <= currentEndDate.time
-                }
-            },
-            onClear = {
-                viewModel.updateStartDate(endDateForUI)
-                viewModel.loadTransactions(isIncome,
-                    startDateForUI,
-                    endDateForUI)
-                showStartDatePicker = false
-            },
-            onCancel = {
-                showStartDatePicker = false
-            },
-            onConfirm = { newDate ->
-                viewModel.updateStartDate(dateFormat.format(newDate))
-                viewModel.loadTransactions(isIncome,
-                    startDateForUI,
-                    endDateForUI)
-                showStartDatePicker = false
-            }
-        )
-    }
-
-    if (showEndDatePicker) {
-        val currentStartDate = remember(startDateForUI) {
-            dateFormat.parse(startDateForUI) ?: Date()
-        }
-        val initialEndDate = remember(endDateForUI) {
-            dateFormat.parse(endDateForUI) ?: Date()
-        }
-
-        CustomDatePickerDialog(
-            initialDate = initialEndDate,
-            selectableDates = object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    return utcTimeMillis >= currentStartDate.time
-                }
-            },
-            onClear = {
-                viewModel.updateEndDate(endDateForUI)
-                viewModel.loadTransactions(isIncome,
-                    startDateForUI,
-                    endDateForUI)
-                showEndDatePicker = false
-            },
-            onCancel = {
-                showEndDatePicker = false
-            },
-            onConfirm = { newDate ->
-                viewModel.updateEndDate(dateFormat.format(newDate))
-                viewModel.loadTransactions(isIncome,
-                    startDateForUI,
-                    endDateForUI)
-                showEndDatePicker = false
-            }
-        )
-    }
+    ShowDatePickerDialog(
+        showDialog = showEndDatePicker,
+        onDismissRequest = { showEndDatePicker = false },
+        initialDateForUI = endDateForUI,
+        boundaryDateForUI = startDateForUI,
+        dateFormat = dateFormat,
+        isStartDatePicker = false,
+        viewModel = viewModel,
+    )
 
     val state = viewModel.transactions.collectAsState().value
     val noDataText = if (isIncome) stringResource(R.string.no_data_incomes)
                      else stringResource(R.string.no_data_expenses)
     val onRetry = { viewModel.loadTransactions(
-        isIncome,
-        startDateForUI,
-        endDateForUI) }
+        isIncome = isIncome,
+        startDate = startDateForUI,
+        endDate = endDateForUI
+    ) }
 
     when (state) {
         ApiResult.Loading -> LoadingIndicator()
