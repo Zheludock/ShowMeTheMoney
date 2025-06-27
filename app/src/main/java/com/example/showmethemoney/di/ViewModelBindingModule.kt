@@ -1,11 +1,11 @@
 package com.example.showmethemoney.di
 
 import androidx.lifecycle.ViewModel
-import com.example.showmethemoney.network.NetworkAwareViewModel
-import com.example.showmethemoney.ui.screens.sections.AccountViewModel
-import com.example.showmethemoney.ui.screens.sections.CategoryViewModel
-import com.example.showmethemoney.ui.screens.sections.ExpensesViewModel
-import com.example.showmethemoney.ui.screens.sections.subsections.AddTransactionViewModel
+import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
+import com.example.showmethemoney.ui.screens.account.AccountViewModel
+import com.example.showmethemoney.ui.screens.category.CategoryViewModel
+import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
+import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,13 +25,13 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class ViewModelBindingModule {
     /**
-     * Привязывает [ExpensesViewModel] к мультибиндингу ViewModel.
+     * Привязывает [TransactionViewModel] к мультибиндингу ViewModel.
      * Далее - аналогично.
      */
     @Binds
     @IntoMap
-    @ViewModelKey(ExpensesViewModel::class)
-    abstract fun bindExpensesViewModel(viewModel: ExpensesViewModel): ViewModel
+    @ViewModelKey(TransactionViewModel::class)
+    abstract fun bindExpensesViewModel(viewModel: TransactionViewModel): ViewModel
 
     @Binds
     @IntoMap

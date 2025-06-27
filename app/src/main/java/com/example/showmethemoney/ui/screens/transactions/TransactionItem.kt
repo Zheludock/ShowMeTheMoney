@@ -1,4 +1,5 @@
-package com.example.showmethemoney.ui.utils
+package com.example.showmethemoney.ui.screens.transactions
+
 /**
  * Данные финансовой транзакции.
  *
@@ -18,6 +19,6 @@ data class TransactionItem(
     val comment: String?,
     val amount: String,
     val accountCurrency: String,
-    val createdAt: String? = null,
+    val createdAt: String,
     val isIncome: Boolean
 )

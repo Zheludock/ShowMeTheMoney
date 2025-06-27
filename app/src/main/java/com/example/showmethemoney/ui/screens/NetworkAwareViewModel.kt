@@ -1,4 +1,4 @@
-package com.example.showmethemoney.network
+package com.example.showmethemoney.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import com.example.domain.repository.NetworkMonitor
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+
 /**
  * ViewModel, предоставляющая состояние подключения к сети.
  * Реализуется в MainScreen, из которого вызываются все остальные экраны.
@@ -20,7 +21,7 @@ class NetworkAwareViewModel @Inject constructor(
     val isOnline = networkMonitor.isOnline
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Companion.WhileSubscribed(5000),
             initialValue = true
         )
 }

@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.sections
+package com.example.showmethemoney.ui.screens.settings
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height

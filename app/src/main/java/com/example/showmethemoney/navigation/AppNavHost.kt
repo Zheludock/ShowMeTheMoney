@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.showmethemoney.ui.screens.sections.AccountScreen
-import com.example.showmethemoney.ui.screens.sections.CategoryScreen
-import com.example.showmethemoney.ui.screens.sections.HistoryScreen
-import com.example.showmethemoney.ui.screens.sections.SettingsScreen
-import com.example.showmethemoney.ui.screens.sections.TransactionScreen
-import com.example.showmethemoney.ui.screens.sections.subsections.AddTransactionScreen
+import com.example.showmethemoney.ui.screens.account.AccountScreen
+import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionScreen
+import com.example.showmethemoney.ui.screens.category.CategoryScreen
+import com.example.showmethemoney.ui.screens.settings.SettingsScreen
+import com.example.showmethemoney.ui.screens.transactionhistory.TransactionHistoryScreen
+import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
 
 /**
  * Главный компонент навигации приложения.
@@ -40,7 +40,7 @@ fun AppNavHost(navController: NavHostController,
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory) }
         composable(Screen.Account.route) { AccountScreen(viewModelFactory) }
         composable(Screen.Settings.route) { SettingsScreen() }
-        composable(Screen.History.route) { HistoryScreen(navController, viewModelFactory) }
+        composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
         composable(Screen.AddExpense.route) {
             AddTransactionScreen( isIncome = false, viewModelFactory = viewModelFactory)
         }

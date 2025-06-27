@@ -1,9 +1,9 @@
-package com.example.showmethemoney.ui.screens.sections.subsections
+package com.example.showmethemoney.ui.screens.addtransaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.showmethemoney.ui.utils.CategoryItem
-import com.example.showmethemoney.ui.utils.TransactionUiState
+import com.example.showmethemoney.ui.screens.category.CategoryItem
+import com.example.showmethemoney.ui.screens.addtransaction.TransactionUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

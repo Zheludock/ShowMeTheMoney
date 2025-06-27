@@ -1,4 +1,5 @@
-package com.example.showmethemoney.ui.utils
+package com.example.showmethemoney.ui.screens.category
+
 /**
  * Модель категории для доходов/расходов.
  *

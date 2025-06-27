@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.components
+package com.example.showmethemoney.ui.screens.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.AccountHistoryDomain
 import com.example.showmethemoney.R
+import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
 /**
  * Компонент для отображения основной информации о счете:

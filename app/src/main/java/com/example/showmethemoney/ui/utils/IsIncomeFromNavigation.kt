@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.components
+package com.example.showmethemoney.ui.utils
 
 import androidx.compose.runtime.Composable
 import com.example.showmethemoney.navigation.Screen

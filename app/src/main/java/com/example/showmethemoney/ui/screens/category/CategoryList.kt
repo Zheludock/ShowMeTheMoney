@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.components
+package com.example.showmethemoney.ui.screens.category
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.showmethemoney.ui.components.SearchBarItem
+import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.ItemGray
-import com.example.showmethemoney.ui.utils.CategoryItem
+
 /**
  * Компонент списка категорий с поиском.
  *

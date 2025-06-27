@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.sections
+package com.example.showmethemoney.ui.screens.category
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,9 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.domain.response.ApiResult
-import com.example.showmethemoney.ui.components.CategoryList
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
+
 /**
  * Экран отображения списка категорий с обработкой состояний загрузки.
  *

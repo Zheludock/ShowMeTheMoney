@@ -23,4 +23,13 @@
     <string name="expenses_toda">Расходы сегодня</string>
     <string name="right_topbar_icon">Правая иконка топбара</string>
     <string name="navigation_icon">Навигационная иконка</string>
+    <string name="sum">Сумма</string>
+    <string name="end">Конец</string>
+    <string name="start">Начало</string>
+    <string name="more">Подробнее</string>
+    <string name="amount">Всего</string>
+    <string name="no_data_incomes">Нет данных о доходах</string>
+    <string name="no_data_expenses">Нет данных о расходах</string>
+    <string name="add">Добавить</string>
+    <string name="no_internet_connection">Нет подключения к интернету</string>
 </resources>

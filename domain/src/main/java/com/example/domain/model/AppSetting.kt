@@ -26,7 +26,6 @@ enum class AppSetting(
     SOUNDS(
         key = "sounds",
         title = "Звуки",
-        isSwitch = true,
     ),
     HATPICKS(
         key = "hatpicks",

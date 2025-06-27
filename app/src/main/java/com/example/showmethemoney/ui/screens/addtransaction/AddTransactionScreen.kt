@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.sections.subsections
+package com.example.showmethemoney.ui.screens.addtransaction
 
 import android.icu.util.Calendar
 import androidx.compose.foundation.clickable
@@ -33,8 +33,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.UniversalListItem
-import com.example.showmethemoney.ui.utils.TransactionUiState
 import java.util.Date
+
 /**
  * Не оценивать, в процессе. В ТЗ пока не фигурирует
  */

@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.utils
+package com.example.showmethemoney.ui.screens.addtransaction
 
 import java.text.SimpleDateFormat
 import java.util.Date
