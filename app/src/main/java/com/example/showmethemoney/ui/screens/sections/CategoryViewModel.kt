@@ -2,7 +2,7 @@ package com.example.showmethemoney.ui.screens.sections
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.ApiResult
+import com.example.domain.response.ApiResult
 import com.example.domain.usecase.GetAllCategoriesUseCase
 import com.example.showmethemoney.ui.utils.CategoryItem
 import com.example.showmethemoney.ui.utils.toCategoryItem

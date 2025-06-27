@@ -1,7 +1,15 @@
 package com.example.data.dto.transaction
 
 import com.example.domain.model.TransactionDomain
-
+/**
+ * Преобразует DTO транзакции из API в доменную модель.
+ * Выполняет:
+ * - Конвертацию типов (Int → String для ID)
+ * - Извлечение необходимых данных из вложенных объектов
+ * - Определение типа транзакции (доход/расход)
+ *
+ * @return [TransactionDomain] - доменная модель транзакции
+ */
 fun TransactionResponse.toDomain(): TransactionDomain {
     return TransactionDomain(
         id = id.toString(),

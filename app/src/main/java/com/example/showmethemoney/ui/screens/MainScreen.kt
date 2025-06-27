@@ -92,7 +92,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         floatingActionButton = {
             if (showFab) {
                 FloatingActionButton(
-                    onClick = { when (currentRoute) {
+                    onClick = { when (currentRoute) { // Не жми, а то пойдешь в Runtime
                         Screen.Expenses.route -> navController
                             .navigate(Screen.AddExpense.route.toString())
                         Screen.Income.route -> navController

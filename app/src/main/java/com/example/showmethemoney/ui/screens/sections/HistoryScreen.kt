@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.domain.ApiResult
+import com.example.domain.response.ApiResult
 import com.example.showmethemoney.ui.components.CustomDatePickerDialog
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.IsIncomeFromNavigation

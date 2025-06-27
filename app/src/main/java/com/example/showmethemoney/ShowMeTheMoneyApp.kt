@@ -4,7 +4,9 @@ import android.app.Application
 import com.example.showmethemoney.di.AppComponent
 import com.example.showmethemoney.di.AppModule
 import com.example.showmethemoney.di.DaggerAppComponent
-
+/**
+ * Главный класс приложения, инициализирующий [appComponent] для внедрения зависимостей.
+ */
 class ShowMeTheMoneyApp : Application() {
 
     lateinit var appComponent: AppComponent
@@ -16,5 +18,4 @@ class ShowMeTheMoneyApp : Application() {
         appComponent = DaggerAppComponent.factory()
             .create(application = this, appModule = AppModule())
     }
-
 }

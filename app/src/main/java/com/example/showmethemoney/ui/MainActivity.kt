@@ -1,11 +1,8 @@
 package com.example.showmethemoney.ui
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -16,35 +13,54 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.domain.ApiResult
-import com.example.domain.usecase.GetAccountsUseCase
 import com.example.showmethemoney.ShowMeTheMoneyApp
 import com.example.showmethemoney.ui.components.SplashScreen
 import com.example.showmethemoney.ui.screens.MainScreen
 import com.example.showmethemoney.ui.theme.BackgroundMainColor
 import com.example.showmethemoney.ui.theme.ShowMeTheMoneyTheme
-import com.example.showmethemoney.ui.utils.AccountManager
+import com.example.showmethemoney.ui.utils.AccountInitializer
+import com.example.showmethemoney.ui.utils.UiConfigurator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+/**
+ * Главная Activity приложения, отвечающая за:
+ * - Инициализацию и настройку основных компонентов
+ * - Управление отображением сплэш-скрина и основного экрана
+ * - Загрузку начальных данных пользователя
+ *
+ * Зависимости:
+ * @property viewModelFactory Фабрика для создания [ViewModel]. Внедряется через DI.
+ * @property accountInitializer Сервис инициализации аккаунта пользователя. Загружает и кэширует начальные данные.
+ * @property uiConfigurator Настройщик параметров UI (ориентация, edge-to-edge и пр.).
+ *
+ * Жизненный цикл:
+ * 1. В [onCreate] происходит:
+ *    - Внедрение зависимостей через Dagger/Hilt
+ *    - Настройка UI через [uiConfigurator]
+ *    - Запуск загрузки аккаунта в фоне [loadInitialAccount]
+ *    - Отображение сплэш-скрина с переходом на [MainScreen]
+ *
+ * Особенности:
+ * - Использует [ShowMeTheMoneyTheme] для стилизации
+ * - Фон [Surface] переопределён через [BackgroundMainColor]
+ * - Короткие операции выполняются в IO-диспетчере
+ *
+ * @see AccountInitializer для деталей инициализации аккаунта
+ * @see MainScreen для структуры основного экрана
+ */
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var getAccountsUseCase: GetAccountsUseCase
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var accountInitializer: AccountInitializer
+    @Inject lateinit var uiConfigurator: UiConfigurator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as ShowMeTheMoneyApp).appComponent.inject(this)
         super.onCreate(savedInstanceState)
 
-        loadInitialAccount(getAccountsUseCase)
-
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        enableEdgeToEdge()
+        uiConfigurator.configure(this) // Настройка UI
+        loadInitialAccount()
 
         setContent {
             ShowMeTheMoneyTheme {
@@ -65,16 +81,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun loadInitialAccount(getAccountsUseCase: GetAccountsUseCase) {
+    private fun loadInitialAccount() {
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val result = getAccountsUseCase.execute()
-                if (result is ApiResult.Success && result.data.isNotEmpty()) {
-                    AccountManager.selectedAccountId = result.data.first().id.toInt()
-                }
-            } catch (e: Exception) {
-                Log.e("InitializeAccount", "Failed to init account", e)
-            }
+            accountInitializer.initialize()
         }
     }
 }

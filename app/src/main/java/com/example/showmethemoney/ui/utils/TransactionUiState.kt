@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Не действующий класс. Не оценивать
+ */
 data class TransactionUiState(
     val selectedAccountId: Int = 1,
     val accountName: String = "Сбербанк",

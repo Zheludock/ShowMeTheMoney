@@ -1,8 +1,9 @@
 package com.example.showmethemoney.di
 
 import android.app.Application
-import com.example.data.NetworkModule
+import com.example.data.di.NetworkModule
 import com.example.data.di.RepositoryModule
+import com.example.data.di.SafeApiModule
 import com.example.showmethemoney.ui.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -29,7 +30,8 @@ import javax.inject.Singleton
     RepositoryModule::class,
     NetworkMonitorModule::class,
     ViewModelModule::class,
-    ViewModelBindingModule::class
+    ViewModelBindingModule::class,
+    SafeApiModule::class
 ])
 interface AppComponent  {
     /**
