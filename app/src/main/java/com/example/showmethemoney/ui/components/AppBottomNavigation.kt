@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,13 @@ import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
 import com.example.showmethemoney.ui.theme.TextUnderIcons
-
+/**
+ * Компонент нижней навигационной панели приложения.
+ *
+ * @param navItems Список элементов навигации (иконка, метка, route).
+ * @param currentRoute Текущий route для определения выбранного элемента.
+ * @param onItemClick Колбэк, вызываемый при клике на элемент (передает его route).
+ */
 @Composable
 fun AppBottomNavigation(
     navItems: List<BottomNavItem>,
@@ -43,7 +50,7 @@ fun AppBottomNavigation(
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
-                        contentDescription = item.label,
+                        contentDescription = stringResource(item.label),
                         tint = if (selected) {
                             IconsGreen
                         } else {
@@ -53,7 +60,7 @@ fun AppBottomNavigation(
                 },
                 label = {
                     Text(
-                        text = item.label,
+                        text = stringResource(item.label),
                         style = if (selected) { TextStyle(fontWeight = FontWeight.Medium,
                             color = SelectedTextUnderIcons)}
                         else {TextStyle(fontWeight = FontWeight.Normal,

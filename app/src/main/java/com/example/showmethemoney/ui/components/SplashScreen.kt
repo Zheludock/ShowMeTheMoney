@@ -18,7 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.example.showmethemoney.R
 import kotlinx.coroutines.delay
-
+/**
+ * Компонент Splash Screen с анимацией исчезновения.
+ *
+ * @param onSplashFinished Колбэк, вызываемый после завершения анимации (через 2300 мс)
+ * @param imageRes Ресурс изображения для splash screen
+ * @param durationMs Общее время показа (2000 мс) + время анимации (300 мс)
+ * @param enterAnimation Анимация появления (по умолчанию fadeIn 700 мс)
+ * @param exitAnimation Анимация исчезновения (по умолчанию fadeOut 300 мс)
+ */
 @Composable
 fun SplashScreen(
     onSplashFinished: () -> Unit

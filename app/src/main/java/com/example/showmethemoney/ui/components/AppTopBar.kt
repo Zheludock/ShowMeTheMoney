@@ -8,25 +8,40 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
+import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.theme.IconsGreen
+
+/**
+ * Кастомный TopAppBar с динамическими иконками действий и навигации.
+ *
+ * @param config Конфигурация TopBar (заголовок, иконки, колбэки).
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppTopBar(title: String,
-              navController: NavController,
-              onActionIconClick: (() -> Unit)? = null) {
-    val actionIcon = when (title) {
-        "Расходы сегодня", "Доходы сегодня" -> R.drawable.ic_history
-        "Мой счет" -> R.drawable.ic_edit
-        "Моя история" -> R.drawable.ic_history_calendar
+fun AppTopBar(
+    navController: NavController,
+    onActionIconClick: (() -> Unit)? = null
+) {
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    val currentScreen = Screen.fromRoute(currentRoute)
+    val title = stringResource(id = currentScreen.title)
+
+    val actionIcon = when (currentScreen) {
+        Screen.Expenses, Screen.Income -> R.drawable.ic_history
+        Screen.Account -> R.drawable.ic_edit
+        Screen.History -> R.drawable.ic_history_calendar
         else -> null
     }
-    val navigationIcon = when(title) {
-        "Моя история" -> R.drawable.ic_back
+
+    val navigationIcon = when(currentScreen) {
+        Screen.History -> R.drawable.ic_back
         else -> null
     }
+
     CenterAlignedTopAppBar(
         title = { Text(text = title) },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -37,7 +52,7 @@ fun AppTopBar(title: String,
                 IconButton(onClick = { onActionIconClick?.invoke() }) {
                     Icon(
                         painter = painterResource(id = iconRes),
-                        contentDescription = "какое-то описание"
+                        contentDescription = stringResource(R.string.right_topbar_icon)
                     )
                 }
             }
@@ -47,7 +62,7 @@ fun AppTopBar(title: String,
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = painterResource(id = iconRes),
-                        contentDescription = "Навигационная иконка"
+                        contentDescription = stringResource(R.string.navigation_icon)
                     )
                 }
             }
