@@ -15,6 +15,8 @@ import com.example.domain.model.AccountHistoryDomain
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
+import com.example.showmethemoney.ui.utils.StringFormatter
+
 /**
  * Компонент для отображения основной информации о счете:
  * - Текущий баланс
@@ -31,7 +33,8 @@ fun AccountContent(history: AccountHistoryDomain) {
             UniversalListItem(
                 lead = "💰",
                 content = "Баланс" to null,
-                trail = "${history.currentBalance} ${history.currency}" to null,
+                trail = StringFormatter.formatAmount(history.currentBalance.toDouble(),
+                    history.currency) to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -40,7 +43,7 @@ fun AccountContent(history: AccountHistoryDomain) {
         item {
             UniversalListItem(
                 content = "Валюта" to null,
-                trail = history.currency to {
+                trail = StringFormatter.getCurrencySymbol(history.currency) to {
                     IconButton(
                         onClick = { /* TODO */ },
                         modifier = Modifier.size(24.dp)

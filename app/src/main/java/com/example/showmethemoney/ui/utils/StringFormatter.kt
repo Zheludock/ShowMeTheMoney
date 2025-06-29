@@ -43,7 +43,7 @@ object StringFormatter {
         return "$formattedAmount ${getCurrencySymbol(currency)}"
     }
 
-    private fun getCurrencySymbol(currencyCode: String): String {
+    fun getCurrencySymbol(currencyCode: String): String {
         return when (currencyCode.uppercase()) {
             "RUB" -> "\u20BD" // ₽
             "USD" -> "\u0024" // $

@@ -1,5 +1,6 @@
 package com.example.showmethemoney.ui.components
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,16 +17,14 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
+
 /**
  * Кастомный диалог выбора даты с кнопками "Clear", "Cancel" и "OK".
  *
@@ -44,8 +43,6 @@ fun CustomDatePickerDialog(
     onCancel: () -> Unit,
     onConfirm: (Date) -> Unit,
 ) {
-    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
-
     val datePickerState = selectableDates?.let {
         rememberDatePickerState(
             initialSelectedDateMillis = initialDate.time,
@@ -56,6 +53,7 @@ fun CustomDatePickerDialog(
 
     DatePickerDialog(
         onDismissRequest = onCancel,
+
         confirmButton = { /* пусто, кнопка OK в dismissButton */ },
         dismissButton = {
             Row(
@@ -126,7 +124,7 @@ fun CustomDatePickerDialog(
                     todayContentColor = SelectedTextUnderIcons,
                     todayDateBorderColor = IconsGreen,
                     selectedDayContentColor = SelectedTextUnderIcons
-                )
+                ),
             )
         }
     }
