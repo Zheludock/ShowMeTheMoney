@@ -39,6 +39,7 @@ import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
 import kotlinx.coroutines.launch
+
 /**
 * Этот экран содержит:
 * - Scaffold с TopBar, BottomNavigation и FloatingActionButton
@@ -91,9 +92,9 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
             AppTopBar(
                 onActionIconClick = {
                     when (currentTitle) {
-                        R.string.incomes_today, R.string.expenses_today ->
+                        Screen.Expenses.title, Screen.Income.title ->
                             navController.navigate(Screen.History.route)
-                        R.string.my_account -> { /* TODO */ }
+                        Screen.Account.title -> { navController.navigate("account?showDialog=true") }
                         else -> {}
                     }},
                 navController = navController

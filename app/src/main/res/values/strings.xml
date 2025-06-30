@@ -32,4 +32,6 @@
     <string name="no_data_expenses">Нет данных о расходах</string>
     <string name="add">Добавить</string>
     <string name="no_internet_connection">Нет подключения к интернету</string>
+    <string name="currency">Валюта</string>
+    <string name="balance">Баланс</string>
 </resources>

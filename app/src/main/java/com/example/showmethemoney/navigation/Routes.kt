@@ -1,7 +1,6 @@
 package com.example.showmethemoney.navigation
 
-import androidx.annotation.StringRes
-import com.example.showmethemoney.R
+import com.example.showmethemoney.ui.utils.AccountManager
 
 /**
  * Класс, представляющий экраны приложения.
@@ -14,28 +13,29 @@ import com.example.showmethemoney.R
  */
 sealed class Screen(
     val route: String,
-    @StringRes val title: Int
+    val title: String
 ) {
-    object Expenses : Screen("expenses", R.string.expenses_today)
-    object Income : Screen("income", R.string.incomes_today)
-    object Account : Screen("account", R.string.my_account)
-    object Category : Screen("category", R.string.my_categories)
-    object Settings : Screen("settings", R.string.settings)
-    object History : Screen("history", R.string.my_history)
-    object AddExpense : Screen("add_expense", R.string.add_expense)
-    object AddIncome : Screen("add_income", R.string.add_income)
+    object Expenses : Screen("expenses", "Расходы сегодня")
+    object Income : Screen("income", "Доходы сегодня")
+    object Account : Screen("account", AccountManager.selectedAccountName)
+    object Category : Screen("category", "Статьи")
+    object Settings : Screen("settings", "Настройки")
+    object History : Screen("history", "Моя история")
+    object AddExpense : Screen("add_expense", "Мои расходы")
+    object AddIncome : Screen("add_income", "Мои доходы")
 
     companion object {
         fun fromRoute(route: String?): Screen {
-            return when (route) {
-                Expenses.route -> Expenses
-                Income.route -> Income
-                Account.route -> Account
-                Category.route -> Category
-                Settings.route -> Settings
-                History.route -> History
-                AddExpense.route -> AddExpense
-                AddIncome.route -> AddIncome
+            return when {
+                route == null -> Expenses
+                route.startsWith(Expenses.route) -> Expenses
+                route.startsWith(Income.route) -> Income
+                route.startsWith(Account.route) -> Account
+                route.startsWith(Category.route) -> Category
+                route.startsWith(Settings.route) -> Settings
+                route.startsWith(History.route) -> History
+                route.startsWith(AddExpense.route) -> AddExpense
+                route.startsWith(AddIncome.route) -> AddIncome
                 else -> Expenses
             }
         }

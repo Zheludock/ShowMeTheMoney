@@ -38,7 +38,9 @@ class AccountInitializer @Inject constructor(
         try {
             val result = getAccountsUseCase.execute()
             if (result is ApiResult.Success && result.data.isNotEmpty()) {
-                AccountManager.selectedAccountId = result.data.first().id.toInt()
+                AccountManager.selectedAccountId = result.data.first().id
+                AccountManager.selectedAccountName = result.data.first().name
+                AccountManager.selectedAccountCurrency = result.data.first().currency
             }
         } catch (e: Exception) {
             Log.e("AccountInitializer", "Failed to init account", e)

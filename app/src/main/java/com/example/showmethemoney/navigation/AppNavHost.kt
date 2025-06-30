@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.showmethemoney.ui.screens.account.AccountScreen
 import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionScreen
 import com.example.showmethemoney.ui.screens.category.CategoryScreen
@@ -27,8 +29,6 @@ import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
 @Composable
 fun AppNavHost(navController: NavHostController,
                viewModelFactory: ViewModelProvider.Factory) {
-
-    val context = LocalContext.current
     NavHost(
         navController = navController,
         startDestination = Screen.Expenses.route
@@ -38,7 +38,17 @@ fun AppNavHost(navController: NavHostController,
         composable(Screen.Income.route) { TransactionScreen(viewModelFactory,
             true) }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory) }
-        composable(Screen.Account.route) { AccountScreen(viewModelFactory) }
+        composable(
+            route = "${Screen.Account.route}?showDialog={showDialog}",
+            arguments = listOf(
+                navArgument("showDialog") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            )
+        ) { backStackEntry ->
+            AccountScreen(viewModelFactory, navController, backStackEntry)
+        }
         composable(Screen.Settings.route) { SettingsScreen() }
         composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
         composable(Screen.AddExpense.route) {

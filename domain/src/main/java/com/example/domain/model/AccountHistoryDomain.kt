@@ -10,7 +10,7 @@ package com.example.domain.model
  * @property history Список изменений аккаунта
  */
 data class AccountHistoryDomain(
-    val accountId: String,
+    val accountId: Int,
     val accountName: String,
     val currency: String,
     val currentBalance: String,

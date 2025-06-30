@@ -6,6 +6,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
@@ -18,7 +20,7 @@ import com.example.showmethemoney.ui.components.LoadingIndicator
  * необходимые зависимости для работы ViewModel.
  *
  * Примечания:
- * - При первом вызове автоматически запускается загрузка истории через [AccountViewModel.loadAccountHistory]
+ * - При первом вызове автоматически запускается загрузка истории через [AccountViewModel.loadAccountDetails]
  * - Отображает индикатор загрузки во время запроса
  * - Показывает контент при успешной загрузке
  * - Отображает ошибку с возможностью повтора при неудачном запросе
@@ -29,19 +31,22 @@ import com.example.showmethemoney.ui.components.LoadingIndicator
  * - [ApiResult.Error] - Показывает [ErrorView] с сообщением об ошибке и кнопкой повтора
  */
 @Composable
-fun AccountScreen(viewModelFactory: ViewModelProvider.Factory) {
+fun AccountScreen(viewModelFactory: ViewModelProvider.Factory,
+                  navController: NavController,
+                  navBackStackEntry: NavBackStackEntry) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccountHistory()
+        viewModel.loadAccountDetails()
     }
-    val accountHistoryState by viewModel.accountHistory.collectAsState()
+    val accountDetailsState by viewModel.accountDetails.collectAsState()
 
-    when (val state = accountHistoryState) {
+
+    when (val state = accountDetailsState) {
         is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> AccountContent(state.data)
+        is ApiResult.Success -> AccountContent(state.data, viewModel, navBackStackEntry)
         is ApiResult.Error -> ErrorView(state.error) {
-            viewModel.loadAccountHistory()
+            viewModel.loadAccountDetails()
         }
     }
 }

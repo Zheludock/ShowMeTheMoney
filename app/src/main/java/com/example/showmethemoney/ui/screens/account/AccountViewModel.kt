@@ -1,11 +1,16 @@
 package com.example.showmethemoney.ui.screens.account
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.model.AccountHistoryDomain
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.GetAccountHistoryUseCase
+import com.example.domain.usecase.GetAccountDetailsUseCase
+import com.example.domain.usecase.UpdateAccountUseCase
 import com.example.showmethemoney.ui.utils.AccountManager
+import com.example.showmethemoney.ui.utils.toAccountDetailsItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,31 +22,84 @@ import javax.inject.Inject
  * - Управление состоянием загрузки
  * - Предоставление данных UI-слою
  *
- * @property accountHistory StateFlow с результатом загрузки (Loading/Success/Error)
- * @param getAccountHistoryUseCase Use case для получения истории счета
+ * @property accountDetails StateFlow с результатом загрузки (Loading/Success/Error)
+ * @param getAccountDetailsUseCase Use case для получения истории счета
  */
 class AccountViewModel @Inject constructor(
-    private val getAccountHistoryUseCase: GetAccountHistoryUseCase
+    private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
+    private val updateAccountUseCase: UpdateAccountUseCase,
 ) : ViewModel() {
+    val accountId = AccountManager.selectedAccountId
 
-    private val _accountHistory =
-        MutableStateFlow<ApiResult<AccountHistoryDomain>>(ApiResult.Loading)
-    val accountHistory: StateFlow<ApiResult<AccountHistoryDomain>> = _accountHistory
+    var accountName by mutableStateOf(AccountManager.selectedAccountName)
+        private set
 
-    fun loadAccountHistory() {
+    var accountCurrency by mutableStateOf(AccountManager.selectedAccountCurrency)
+        private set
+
+    private val _accountDetails =
+        MutableStateFlow<ApiResult<AccountDetailsItem>>(ApiResult.Loading)
+    val accountDetails: StateFlow<ApiResult<AccountDetailsItem>> = _accountDetails
+
+    fun loadAccountDetails() {
         viewModelScope.launch {
-            val accountId = AccountManager.selectedAccountId.toString()
-
-            _accountHistory.value = ApiResult.Loading
-            when (val result = getAccountHistoryUseCase.execute(accountId)) {
+            _accountDetails.value = ApiResult.Loading
+            when (val result = getAccountDetailsUseCase.execute(accountId)) {
                 is ApiResult.Success -> {
-                    _accountHistory.value = ApiResult.Success(result.data)
+                    _accountDetails.value = ApiResult.Success(result.data.toAccountDetailsItem())
+                    accountName = result.data.name
+                    accountCurrency = result.data.currency
                 }
                 is ApiResult.Error -> {
-                    _accountHistory.value = result
+                    _accountDetails.value = result
                 }
                 ApiResult.Loading -> Unit
             }
+        }
+    }
+
+    private suspend fun updateAccount(
+        name: String,
+        currency: String,
+        balance: String
+    ) {
+        val currentDetails = (_accountDetails.value as? ApiResult.Success)?.data ?: return
+
+        val originalDetails = currentDetails.copy()
+
+        _accountDetails.value = ApiResult.Loading
+
+        when (val result = updateAccountUseCase.execute(
+            id = accountId,
+            currency = currency,
+            name = name,
+            balance = balance
+        )) {
+            is ApiResult.Success -> {
+                val updatedItem = result.data.toAccountDetailsItem()
+                _accountDetails.value = ApiResult.Success(updatedItem)
+                accountName = updatedItem.name
+                accountCurrency = updatedItem.currency
+
+                AccountManager.selectedAccountName = updatedItem.name
+                AccountManager.selectedAccountCurrency = updatedItem.currency
+            }
+            is ApiResult.Error -> {
+                _accountDetails.value = ApiResult.Success(originalDetails)
+            }
+            ApiResult.Loading -> Unit
+        }
+    }
+
+    fun updateCurrency(currency: String, balance: String) {
+        viewModelScope.launch {
+            updateAccount(accountName, currency, balance)
+        }
+    }
+
+    fun updateName(name: String, balance: String) {
+        viewModelScope.launch {
+            updateAccount(name, accountCurrency, balance)
         }
     }
 }

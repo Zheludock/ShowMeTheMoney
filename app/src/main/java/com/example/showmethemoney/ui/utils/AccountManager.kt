@@ -4,4 +4,6 @@ package com.example.showmethemoney.ui.utils
  */
 object AccountManager {
     var selectedAccountId: Int = -1
+    var selectedAccountName: String = ""
+    var selectedAccountCurrency: String = ""
 }

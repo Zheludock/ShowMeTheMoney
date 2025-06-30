@@ -28,7 +28,7 @@ fun AppTopBar(
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     val currentScreen = Screen.fromRoute(currentRoute)
-    val title = stringResource(id = currentScreen.title)
+    val title = currentScreen.title
 
     val actionIcon = when (currentScreen) {
         Screen.Expenses, Screen.Income -> R.drawable.ic_history

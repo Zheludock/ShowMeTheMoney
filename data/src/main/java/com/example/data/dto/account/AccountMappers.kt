@@ -14,7 +14,7 @@ import com.example.domain.model.AccountHistoryItemDomain
  */
 fun AccountResponse.toDomain(): AccountDomain {
     return AccountDomain(
-        id = id.toString(),
+        id = id,
         userId = userId.toString(),
         name = name,
         balance = balance,
@@ -32,7 +32,7 @@ fun AccountResponse.toDomain(): AccountDomain {
  */
 fun AccountDetailsResponse.toDomain(): AccountDetailsDomain {
     return AccountDetailsDomain(
-        id = id.toString(),
+        id = id,
         name = name,
         balance = balance,
         currency = currency,
@@ -67,7 +67,7 @@ fun AccountHistoryItem.toDomain(): AccountHistoryItemDomain {
  */
 fun AccountHistoryResponse.toDomain(): AccountHistoryDomain {
     return AccountHistoryDomain(
-        accountId = accountId.toString(),
+        accountId = accountId,
         accountName = accountName,
         currency = currency,
         currentBalance = currentBalance,
@@ -83,7 +83,7 @@ fun AccountHistoryResponse.toDomain(): AccountHistoryDomain {
  */
 fun AccountInfo.toDomain(): AccountDomain {
     return AccountDomain(
-        id = id.toString(),
+        id = id,
         userId = "",
         name = name,
         balance = balance,

@@ -58,9 +58,9 @@ class AccountRepositoryImpl @Inject constructor(
      */
     override suspend fun updateAccount(
         accountId: Int,
-        name: String?,
-        balance: String?,
-        currency: String?
+        name: String,
+        balance: String,
+        currency: String
     ): ApiResult<AccountDomain> {
         val request = UpdateAccountRequest(name, balance, currency)
         return apiCallHelper.safeApiCall(block = {
