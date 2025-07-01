@@ -2,8 +2,8 @@ package com.example.showmethemoney.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
 import com.example.showmethemoney.R
+
 /**
  * Data-класс, представляющий элемент нижней навигационной панели.
  *

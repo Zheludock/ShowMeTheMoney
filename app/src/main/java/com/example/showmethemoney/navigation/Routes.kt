@@ -1,7 +1,5 @@
 package com.example.showmethemoney.navigation
 
-import com.example.showmethemoney.ui.utils.AccountManager
-
 /**
  * Класс, представляющий экраны приложения.
  *

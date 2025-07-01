@@ -1,7 +1,7 @@
 package com.example.showmethemoney.di
 
 import com.example.domain.repository.NetworkMonitor
-import com.example.showmethemoney.network.AndroidNetworkMonitor
+import com.example.data.network.AndroidNetworkMonitor
 import dagger.Binds
 import dagger.Module
 /**
