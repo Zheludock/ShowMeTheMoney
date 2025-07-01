@@ -34,11 +34,13 @@ fun AppTopBar(
         Screen.Expenses, Screen.Income -> R.drawable.ic_history
         Screen.Account -> R.drawable.ic_edit
         Screen.History -> R.drawable.ic_history_calendar
+        Screen.EditAccount -> R.drawable.ic_accept
         else -> null
     }
 
     val navigationIcon = when(currentScreen) {
         Screen.History -> R.drawable.ic_back
+        Screen.EditAccount -> R.drawable.ic_close
         else -> null
     }
 

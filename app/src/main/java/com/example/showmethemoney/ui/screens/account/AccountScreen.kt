@@ -31,9 +31,7 @@ import com.example.showmethemoney.ui.components.LoadingIndicator
  * - [ApiResult.Error] - Показывает [ErrorView] с сообщением об ошибке и кнопкой повтора
  */
 @Composable
-fun AccountScreen(viewModelFactory: ViewModelProvider.Factory,
-                  navController: NavController,
-                  navBackStackEntry: NavBackStackEntry) {
+fun AccountScreen(viewModelFactory: ViewModelProvider.Factory) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
 
     LaunchedEffect(Unit) {
@@ -44,7 +42,7 @@ fun AccountScreen(viewModelFactory: ViewModelProvider.Factory,
 
     when (val state = accountDetailsState) {
         is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> AccountContent(state.data, viewModel, navBackStackEntry)
+        is ApiResult.Success -> AccountContent(state.data)
         is ApiResult.Error -> ErrorView(state.error) {
             viewModel.loadAccountDetails()
         }

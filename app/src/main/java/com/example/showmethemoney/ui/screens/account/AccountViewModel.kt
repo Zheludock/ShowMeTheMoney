@@ -2,7 +2,6 @@ package com.example.showmethemoney.ui.screens.account
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +26,6 @@ import javax.inject.Inject
  */
 class AccountViewModel @Inject constructor(
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
-    private val updateAccountUseCase: UpdateAccountUseCase,
 ) : ViewModel() {
     val accountId = AccountManager.selectedAccountId
 
@@ -55,51 +53,6 @@ class AccountViewModel @Inject constructor(
                 }
                 ApiResult.Loading -> Unit
             }
-        }
-    }
-
-    private suspend fun updateAccount(
-        name: String,
-        currency: String,
-        balance: String
-    ) {
-        val currentDetails = (_accountDetails.value as? ApiResult.Success)?.data ?: return
-
-        val originalDetails = currentDetails.copy()
-
-        _accountDetails.value = ApiResult.Loading
-
-        when (val result = updateAccountUseCase.execute(
-            id = accountId,
-            currency = currency,
-            name = name,
-            balance = balance
-        )) {
-            is ApiResult.Success -> {
-                val updatedItem = result.data.toAccountDetailsItem()
-                _accountDetails.value = ApiResult.Success(updatedItem)
-                accountName = updatedItem.name
-                accountCurrency = updatedItem.currency
-
-                AccountManager.selectedAccountName = updatedItem.name
-                AccountManager.selectedAccountCurrency = updatedItem.currency
-            }
-            is ApiResult.Error -> {
-                _accountDetails.value = ApiResult.Success(originalDetails)
-            }
-            ApiResult.Loading -> Unit
-        }
-    }
-
-    fun updateCurrency(currency: String, balance: String) {
-        viewModelScope.launch {
-            updateAccount(accountName, currency, balance)
-        }
-    }
-
-    fun updateName(name: String, balance: String) {
-        viewModelScope.launch {
-            updateAccount(name, accountCurrency, balance)
         }
     }
 }

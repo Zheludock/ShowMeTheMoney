@@ -23,19 +23,20 @@ sealed class Screen(
     object History : Screen("history", "Моя история")
     object AddExpense : Screen("add_expense", "Мои расходы")
     object AddIncome : Screen("add_income", "Мои доходы")
+    object EditAccount : Screen("edit_account", "Редактирование аккаунта")
 
     companion object {
         fun fromRoute(route: String?): Screen {
-            return when {
-                route == null -> Expenses
-                route.startsWith(Expenses.route) -> Expenses
-                route.startsWith(Income.route) -> Income
-                route.startsWith(Account.route) -> Account
-                route.startsWith(Category.route) -> Category
-                route.startsWith(Settings.route) -> Settings
-                route.startsWith(History.route) -> History
-                route.startsWith(AddExpense.route) -> AddExpense
-                route.startsWith(AddIncome.route) -> AddIncome
+            return when (route) {
+                Expenses.route -> Expenses
+                Income.route -> Income
+                Account.route -> Account
+                Category.route -> Category
+                Settings.route -> Settings
+                History.route -> History
+                AddExpense.route -> AddExpense
+                AddIncome.route -> AddIncome
+                EditAccount.route -> EditAccount
                 else -> Expenses
             }
         }

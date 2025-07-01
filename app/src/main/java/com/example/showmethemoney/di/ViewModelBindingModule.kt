@@ -6,6 +6,7 @@ import com.example.showmethemoney.ui.screens.account.AccountViewModel
 import com.example.showmethemoney.ui.screens.category.CategoryViewModel
 import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
 import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionViewModel
+import com.example.showmethemoney.ui.screens.editaccount.EditAccountViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -52,4 +53,9 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(AddTransactionViewModel::class)
     abstract fun bindAddTransactionViewModel(viewModel: AddTransactionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditAccountViewModel::class)
+    abstract fun bindEditAccountViewModel(viewModel: EditAccountViewModel): ViewModel
 }
