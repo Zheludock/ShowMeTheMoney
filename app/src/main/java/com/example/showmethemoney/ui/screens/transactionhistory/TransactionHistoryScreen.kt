@@ -29,6 +29,7 @@ import com.example.showmethemoney.ui.utils.DateUtils
 import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 /**
  * Экран истории транзакций (доходов/расходов) с возможностью выбора периода.
  *
@@ -67,16 +68,20 @@ fun TransactionHistoryScreen(
 ) {
     val viewModel: TransactionViewModel = viewModel(factory = viewModelFactory)
 
-    val isIncome = IsIncomeFromNavigation(navController
-        .previousBackStackEntry
-        ?.destination
-        ?.route)
+    val isIncome = IsIncomeFromNavigation(
+        navController
+            .previousBackStackEntry
+            ?.destination
+            ?.route
+    )
 
     LaunchedEffect(isIncome) {
         viewModel.updateIsIncome(isIncome)
         viewModel.updateStartDate(DateUtils.getFirstDayOfCurrentMonth())
-        viewModel.loadTransactions(isIncome, viewModel.startDateForUI.value,
-            viewModel.endDateForUI.value)
+        viewModel.loadTransactions(
+            isIncome, viewModel.startDateForUI.value,
+            viewModel.endDateForUI.value
+        )
     }
 
     var showStartDatePicker by remember { mutableStateOf(false) }
@@ -105,12 +110,14 @@ fun TransactionHistoryScreen(
 
     val state = viewModel.transactions.collectAsState().value
     val noDataText = if (isIncome) stringResource(R.string.no_data_incomes)
-                     else stringResource(R.string.no_data_expenses)
-    val onRetry = { viewModel.loadTransactions(
-        isIncome = isIncome,
-        startDate = startDateForUI,
-        endDate = endDateForUI
-    ) }
+    else stringResource(R.string.no_data_expenses)
+    val onRetry = {
+        viewModel.loadTransactions(
+            isIncome = isIncome,
+            startDate = startDateForUI,
+            endDate = endDateForUI
+        )
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -122,17 +129,13 @@ fun TransactionHistoryScreen(
             when (state) {
                 ApiResult.Loading -> LoadingIndicator()
                 is ApiResult.Success -> {
-                    if (state.data.isNotEmpty()) {
-                        TransactionHistoryList(
-                            transactions = state.data,
-                            DateUtils.formatDateForDisplay(startDateForUI),
-                            DateUtils.formatDateForDisplay(endDateForUI),
-                            onStartDateClick = { showStartDatePicker = true },
-                            onEndDateClick = { showEndDatePicker = true }
-                        )
-                    } else {
-                        Text(noDataText)
-                    }
+                    TransactionHistoryList(
+                        transactions = state.data,
+                        DateUtils.formatDateForDisplay(startDateForUI),
+                        DateUtils.formatDateForDisplay(endDateForUI),
+                        onStartDateClick = { showStartDatePicker = true },
+                        onEndDateClick = { showEndDatePicker = true }
+                    )
                 }
                 is ApiResult.Error -> ErrorView(error = state.error, onRetry = onRetry)
             }

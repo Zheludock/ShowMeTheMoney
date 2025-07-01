@@ -52,11 +52,10 @@ fun TransactionList(transactions: List<TransactionItem>) {
             )
         }
         items(transactions) { item ->
-            val trailText = StringFormatter.formatTransactionTrail(item)
             UniversalListItem(
                 lead = item.categoryEmoji,
                 content = item.categoryName to item.comment,
-                trail = trailText to {
+                trail = StringFormatter.formatAmount(item.amount.toDouble(), item.accountCurrency)  to {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert),
                         contentDescription = stringResource(R.string.more),
