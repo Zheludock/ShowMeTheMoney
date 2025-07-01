@@ -17,10 +17,6 @@ class EditAccountViewModel @Inject constructor(
     private val updateAccountUseCase: UpdateAccountUseCase,
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase
 ) : ViewModel() {
-    init {
-        loadAccountDetails()
-    }
-
     val accountId = AccountManager.selectedAccountId
 
     private val _accountDetails = MutableStateFlow<ApiResult<AccountDetailsItem>>(ApiResult.Loading)

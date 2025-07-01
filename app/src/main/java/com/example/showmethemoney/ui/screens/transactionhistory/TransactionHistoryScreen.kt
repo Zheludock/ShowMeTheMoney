@@ -1,6 +1,10 @@
 package com.example.showmethemoney.ui.screens.transactionhistory
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,14 +13,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.R
+import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
+import com.example.showmethemoney.ui.screens.category.CategoryList
 import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
 import com.example.showmethemoney.ui.utils.DateUtils
 import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation
@@ -105,21 +112,30 @@ fun TransactionHistoryScreen(
         endDate = endDateForUI
     ) }
 
-    when (state) {
-        ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> {
-            if (state.data.isNotEmpty()) {
-                TransactionHistoryList(
-                    transactions = state.data,
-                    DateUtils.formatDateForDisplay(startDateForUI),
-                    DateUtils.formatDateForDisplay(endDateForUI),
-                    onStartDateClick = { showStartDatePicker = true },
-                    onEndDateClick = { showEndDatePicker = true }
-                )
-            } else {
-                Text(noDataText)
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            AppTopBar(title = stringResource(R.string.my_history))
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            when (state) {
+                ApiResult.Loading -> LoadingIndicator()
+                is ApiResult.Success -> {
+                    if (state.data.isNotEmpty()) {
+                        TransactionHistoryList(
+                            transactions = state.data,
+                            DateUtils.formatDateForDisplay(startDateForUI),
+                            DateUtils.formatDateForDisplay(endDateForUI),
+                            onStartDateClick = { showStartDatePicker = true },
+                            onEndDateClick = { showEndDatePicker = true }
+                        )
+                    } else {
+                        Text(noDataText)
+                    }
+                }
+                is ApiResult.Error -> ErrorView(error = state.error, onRetry = onRetry)
             }
         }
-        is ApiResult.Error -> ErrorView(error = state.error, onRetry = onRetry)
     }
 }

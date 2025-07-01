@@ -23,24 +23,23 @@ import com.example.showmethemoney.ui.theme.IconsGreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
-    navController: NavController,
-    onActionIconClick: (() -> Unit)? = null
+    navController: NavController? = null,
+    onActionIconClick: (() -> Unit)? = null,
+    title: String
 ) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val currentScreen = Screen.fromRoute(currentRoute)
-    val title = currentScreen.title
+    val currentRoute = navController?.currentBackStackEntry?.destination?.route
 
-    val actionIcon = when (currentScreen) {
-        Screen.Expenses, Screen.Income -> R.drawable.ic_history
-        Screen.Account -> R.drawable.ic_edit
-        Screen.History -> R.drawable.ic_history_calendar
-        Screen.EditAccount -> R.drawable.ic_accept
+    val actionIcon = when (currentRoute) {
+        Screen.Expenses.route, Screen.Income.route -> R.drawable.ic_history
+        Screen.Account.route -> R.drawable.ic_edit
+        Screen.History.route -> R.drawable.ic_history_calendar
+        Screen.EditAccount.route -> R.drawable.ic_accept
         else -> null
     }
 
-    val navigationIcon = when(currentScreen) {
-        Screen.History -> R.drawable.ic_back
-        Screen.EditAccount -> R.drawable.ic_close
+    val navigationIcon = when(currentRoute) {
+        Screen.History.route -> R.drawable.ic_back
+        Screen.EditAccount.route -> R.drawable.ic_close
         else -> null
     }
 
@@ -61,7 +60,7 @@ fun AppTopBar(
         },
         navigationIcon = {
             navigationIcon?.let { iconRes ->
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = { navController?.popBackStack() }) {
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = stringResource(R.string.navigation_icon)

@@ -1,6 +1,7 @@
 package com.example.showmethemoney.ui.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -89,19 +90,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
     val showFab = currentNavItem?.showFab ?: false
 
     Scaffold(
-        topBar = {
-            AppTopBar(
-                onActionIconClick = {
-                    when (currentRoute) {
-                        Screen.Expenses.route, Screen.Income.route ->
-                            navController.navigate(Screen.History.route)
-                        Screen.Account.route -> { navController.navigate(Screen.EditAccount.route) }
-                        Screen.EditAccount.route -> {  }
-                        else -> {}
-                    }},
-                navController = navController
-                )
-            },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             AppBottomNavigation(
                 navItems = BottomNavItems.items,

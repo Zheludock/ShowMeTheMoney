@@ -34,4 +34,6 @@
     <string name="no_internet_connection">Нет подключения к интернету</string>
     <string name="currency">Валюта</string>
     <string name="balance">Баланс</string>
+    <string name="edit_account">Редактирование счета</string>
+    <string name="account_name">Название счета</string>
 </resources>

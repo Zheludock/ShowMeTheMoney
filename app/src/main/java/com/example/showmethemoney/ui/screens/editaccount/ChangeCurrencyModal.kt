@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.account
+package com.example.showmethemoney.ui.screens.editaccount
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -82,7 +82,7 @@ fun ChangeCurrencyModal(
                     )
                 },
                 text = "Отмена",
-                onClick = { onDismissRequest },
+                onClick = { onDismissRequest() },
                 backgroundColor = Red
             )
         }

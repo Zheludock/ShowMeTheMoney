@@ -1,16 +1,26 @@
 package com.example.showmethemoney.ui.screens.account
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
+import com.example.showmethemoney.navigation.Screen
+import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
+import com.example.showmethemoney.ui.utils.AccountManager
+
 /**
  * Экран отображения истории аккаунта.
  *
@@ -31,7 +41,10 @@ import com.example.showmethemoney.ui.components.LoadingIndicator
  * - [ApiResult.Error] - Показывает [ErrorView] с сообщением об ошибке и кнопкой повтора
  */
 @Composable
-fun AccountScreen(viewModelFactory: ViewModelProvider.Factory) {
+fun AccountScreen(
+    viewModelFactory: ViewModelProvider.Factory,
+    navController: NavController
+) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
 
     LaunchedEffect(Unit) {
@@ -39,12 +52,24 @@ fun AccountScreen(viewModelFactory: ViewModelProvider.Factory) {
     }
     val accountDetailsState by viewModel.accountDetails.collectAsState()
 
-
-    when (val state = accountDetailsState) {
-        is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> AccountContent(state.data)
-        is ApiResult.Error -> ErrorView(state.error) {
-            viewModel.loadAccountDetails()
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            AppTopBar(
+                title = AccountManager.selectedAccountName,
+                onActionIconClick = { navController.navigate(Screen.EditAccount.route) },
+                navController = navController
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            when (val state = accountDetailsState) {
+                is ApiResult.Loading -> LoadingIndicator()
+                is ApiResult.Success -> AccountContent(state.data)
+                is ApiResult.Error -> ErrorView(state.error) {
+                    viewModel.loadAccountDetails()
+                }
+            }
         }
     }
 }

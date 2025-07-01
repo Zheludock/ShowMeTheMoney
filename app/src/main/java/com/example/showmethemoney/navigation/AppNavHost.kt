@@ -33,11 +33,11 @@ fun AppNavHost(navController: NavHostController,
         startDestination = Screen.Expenses.route
     ) {
         composable(Screen.Expenses.route) { TransactionScreen(viewModelFactory,
-            false) }
+            false, navController) }
         composable(Screen.Income.route) { TransactionScreen(viewModelFactory,
-            true) }
+            true, navController) }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory) }
-        composable(Screen.Account.route) { AccountScreen(viewModelFactory) }
+        composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController) }
         composable(Screen.Settings.route) { SettingsScreen() }
         composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
         composable(Screen.AddExpense.route) {
@@ -46,6 +46,6 @@ fun AppNavHost(navController: NavHostController,
         composable(Screen.AddIncome.route) {
             AddTransactionScreen(isIncome = true, viewModelFactory = viewModelFactory)
         }
-        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory) }
+        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController) }
     }
 }
