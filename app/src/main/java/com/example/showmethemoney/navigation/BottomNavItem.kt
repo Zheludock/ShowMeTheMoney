@@ -45,7 +45,6 @@ object BottomNavItems {
             route = Screen.Account.route,
             icon = R.drawable.ic_account,
             label = R.string.account,
-            showFab = true
         ),
         BottomNavItem(
             route = Screen.Category.route,

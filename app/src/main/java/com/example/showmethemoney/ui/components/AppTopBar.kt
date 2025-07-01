@@ -16,8 +16,6 @@ import com.example.showmethemoney.ui.theme.IconsGreen
 
 /**
  * Кастомный TopAppBar с динамическими иконками действий и навигации.
- *
- * @param config Конфигурация TopBar (заголовок, иконки, колбэки).
  */
 
 @OptIn(ExperimentalMaterial3Api::class)

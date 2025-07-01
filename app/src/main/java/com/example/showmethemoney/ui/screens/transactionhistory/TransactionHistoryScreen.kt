@@ -109,8 +109,6 @@ fun TransactionHistoryScreen(
     )
 
     val state = viewModel.transactions.collectAsState().value
-    val noDataText = if (isIncome) stringResource(R.string.no_data_incomes)
-    else stringResource(R.string.no_data_expenses)
     val onRetry = {
         viewModel.loadTransactions(
             isIncome = isIncome,

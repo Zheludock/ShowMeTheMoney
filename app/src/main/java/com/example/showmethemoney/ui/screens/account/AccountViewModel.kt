@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.response.ApiResult
 import com.example.domain.usecase.GetAccountDetailsUseCase
-import com.example.domain.usecase.UpdateAccountUseCase
 import com.example.showmethemoney.ui.utils.AccountManager
 import com.example.showmethemoney.ui.utils.toAccountDetailsItem
 import kotlinx.coroutines.flow.MutableStateFlow
