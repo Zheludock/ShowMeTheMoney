@@ -1,18 +1,17 @@
-package com.example.showmethemoney.ui.screens.editaccount
+package com.example.showmethemoney.ui.screens.account.editaccount
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,11 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -34,7 +35,7 @@ import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.screens.account.AccountDetailsItem
-import com.example.showmethemoney.ui.theme.Indicator
+import com.example.showmethemoney.ui.theme.DividerGray
 import com.example.showmethemoney.ui.utils.AccountManager
 import com.example.showmethemoney.ui.utils.StringFormatter
 
@@ -87,26 +88,28 @@ fun EditAccountScreen(
         Box(modifier = Modifier.padding(padding)) {
             LazyColumn {
                 item {
-                    TextField(
-                        value = accountName,
-                        onValueChange = { accountName = it },
-                        label = { Text(stringResource(R.string.account_name)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .height(56.dp)
+                    UniversalListItem(
+                        lead = "\uD83E\uDE99",
+                        content = stringResource(R.string.account_name) to null,
+                        trail = null to {
+                            UpdateAccountTextField(
+                                value = accountName,
+                                onValueChange = { accountName = it }
+                            )
+                        },
+                        modifier = Modifier.height(56.dp),
                     )
                 }
                 item {
-                    TextField(
-                        value = accountBalance,
-                        onValueChange = { accountBalance = it },
-                        label = { Text(stringResource(R.string.balance)) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .height(56.dp)
+                    UniversalListItem(
+                        lead = "💰",
+                        content = stringResource(R.string.balance) to null,
+                        trail = null to {
+                            UpdateAccountTextField(
+                                value = accountBalance,
+                                onValueChange = { accountBalance = it })
+                        },
+                        modifier = Modifier.height(56.dp),
                     )
                 }
                 item {
@@ -119,10 +122,13 @@ fun EditAccountScreen(
                                 modifier = Modifier.size(24.dp)
                             )
                         },
-                        modifier = Modifier
-                            .background(Indicator)
-                            .height(56.dp),
+                        modifier = Modifier.height(56.dp),
                         onClick = { showChangeCurrencyModal = true }
+                    )
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = DividerGray,
+                        modifier = Modifier.zIndex(1f)
                     )
                 }
             }

@@ -1,4 +1,5 @@
-package com.example.showmethemoney.ui.screens.addtransaction
+/*
+package com.example.showmethemoney.ui.screens.transactions.addtransaction
 
 import android.icu.util.Calendar
 import androidx.compose.foundation.clickable
@@ -10,11 +11,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -35,15 +39,16 @@ import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.UniversalListItem
 import java.util.Date
 
+*/
 /**
  * Не оценивать, в процессе. В ТЗ пока не фигурирует
- */
+ *//*
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionScreen(
-    isIncome: Boolean,
+    viewModelFactory: ViewModelProvider.Factory,
     currentTransactionId: String? = null,
-    viewModelFactory: ViewModelProvider.Factory
 ) {
     val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
 
@@ -53,27 +58,16 @@ fun AddTransactionScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
 
-    /*LaunchedEffect(Unit) {
-        viewModel.createTransactionResult.collect { result ->
-            when (result) {
-                is com.example.data.safecaller.ApiResult.Success<*> -> navController.popBackStack()
-                is com.example.data.safecaller.ApiResult.Error -> {
-                    println("Error: ${result.error}")
-                }
-                else -> {}
-            }
-        }
-    }*/
 
-    /*if (showCategoryDialog) {
+    if (showCategoryDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.showCategoryDialog(false) },
             title = { Text("Выберите категорию") },
             text = {
                 LazyColumn {
-                    items(categories) { category ->
+                    items(categories.data) { category ->
                         ListItem(
-                            headlineText = { Text(category.name) },
+                            headlineText = { Text(category.name },
                             modifier = Modifier.clickable {
                                 viewModel.updateSelectedCategory(category)
                             }
@@ -88,7 +82,7 @@ fun AddTransactionScreen(
                 }
             }
         )
-    }*/
+    }
 
     if (showDatePicker) {
         val calendar = Calendar.getInstance()
@@ -125,7 +119,9 @@ fun AddTransactionScreen(
     TransactionList(
         isIncome = isIncome,
         state = uiState,
-        onAccountClick = { /* Открыть выбор счета */ },
+        onAccountClick = { */
+/* Открыть выбор счета *//*
+ },
         onCategoryClick = { viewModel.showCategoryDialog(true) },
         onAmountChange = viewModel::updateAmount,
         onDateClick = { showDatePicker = true },
@@ -237,3 +233,4 @@ fun TransactionList(
         }
     }
 }
+*/

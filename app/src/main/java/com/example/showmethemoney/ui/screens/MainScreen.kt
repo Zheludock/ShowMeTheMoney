@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,7 +37,6 @@ import com.example.showmethemoney.navigation.BottomNavItems
 import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.AppBottomNavigation
 import com.example.showmethemoney.ui.components.AppTopBar
-import com.example.showmethemoney.ui.screens.editaccount.EditAccountViewModel
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
 import kotlinx.coroutines.launch

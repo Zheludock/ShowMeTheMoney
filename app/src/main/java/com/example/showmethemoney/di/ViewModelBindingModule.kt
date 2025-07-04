@@ -5,8 +5,8 @@ import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
 import com.example.showmethemoney.ui.screens.account.AccountViewModel
 import com.example.showmethemoney.ui.screens.category.CategoryViewModel
 import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
-import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionViewModel
-import com.example.showmethemoney.ui.screens.editaccount.EditAccountViewModel
+//import com.example.showmethemoney.ui.screens.transactions.addtransaction.AddTransactionViewModel
+import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -49,10 +49,10 @@ abstract class ViewModelBindingModule {
     @ViewModelKey(NetworkAwareViewModel::class)
     abstract fun bindNetworkAwareViewModel(viewModel: NetworkAwareViewModel): ViewModel
 
-    @Binds
+    /*@Binds
     @IntoMap
     @ViewModelKey(AddTransactionViewModel::class)
-    abstract fun bindAddTransactionViewModel(viewModel: AddTransactionViewModel): ViewModel
+    abstract fun bindAddTransactionViewModel(viewModel: AddTransactionViewModel): ViewModel*/
 
     @Binds
     @IntoMap

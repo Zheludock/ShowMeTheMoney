@@ -36,4 +36,5 @@
     <string name="balance">Баланс</string>
     <string name="edit_account">Редактирование счета</string>
     <string name="account_name">Название счета</string>
+    <string name="account_name_eng">account</string>
 </resources>

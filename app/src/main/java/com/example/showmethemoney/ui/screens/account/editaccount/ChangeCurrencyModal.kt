@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.editaccount
+package com.example.showmethemoney.ui.screens.account.editaccount
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

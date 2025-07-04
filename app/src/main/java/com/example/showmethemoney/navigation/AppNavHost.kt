@@ -2,16 +2,15 @@ package com.example.showmethemoney.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.showmethemoney.ui.screens.account.AccountScreen
-import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionScreen
+//import com.example.showmethemoney.ui.screens.transactions.addtransaction.AddTransactionScreen
 import com.example.showmethemoney.ui.screens.category.CategoryScreen
-import com.example.showmethemoney.ui.screens.editaccount.EditAccountScreen
+import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountScreen
 import com.example.showmethemoney.ui.screens.settings.SettingsScreen
-import com.example.showmethemoney.ui.screens.transactionhistory.TransactionHistoryScreen
+import com.example.showmethemoney.ui.screens.transactions.transactionhistory.TransactionHistoryScreen
 import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
 
 /**
@@ -40,12 +39,12 @@ fun AppNavHost(navController: NavHostController,
         composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController) }
         composable(Screen.Settings.route) { SettingsScreen() }
         composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
-        composable(Screen.AddExpense.route) {
-            AddTransactionScreen( isIncome = false, viewModelFactory = viewModelFactory)
+        /*composable(Screen.AddExpense.route) {
+            AddTransactionScreen(viewModelFactory)
         }
         composable(Screen.AddIncome.route) {
-            AddTransactionScreen(isIncome = true, viewModelFactory = viewModelFactory)
-        }
+            AddTransactionScreen(viewModelFactory)
+        }*/
         composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController) }
     }
 }

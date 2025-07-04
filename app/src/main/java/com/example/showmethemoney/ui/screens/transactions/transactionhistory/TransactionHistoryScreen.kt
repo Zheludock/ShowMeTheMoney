@@ -1,11 +1,10 @@
-package com.example.showmethemoney.ui.screens.transactionhistory
+package com.example.showmethemoney.ui.screens.transactions.transactionhistory
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,7 +22,6 @@ import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
-import com.example.showmethemoney.ui.screens.category.CategoryList
 import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
 import com.example.showmethemoney.ui.utils.DateUtils
 import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation

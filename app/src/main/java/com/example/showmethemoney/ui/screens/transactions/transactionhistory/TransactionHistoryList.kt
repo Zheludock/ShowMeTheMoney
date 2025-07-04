@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.transactionhistory
+package com.example.showmethemoney.ui.screens.transactions.transactionhistory
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
