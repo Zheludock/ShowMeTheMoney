@@ -12,7 +12,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+/**
+ * ViewModel для экрана редактирования аккаунта.
+ *
+ * Отвечает за:
+ * - Загрузку текущих данных аккаунта
+ * - Валидацию вводимых данных
+ * - Обновление информации об аккаунте
+ * - Управление состоянием экрана
+ *
+ * @property accountId ID текущего выбранного аккаунта (берется из AccountManager)
+ * @property accountDetails StateFlow с состоянием загрузки/обновления данных аккаунта
+ *
+ * @param updateAccountUseCase UseCase для обновления данных аккаунта
+ * @param getAccountDetailsUseCase UseCase для получения деталей аккаунта
+ */
 class EditAccountViewModel @Inject constructor(
     private val updateAccountUseCase: UpdateAccountUseCase,
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase
@@ -29,9 +43,11 @@ class EditAccountViewModel @Inject constructor(
                 is ApiResult.Success -> {
                     _accountDetails.value = ApiResult.Success(result.data.toAccountDetailsItem())
                 }
+
                 is ApiResult.Error -> {
                     _accountDetails.value = result
                 }
+
                 ApiResult.Loading -> Unit
             }
         }
@@ -54,8 +70,7 @@ class EditAccountViewModel @Inject constructor(
                     val updatedItem = result.data.toAccountDetailsItem()
                     _accountDetails.value = ApiResult.Success(updatedItem)
 
-                    AccountManager.selectedAccountName = updatedItem.name
-                    AccountManager.selectedAccountCurrency = updatedItem.currency
+                    AccountManager.updateAcc(updatedItem.currency, updatedItem.name)
                 }
 
                 is ApiResult.Error -> {
@@ -64,6 +79,15 @@ class EditAccountViewModel @Inject constructor(
 
                 ApiResult.Loading -> Unit
             }
+        }
+    }
+
+    fun isValidBalance(input: String): Boolean {
+        return try {
+            input.replace(",", ".").toBigDecimal()
+            true
+        } catch (e: NumberFormatException) {
+            false
         }
     }
 }

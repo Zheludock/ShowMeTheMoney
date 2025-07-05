@@ -11,7 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
+/**
+ * Кастомное текстовое поле для редактирования данных аккаунта.
+ *
+ * Особенности:
+ * - Прозрачный фон без видимых границ
+ * - Текст выравнивается по правому краю
+ * - Поддерживает кастомизацию параметров клавиатуры
+ *
+ * @param value Текущее значение текстового поля
+ * @param onValueChange Callback при изменении текста (String -> Unit)
+ * @param keyboardOptions Опции клавиатуры (по умолчанию - стандартная клавиатура)
+ *                       Для числового ввода используйте: KeyboardOptions(keyboardType = KeyboardType.Number)
+ */
 @Composable
 fun UpdateAccountTextField(
     value: String,

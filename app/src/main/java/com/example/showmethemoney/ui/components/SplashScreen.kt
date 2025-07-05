@@ -20,10 +20,18 @@ import androidx.compose.ui.res.painterResource
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.utils.AccountInitializer
 import kotlinx.coroutines.delay
+
 /**
- * Компонент Splash Screen с анимацией исчезновения.
+ * Компонуемый экран заставки (Splash Screen) с анимацией.
  *
- * @param onSplashFinished Колбэк, вызываемый после завершения анимации (через 2300 мс)
+ * Выполняет:
+ * 1. Инициализацию аккаунта через AccountInitializer
+ * 2. Отображение анимированного логотипа/изображения
+ * 3. Автоматический переход после завершения инициализации и минимальной задержки
+ *
+ * @param accountInitializer Сервис инициализации аккаунта, должен реализовывать метод initialize()
+ * @param onSplashFinished Callback-функция, вызываемая после завершения показа заставки.
+ *                         Должна содержать логику перехода на следующий экран.
  */
 @Composable
 fun SplashScreen(

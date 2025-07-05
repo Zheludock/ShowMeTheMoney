@@ -49,8 +49,7 @@ class AccountInitializer @Inject constructor(
 
             if (savedAccountId != null && savedAccountName != null && savedAccountCurrency != null) {
                 AccountManager.selectedAccountId = savedAccountId
-                AccountManager.selectedAccountName = savedAccountName
-                AccountManager.selectedAccountCurrency = savedAccountCurrency
+                AccountManager.updateAcc(savedAccountCurrency, savedAccountName)
                 Log.d("Shared preference is OK","used shared preference")
                 return
             }
@@ -68,8 +67,7 @@ class AccountInitializer @Inject constructor(
                 }
 
                 AccountManager.selectedAccountId = account.id
-                AccountManager.selectedAccountName = account.name
-                AccountManager.selectedAccountCurrency = account.currency
+                AccountManager.updateAcc(account.currency, account.name)
             } else {
                 delay(1000)
                 initialize()

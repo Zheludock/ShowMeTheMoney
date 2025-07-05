@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.showmethemoney.ui.screens.account.AccountScreen
-//import com.example.showmethemoney.ui.screens.transactions.addtransaction.AddTransactionScreen
 import com.example.showmethemoney.ui.screens.category.CategoryScreen
 import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountScreen
 import com.example.showmethemoney.ui.screens.settings.SettingsScreen
@@ -39,12 +38,6 @@ fun AppNavHost(navController: NavHostController,
         composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController) }
         composable(Screen.Settings.route) { SettingsScreen() }
         composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
-        /*composable(Screen.AddExpense.route) {
-            AddTransactionScreen(viewModelFactory)
-        }
-        composable(Screen.AddIncome.route) {
-            AddTransactionScreen(viewModelFactory)
-        }*/
         composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController) }
     }
 }

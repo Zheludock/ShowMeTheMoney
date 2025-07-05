@@ -56,7 +56,7 @@ fun AccountScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             AppTopBar(
-                title = AccountManager.selectedAccountName,
+                title = AccountManager.selectedAccountName.value,
                 onActionIconClick = { navController.navigate(Screen.EditAccount.route) },
                 navController = navController
             )

@@ -118,7 +118,7 @@ fun TransactionHistoryScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            AppTopBar(title = stringResource(R.string.my_history))
+            AppTopBar(title = stringResource(R.string.my_history), navController = navController)
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {

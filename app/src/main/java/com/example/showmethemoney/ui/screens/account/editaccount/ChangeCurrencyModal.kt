@@ -19,13 +19,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.theme.Red
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
 import com.example.showmethemoney.ui.theme.White
 import com.example.showmethemoney.ui.theme.WhiteBG
-
+/**
+ * Модальное окно выбора валюты в виде нижнего листа (Bottom Sheet).
+ *
+ * Позволяет пользователю выбрать одну из доступных валют:
+ * - Российский рубль (RUB)
+ * - Американский доллар (USD)
+ * - Евро (EUR)
+ * Или отменить выбор
+ *
+ * @param onElementSelected Callback, вызываемый при выборе валюты (передает код валюты: "RUB", "USD", "EUR")
+ * @param onDismissRequest Callback, вызываемый при закрытии модального окна (по нажатию на отмену или вне области)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangeCurrencyModal(
@@ -50,7 +62,7 @@ fun ChangeCurrencyModal(
                     contentDescription = "RUB"
                 )
             },
-                text = "Российский рубль",
+                text = stringResource(R.string.RU_rub),
                 onClick = { onElementSelected("RUB") })
             ModalList(
                 icon = {
@@ -60,7 +72,7 @@ fun ChangeCurrencyModal(
                         contentDescription = "USD"
                     )
                 },
-                text = "Американский доллар",
+                text = stringResource(R.string.US_dollar),
                 onClick = { onElementSelected("USD") })
             ModalList(
                 icon = {
@@ -70,7 +82,7 @@ fun ChangeCurrencyModal(
                         contentDescription = "EUR"
                     )
                 },
-                text = "Евро",
+                text = stringResource(R.string.Euro),
                 onClick = { onElementSelected("EUR") })
             ModalList(
                 icon = {
@@ -81,14 +93,25 @@ fun ChangeCurrencyModal(
                         contentDescription = "cancel"
                     )
                 },
-                text = "Отмена",
+                text = stringResource(R.string.Cancel),
                 onClick = { onDismissRequest() },
                 backgroundColor = Red
             )
         }
     }
 }
-
+/**
+ * Элемент списка для модального окна с иконкой и текстом.
+ *
+ * @param icon Компонуемая иконка элемента
+ * @param text Текст элемента
+ * @param onClick Обработчик нажатия на элемент
+ * @param backgroundColor Цвет фона элемента (по умолчанию прозрачный)
+ *
+ * Примечание:
+ * - Для элемента "Отмена" автоматически применяется белый цвет текста
+ * - Для остальных элементов используется цвет SelectedTextUnderIcons
+ */
 @Composable
 fun ModalList(
     icon: @Composable (() -> Unit),
