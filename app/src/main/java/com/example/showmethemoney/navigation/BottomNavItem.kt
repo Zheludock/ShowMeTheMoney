@@ -2,8 +2,8 @@ package com.example.showmethemoney.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
 import com.example.showmethemoney.R
+
 /**
  * Data-класс, представляющий элемент нижней навигационной панели.
  *
@@ -45,7 +45,6 @@ object BottomNavItems {
             route = Screen.Account.route,
             icon = R.drawable.ic_account,
             label = R.string.account,
-            showFab = true
         ),
         BottomNavItem(
             route = Screen.Category.route,

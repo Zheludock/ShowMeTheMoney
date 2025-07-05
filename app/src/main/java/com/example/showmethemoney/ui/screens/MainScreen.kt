@@ -1,6 +1,7 @@
 package com.example.showmethemoney.ui.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,6 +40,7 @@ import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
 import kotlinx.coroutines.launch
+
 /**
 * Этот экран содержит:
 * - Scaffold с TopBar, BottomNavigation и FloatingActionButton
@@ -84,21 +86,9 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         derivedStateOf { BottomNavItems.items.firstOrNull { it.route == currentRoute } }
     }
     val showFab = currentNavItem?.showFab ?: false
-    val currentTitle = Screen.fromRoute(currentRoute).title
 
     Scaffold(
-        topBar = {
-            AppTopBar(
-                onActionIconClick = {
-                    when (currentTitle) {
-                        R.string.incomes_today, R.string.expenses_today ->
-                            navController.navigate(Screen.History.route)
-                        R.string.my_account -> { /* TODO */ }
-                        else -> {}
-                    }},
-                navController = navController
-                )
-            },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             AppBottomNavigation(
                 navItems = BottomNavItems.items,

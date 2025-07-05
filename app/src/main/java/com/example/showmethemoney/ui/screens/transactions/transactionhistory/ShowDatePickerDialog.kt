@@ -1,4 +1,4 @@
-package com.example.showmethemoney.ui.screens.transactionhistory
+package com.example.showmethemoney.ui.screens.transactions.transactionhistory
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates

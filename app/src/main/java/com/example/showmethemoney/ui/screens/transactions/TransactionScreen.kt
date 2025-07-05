@@ -1,14 +1,26 @@
 package com.example.showmethemoney.ui.screens.transactions
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
+import com.example.showmethemoney.R
+import com.example.showmethemoney.navigation.Screen
+import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
+import com.example.showmethemoney.ui.screens.account.AccountContent
+
 /**
  * Composable-функция, представляющая экран списка транзакций (доходов/расходов).
  *
@@ -38,7 +50,8 @@ import com.example.showmethemoney.ui.components.LoadingIndicator
 @Composable
 fun TransactionScreen(
     viewModelFactory: ViewModelProvider.Factory,
-    isIncome: Boolean
+    isIncome: Boolean,
+    navController: NavController
 ) {
     val viewModel: TransactionViewModel = viewModel(factory = viewModelFactory)
 
@@ -49,15 +62,29 @@ fun TransactionScreen(
 
     val transactionState by viewModel.transactions.collectAsState()
 
-    when (val state = transactionState) {
-        is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> TransactionList(state.data)
-        is ApiResult.Error -> ErrorView(state.error) {
-            viewModel.loadTransactions(
-                viewModel.isIncome.value,
-                viewModel.startDateForUI.value,
-                viewModel.endDateForUI.value
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            AppTopBar(
+                title = if(isIncome) stringResource(R.string.incomes_today)
+                        else stringResource(R.string.expenses_today),
+                onActionIconClick = { navController.navigate(Screen.History.route) },
+                navController = navController
             )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            when (val state = transactionState) {
+                is ApiResult.Loading -> LoadingIndicator()
+                is ApiResult.Success -> TransactionList(state.data)
+                is ApiResult.Error -> ErrorView(state.error) {
+                    viewModel.loadTransactions(
+                        viewModel.isIncome.value,
+                        viewModel.startDateForUI.value,
+                        viewModel.endDateForUI.value
+                    )
+                }
+            }
         }
     }
 }

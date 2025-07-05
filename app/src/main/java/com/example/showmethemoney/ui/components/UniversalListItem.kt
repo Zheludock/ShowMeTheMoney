@@ -26,6 +26,7 @@ import androidx.compose.ui.zIndex
 import com.example.showmethemoney.ui.theme.DividerGray
 import com.example.showmethemoney.ui.theme.Indicator
 import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
+
 /**
  * Универсальный компонент элемента списка с поддержкой:
  * - Обработки кликов
@@ -39,19 +40,19 @@ import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
  */
 @Composable
 fun UniversalListItem(
+    modifier: Modifier = Modifier.background(Color.Transparent),
     lead: String? = null,
     content: Pair<String, String?>,
     trail: Pair<String?, @Composable (() -> Unit)?> = null to null,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier.background(Color.Transparent)
+    onClick: (() -> Unit)? = null,
 ) {
     Column(modifier = modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .clickable { onClick() }
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .clickable(enabled = onClick != null, onClick = { onClick?.invoke() }),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

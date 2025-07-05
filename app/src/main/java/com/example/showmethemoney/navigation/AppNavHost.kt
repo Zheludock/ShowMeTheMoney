@@ -1,16 +1,15 @@
 package com.example.showmethemoney.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.showmethemoney.ui.screens.account.AccountScreen
-import com.example.showmethemoney.ui.screens.addtransaction.AddTransactionScreen
 import com.example.showmethemoney.ui.screens.category.CategoryScreen
+import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountScreen
 import com.example.showmethemoney.ui.screens.settings.SettingsScreen
-import com.example.showmethemoney.ui.screens.transactionhistory.TransactionHistoryScreen
+import com.example.showmethemoney.ui.screens.transactions.transactionhistory.TransactionHistoryScreen
 import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
 
 /**
@@ -27,25 +26,18 @@ import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
 @Composable
 fun AppNavHost(navController: NavHostController,
                viewModelFactory: ViewModelProvider.Factory) {
-
-    val context = LocalContext.current
     NavHost(
         navController = navController,
         startDestination = Screen.Expenses.route
     ) {
         composable(Screen.Expenses.route) { TransactionScreen(viewModelFactory,
-            false) }
+            false, navController) }
         composable(Screen.Income.route) { TransactionScreen(viewModelFactory,
-            true) }
+            true, navController) }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory) }
-        composable(Screen.Account.route) { AccountScreen(viewModelFactory) }
+        composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController) }
         composable(Screen.Settings.route) { SettingsScreen() }
         composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
-        composable(Screen.AddExpense.route) {
-            AddTransactionScreen( isIncome = false, viewModelFactory = viewModelFactory)
-        }
-        composable(Screen.AddIncome.route) {
-            AddTransactionScreen(isIncome = true, viewModelFactory = viewModelFactory)
-        }
+        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController) }
     }
 }

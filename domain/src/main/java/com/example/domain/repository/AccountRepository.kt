@@ -35,16 +35,15 @@ interface AccountRepository {
     /**
      * Обновляет данные аккаунта
      * @param accountId ID редактируемого аккаунта
-     * @param name Новое название (опционально)
-     * @param balance Новый баланс (опционально, строковое представление)
-     * @param currency Новая валюта (опционально)
+     * @param name Новое название
+     * @param currency Новая валюта
      * @return ApiResult с обновленным AccountDomain или ошибкой
      */
     suspend fun updateAccount(
         accountId: Int,
-        name: String? = null,
-        balance: String? = null,
-        currency: String? = null
+        name: String,
+        balance: String,
+        currency: String
     ): ApiResult<AccountDomain>
     /**
      * Удаляет аккаунт

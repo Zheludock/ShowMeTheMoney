@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.showmethemoney.R
 import com.example.showmethemoney.ui.components.UniversalListItem
 import com.example.showmethemoney.ui.theme.Indicator
+import com.example.showmethemoney.ui.utils.AccountManager
 import com.example.showmethemoney.ui.utils.StringFormatter
 /**
  * Отображает список транзакций с заголовком, содержащим общую сумму.
@@ -43,7 +44,7 @@ fun TransactionList(transactions: List<TransactionItem>) {
                 content = stringResource(R.string.amount) to null,
                 trail = StringFormatter.formatAmount(
                     transactions.sumOf { it.amount.toDoubleOrNull() ?: 0.0 },
-                    transactions.firstOrNull()?.accountCurrency ?: "RUB"
+                    AccountManager.selectedAccountCurrency.value
                 ) to null,
                 modifier = Modifier
                     .background(Indicator)
@@ -54,7 +55,7 @@ fun TransactionList(transactions: List<TransactionItem>) {
             UniversalListItem(
                 lead = item.categoryEmoji,
                 content = item.categoryName to item.comment,
-                trail = StringFormatter.formatAmount(item.amount.toDoubleOrNull() ?: 0.0, item.accountCurrency) to {
+                trail = StringFormatter.formatAmount(item.amount.toDouble(), item.accountCurrency)  to {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert),
                         contentDescription = stringResource(R.string.more),

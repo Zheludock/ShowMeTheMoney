@@ -15,7 +15,7 @@ package com.example.domain.model
  * @property updatedAt Дата последнего обновления
  */
 data class AccountDetailsDomain(
-    val id: String,
+    val id: Int,
     val name: String,
     val balance: String,
     val currency: String,

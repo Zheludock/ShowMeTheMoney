@@ -44,8 +44,6 @@ fun CustomDatePickerDialog(
     onCancel: () -> Unit,
     onConfirm: (Date) -> Unit,
 ) {
-    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
-
     val datePickerState = selectableDates?.let {
         rememberDatePickerState(
             initialSelectedDateMillis = initialDate.time,

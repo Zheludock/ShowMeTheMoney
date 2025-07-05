@@ -59,31 +59,24 @@ class MainActivity : ComponentActivity() {
         (application as ShowMeTheMoneyApp).appComponent.inject(this)
         super.onCreate(savedInstanceState)
 
-        uiConfigurator.configure(this) // Настройка UI
-        loadInitialAccount()
+        uiConfigurator.configure(this)
 
         setContent {
             ShowMeTheMoneyTheme {
-                var showSplash by remember { mutableStateOf(true) }
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(color = BackgroundMainColor),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    if (showSplash) {
-                        SplashScreen { showSplash = false }
-                    } else {
-                        MainScreen(viewModelFactory)
-                    }
+                    SplashScreen(
+                        accountInitializer = accountInitializer,
+                        onSplashFinished = {
+                            MainScreen(viewModelFactory)
+                        }
+                    )
                 }
             }
-        }
-    }
-
-    private fun loadInitialAccount() {
-        CoroutineScope(Dispatchers.IO).launch {
-            accountInitializer.initialize()
         }
     }
 }

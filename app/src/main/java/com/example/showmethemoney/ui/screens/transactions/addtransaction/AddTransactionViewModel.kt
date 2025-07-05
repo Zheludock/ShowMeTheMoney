@@ -1,9 +1,12 @@
-package com.example.showmethemoney.ui.screens.addtransaction
+/*
+package com.example.showmethemoney.ui.screens.transactions.addtransaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.response.ApiResult
+import com.example.domain.usecase.GetCategoriesByTypeUseCase
 import com.example.showmethemoney.ui.screens.category.CategoryItem
-import com.example.showmethemoney.ui.screens.addtransaction.TransactionUiState
+import com.example.showmethemoney.ui.utils.toCategoryItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,16 +17,19 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+*/
 /**
  * Не оценивать, в процессе. В ТЗ пока не фигурирует
- */
-class AddTransactionViewModel @Inject constructor() : ViewModel() {
+ *//*
+
+class AddTransactionViewModel @Inject constructor(
+    private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 
-
-    private val _categories = MutableStateFlow<List<CategoryItem>>(emptyList())
-    val categories: StateFlow<List<CategoryItem>> = _categories.asStateFlow()
+    private val _categories = MutableStateFlow<ApiResult<List<CategoryItem>>>(ApiResult.Loading)
+    val categories: StateFlow<ApiResult<List<CategoryItem>>> = _categories
 
     private val _showCategoryDialog = MutableStateFlow(false)
     val showCategoryDialog: StateFlow<Boolean> = _showCategoryDialog.asStateFlow()
@@ -34,7 +40,17 @@ class AddTransactionViewModel @Inject constructor() : ViewModel() {
 
     private fun loadCategories() {
         viewModelScope.launch {
-            //_categories.value = repository.getAllCategories().map { it.toDomain().toCategoryItem() }
+            _categories.value = ApiResult.Loading
+            when (val result = getCategoriesByTypeUseCase.execute(isIncome)) {
+                is ApiResult.Success -> {
+                    val mappedItems = result.data.map { it.toCategoryItem() }
+                    _categories.value = ApiResult.Success(mappedItems)
+                }
+                is ApiResult.Error -> {
+                    _categories.value = result
+                }
+                ApiResult.Loading -> Unit
+            }
         }
     }
 
@@ -58,7 +74,7 @@ class AddTransactionViewModel @Inject constructor() : ViewModel() {
         comment: String? = null
     ) {
         viewModelScope.launch {
-            //_createTransactionResult.value =
+            _createTransactionResult.value =
         }
     }
 
@@ -80,3 +96,4 @@ class AddTransactionViewModel @Inject constructor() : ViewModel() {
         _uiState.update { it.copy(comment = comment) }
     }
 }
+*/

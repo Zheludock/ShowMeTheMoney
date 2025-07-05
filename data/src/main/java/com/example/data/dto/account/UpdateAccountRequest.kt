@@ -8,7 +8,7 @@ package com.example.data.dto.account
  * @property currency Новая валюта счета (3-буквенный код ISO, опционально, пример: "RUB")
  */
 data class UpdateAccountRequest(
-    val name: String?,
-    val balance: String?,
-    val currency: String?
+    val name: String,
+    val balance: String,
+    val currency: String
 )

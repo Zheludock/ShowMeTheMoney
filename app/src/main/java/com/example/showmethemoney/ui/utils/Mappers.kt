@@ -1,7 +1,10 @@
 package com.example.showmethemoney.ui.utils
 
+import com.example.domain.model.AccountDetailsDomain
+import com.example.domain.model.AccountDomain
 import com.example.domain.model.CategoryDomain
 import com.example.domain.model.TransactionDomain
+import com.example.showmethemoney.ui.screens.account.AccountDetailsItem
 import com.example.showmethemoney.ui.screens.category.CategoryItem
 import com.example.showmethemoney.ui.screens.transactions.TransactionItem
 /**
@@ -43,5 +46,23 @@ fun CategoryDomain.toCategoryItem(): CategoryItem {
         id = categoryId,
         emoji = emoji,
         name = categoryName
+    )
+}
+
+fun AccountDetailsDomain.toAccountDetailsItem(): AccountDetailsItem {
+    return AccountDetailsItem(
+        id = id,
+        name = name,
+        balance = balance,
+        currency = currency,
+    )
+}
+
+fun AccountDomain.toAccountDetailsItem(): AccountDetailsItem {
+    return AccountDetailsItem(
+        id = id,
+        name = name,
+        balance = balance,
+        currency = currency,
     )
 }

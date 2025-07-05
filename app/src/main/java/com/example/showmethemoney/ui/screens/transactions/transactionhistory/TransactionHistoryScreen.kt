@@ -1,7 +1,10 @@
-package com.example.showmethemoney.ui.screens.transactionhistory
+package com.example.showmethemoney.ui.screens.transactions.transactionhistory
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -9,12 +12,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.R
+import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
 import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
@@ -22,6 +27,7 @@ import com.example.showmethemoney.ui.utils.DateUtils
 import com.example.showmethemoney.ui.utils.IsIncomeFromNavigation
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 /**
  * Экран истории транзакций (доходов/расходов) с возможностью выбора периода.
  *
@@ -60,16 +66,20 @@ fun TransactionHistoryScreen(
 ) {
     val viewModel: TransactionViewModel = viewModel(factory = viewModelFactory)
 
-    val isIncome = IsIncomeFromNavigation(navController
-        .previousBackStackEntry
-        ?.destination
-        ?.route)
+    val isIncome = IsIncomeFromNavigation(
+        navController
+            .previousBackStackEntry
+            ?.destination
+            ?.route
+    )
 
     LaunchedEffect(isIncome) {
         viewModel.updateIsIncome(isIncome)
         viewModel.updateStartDate(DateUtils.getFirstDayOfCurrentMonth())
-        viewModel.loadTransactions(isIncome, viewModel.startDateForUI.value,
-            viewModel.endDateForUI.value)
+        viewModel.loadTransactions(
+            isIncome, viewModel.startDateForUI.value,
+            viewModel.endDateForUI.value
+        )
     }
 
     var showStartDatePicker by remember { mutableStateOf(false) }
@@ -97,29 +107,34 @@ fun TransactionHistoryScreen(
     )
 
     val state = viewModel.transactions.collectAsState().value
-    val noDataText = if (isIncome) stringResource(R.string.no_data_incomes)
-                     else stringResource(R.string.no_data_expenses)
-    val onRetry = { viewModel.loadTransactions(
-        isIncome = isIncome,
-        startDate = startDateForUI,
-        endDate = endDateForUI
-    ) }
+    val onRetry = {
+        viewModel.loadTransactions(
+            isIncome = isIncome,
+            startDate = startDateForUI,
+            endDate = endDateForUI
+        )
+    }
 
-    when (state) {
-        ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> {
-            if (state.data.isNotEmpty()) {
-                TransactionHistoryList(
-                    transactions = state.data,
-                    DateUtils.formatDateForDisplay(startDateForUI),
-                    DateUtils.formatDateForDisplay(endDateForUI),
-                    onStartDateClick = { showStartDatePicker = true },
-                    onEndDateClick = { showEndDatePicker = true }
-                )
-            } else {
-                Text(noDataText)
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            AppTopBar(title = stringResource(R.string.my_history), navController = navController)
+        }
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            when (state) {
+                ApiResult.Loading -> LoadingIndicator()
+                is ApiResult.Success -> {
+                    TransactionHistoryList(
+                        transactions = state.data,
+                        DateUtils.formatDateForDisplay(startDateForUI),
+                        DateUtils.formatDateForDisplay(endDateForUI),
+                        onStartDateClick = { showStartDatePicker = true },
+                        onEndDateClick = { showEndDatePicker = true }
+                    )
+                }
+                is ApiResult.Error -> ErrorView(error = state.error, onRetry = onRetry)
             }
         }
-        is ApiResult.Error -> ErrorView(error = state.error, onRetry = onRetry)
     }
 }

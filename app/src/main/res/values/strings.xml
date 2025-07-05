@@ -32,4 +32,14 @@
     <string name="no_data_expenses">Нет данных о расходах</string>
     <string name="add">Добавить</string>
     <string name="no_internet_connection">Нет подключения к интернету</string>
+    <string name="currency">Валюта</string>
+    <string name="balance">Баланс</string>
+    <string name="edit_account">Редактирование счета</string>
+    <string name="account_name">Название счета</string>
+    <string name="account_name_eng">account</string>
+    <string name="niumber_error_message">Ошибка ввода баланса</string>
+    <string name="Cancel">Отмена</string>
+    <string name="Euro">Евро</string>
+    <string name="US_dollar">Американский доллар</string>
+    <string name="RU_rub">Российский рубль</string>
 </resources>
