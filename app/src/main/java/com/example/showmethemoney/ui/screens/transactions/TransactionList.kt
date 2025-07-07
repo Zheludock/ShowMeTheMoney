@@ -44,7 +44,8 @@ fun TransactionList(transactions: List<TransactionItem>) {
                 content = stringResource(R.string.amount) to null,
                 trail = StringFormatter.formatAmount(
                     transactions.sumOf { it.amount.toDoubleOrNull() ?: 0.0 },
-                    AccountManager.selectedAccountCurrency.value
+                    transactions.firstOrNull()?.accountCurrency
+                        ?: AccountManager.selectedAccountCurrency.value
                 ) to null,
                 modifier = Modifier
                     .background(Indicator)
