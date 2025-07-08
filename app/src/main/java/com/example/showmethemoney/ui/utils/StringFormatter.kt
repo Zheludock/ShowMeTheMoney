@@ -54,8 +54,10 @@ object StringFormatter {
 
     fun formatTotalAmount(transactions: List<TransactionItem>): String {
         val total = transactions.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }
+
         val currency = transactions.firstOrNull()?.accountCurrency
             ?: AccountManager.selectedAccountCurrency.value
+
         return formatAmount(total, currency)
     }
 
