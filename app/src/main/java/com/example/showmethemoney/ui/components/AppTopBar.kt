@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.Screen
+import com.example.showmethemoney.ui.screens.TopBarState
 import com.example.showmethemoney.ui.theme.IconsGreen
 
 /**
@@ -21,11 +22,10 @@ import com.example.showmethemoney.ui.theme.IconsGreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
-    navController: NavController? = null,
-    onActionIconClick: (() -> Unit)? = null,
-    title: String
+    navController: NavController,
+    topBarState: TopBarState
 ) {
-    val currentRoute = navController?.currentBackStackEntry?.destination?.route
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
 
     val actionIcon = when (currentRoute) {
         Screen.Expenses.route, Screen.Income.route -> R.drawable.ic_history
@@ -42,13 +42,13 @@ fun AppTopBar(
     }
 
     CenterAlignedTopAppBar(
-        title = { Text(text = title) },
+        title = { Text(text = topBarState.title) },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = IconsGreen
         ),
         actions = {
             actionIcon?.let { iconRes ->
-                IconButton(onClick = { onActionIconClick?.invoke() }) {
+                IconButton(onClick = { topBarState.onActionClick?.invoke() }) {
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = stringResource(R.string.right_topbar_icon)
@@ -58,7 +58,7 @@ fun AppTopBar(
         },
         navigationIcon = {
             navigationIcon?.let { iconRes ->
-                IconButton(onClick = { navController?.popBackStack() }) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = stringResource(R.string.navigation_icon)

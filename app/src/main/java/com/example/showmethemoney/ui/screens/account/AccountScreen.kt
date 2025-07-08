@@ -1,24 +1,17 @@
 package com.example.showmethemoney.ui.screens.account
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.navigation.Screen
-import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
+import com.example.showmethemoney.ui.screens.TopBarState
 import com.example.showmethemoney.ui.utils.AccountManager
 
 /**
@@ -43,7 +36,8 @@ import com.example.showmethemoney.ui.utils.AccountManager
 @Composable
 fun AccountScreen(
     viewModelFactory: ViewModelProvider.Factory,
-    navController: NavController
+    navController: NavController,
+    updateTopBar: (TopBarState) -> Unit
 ) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
 
@@ -52,24 +46,20 @@ fun AccountScreen(
     }
     val accountDetailsState by viewModel.accountDetails.collectAsState()
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            AppTopBar(
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
                 title = AccountManager.selectedAccountName.value,
-                onActionIconClick = { navController.navigate(Screen.EditAccount.route) },
-                navController = navController
+                onActionClick = { navController.navigate(Screen.EditAccount.route) }
             )
-        }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (val state = accountDetailsState) {
-                is ApiResult.Loading -> LoadingIndicator()
-                is ApiResult.Success -> AccountContent(state.data)
-                is ApiResult.Error -> ErrorView(state.error) {
-                    viewModel.loadAccountDetails()
-                }
-            }
+        )
+    }
+
+    when (val state = accountDetailsState) {
+        is ApiResult.Loading -> LoadingIndicator()
+        is ApiResult.Success -> AccountContent(state.data)
+        is ApiResult.Error -> ErrorView(state.error) {
+            viewModel.loadAccountDetails()
         }
     }
 }

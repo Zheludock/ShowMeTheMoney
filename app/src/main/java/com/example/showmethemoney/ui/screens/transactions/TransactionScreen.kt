@@ -19,7 +19,7 @@ import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
-import com.example.showmethemoney.ui.screens.account.AccountContent
+import com.example.showmethemoney.ui.screens.TopBarState
 
 /**
  * Composable-функция, представляющая экран списка транзакций (доходов/расходов).
@@ -51,7 +51,8 @@ import com.example.showmethemoney.ui.screens.account.AccountContent
 fun TransactionScreen(
     viewModelFactory: ViewModelProvider.Factory,
     isIncome: Boolean,
-    navController: NavController
+    navController: NavController,
+    updateTopBar: (TopBarState) -> Unit
 ) {
     val viewModel: TransactionViewModel = viewModel(factory = viewModelFactory)
 
@@ -60,34 +61,30 @@ fun TransactionScreen(
         viewModel.loadTransactions(isIncome)
     }
 
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
+                title = if (isIncome) "Доходы сегодня" else "Расходы сегодня",
+                onActionClick = { navController.navigate(Screen.History.route) }
+            )
+        )
+    }
+
     val transactionState by viewModel.transactions.collectAsState()
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            AppTopBar(
-                title = if(isIncome) stringResource(R.string.incomes_today)
-                        else stringResource(R.string.expenses_today),
-                onActionIconClick = { navController.navigate(Screen.History.route) },
-                navController = navController
+    when (val state = transactionState) {
+        is ApiResult.Loading -> LoadingIndicator()
+        is ApiResult.Success -> TransactionList(state.data)
+        is ApiResult.Error -> ErrorView(state.error) {
+            viewModel.loadTransactions(
+                viewModel.isIncome.value,
+                viewModel.startDateForUI.value,
+                viewModel.endDateForUI.value
             )
-        }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (val state = transactionState) {
-                is ApiResult.Loading -> LoadingIndicator()
-                is ApiResult.Success -> TransactionList(state.data)
-                is ApiResult.Error -> ErrorView(state.error) {
-                    viewModel.loadTransactions(
-                        viewModel.isIncome.value,
-                        viewModel.startDateForUI.value,
-                        viewModel.endDateForUI.value
-                    )
-                }
-            }
         }
     }
 }
+
 
 
 

@@ -1,4 +1,5 @@
 package com.example.domain.model
+
 /**
  * Перечисление всех доступных настроек приложения с их метаданными.
  * Каждая настройка содержит:
@@ -48,7 +49,7 @@ enum class AppSetting(
         title = "О программе",
     );
 /**
- * Конвертирует enum-настройку в доменную модель [SettingsDomain].
+ * Конвертирует enum-настройку в доменную модель [com.example.domain.model.SettingsDomain].
  *
  * @return Новый объект SettingsDomain с теми же свойствами.
  */

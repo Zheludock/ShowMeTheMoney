@@ -23,3 +23,7 @@ rootProject.name = "ShowMeTheMoney"
 include(":app")
 include(":domain")
 include(":data")
+include(":feature")
+include(":feature:settings")
+include(":core")
+include(":core:ui")

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.showmethemoney.ui.screens.TopBarState
 import com.example.showmethemoney.ui.screens.account.AccountScreen
 import com.example.showmethemoney.ui.screens.category.CategoryScreen
 import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountScreen
@@ -25,19 +26,20 @@ import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
  */
 @Composable
 fun AppNavHost(navController: NavHostController,
-               viewModelFactory: ViewModelProvider.Factory) {
+               viewModelFactory: ViewModelProvider.Factory,
+               updateTopBar: (TopBarState) -> Unit) {
     NavHost(
         navController = navController,
         startDestination = Screen.Expenses.route
     ) {
         composable(Screen.Expenses.route) { TransactionScreen(viewModelFactory,
-            false, navController) }
+            false, navController, updateTopBar) }
         composable(Screen.Income.route) { TransactionScreen(viewModelFactory,
-            true, navController) }
-        composable(Screen.Category.route) { CategoryScreen(viewModelFactory) }
-        composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController) }
-        composable(Screen.Settings.route) { SettingsScreen() }
-        composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory) }
-        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController) }
+            true, navController, updateTopBar) }
+        composable(Screen.Category.route) { CategoryScreen(viewModelFactory, updateTopBar) }
+        composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController, updateTopBar) }
+        composable(Screen.Settings.route) { SettingsScreen(updateTopBar) }
+        composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory, updateTopBar) }
+        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController, updateTopBar) }
     }
 }

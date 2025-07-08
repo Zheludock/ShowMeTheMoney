@@ -14,8 +14,8 @@ data class SettingsDomain(
     val isSwitch: Boolean = false
 )
 /**
- * Дефолтный список всех настроек приложения, преобразованный из [AppSetting].
- * Порядок элементов соответствует порядку объявления в enum-классе [AppSetting].
+ * Дефолтный список всех настроек приложения, преобразованный из [com.example.settings.AppSetting].
+ * Порядок элементов соответствует порядку объявления в enum-классе [com.example.settings.AppSetting].
  */
 val listSettings = AppSetting.entries.map { it.toDomain() }
 

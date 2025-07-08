@@ -54,12 +54,14 @@ object StringFormatter {
 
     fun formatTotalAmount(transactions: List<TransactionItem>): String {
         val total = transactions.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }
-        val currency = transactions.firstOrNull()?.accountCurrency ?: "RUB"
+        val currency = transactions.firstOrNull()?.accountCurrency
+            ?: AccountManager.selectedAccountCurrency.value
         return formatAmount(total, currency)
     }
 
     fun formatTransactionTrail(item: TransactionItem): String {
-        val amountStr = formatAmount(item.amount.toDoubleOrNull() ?: 0.0, item.accountCurrency)
+        val amountStr = formatAmount(item.amount.toDoubleOrNull()
+            ?: 0.0, AccountManager.selectedAccountCurrency.value)
         val dateStr = item.createdAt.let { createdAt ->
             stringToDate(createdAt)?.let { date ->
                 "${formatDateForDisplay(formatDate(date))} ${formatTime(date)}"
