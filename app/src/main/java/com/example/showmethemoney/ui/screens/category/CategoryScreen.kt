@@ -14,11 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.R
-import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.ErrorView
 import com.example.showmethemoney.ui.components.LoadingIndicator
-import com.example.showmethemoney.ui.screens.account.AccountContent
+import com.example.showmethemoney.ui.screens.TopBarState
 
 /**
  * Экран отображения списка категорий с обработкой состояний загрузки.
@@ -31,29 +30,31 @@ import com.example.showmethemoney.ui.screens.account.AccountContent
  * - Error: Показывает ошибку с возможностью повтора
  */
 @Composable
-fun CategoryScreen(viewModelFactory: ViewModelProvider.Factory) {
+fun CategoryScreen(
+    viewModelFactory: ViewModelProvider.Factory,
+    updateTopBar: (TopBarState) -> Unit
+) {
 
     val viewModel: CategoryViewModel = viewModel(factory = viewModelFactory)
+
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
+                title = "Мои статьи"
+            )
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadCategories()
     }
     val categoriesState by viewModel.categories.collectAsState()
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            AppTopBar(title = stringResource(R.string.my_categories))
-        }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            when (val state = categoriesState) {
-                is ApiResult.Loading -> LoadingIndicator()
-                is ApiResult.Success -> CategoryList(state.data)
-                is ApiResult.Error -> ErrorView(state.error) {
-                    viewModel.loadCategories()
-                }
-            }
+    when (val state = categoriesState) {
+        is ApiResult.Loading -> LoadingIndicator()
+        is ApiResult.Success -> CategoryList(state.data)
+        is ApiResult.Error -> ErrorView(state.error) {
+            viewModel.loadCategories()
         }
     }
 }

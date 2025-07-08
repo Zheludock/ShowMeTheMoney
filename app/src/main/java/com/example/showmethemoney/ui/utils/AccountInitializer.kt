@@ -3,6 +3,7 @@ package com.example.showmethemoney.ui.utils
 import android.content.Context
 import android.util.Log
 import com.example.domain.response.ApiResult
+import com.example.domain.usecase.GetAccountDetailsUseCase
 import com.example.domain.usecase.GetAccountsUseCase
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -31,6 +32,7 @@ import javax.inject.Inject
  */
 class AccountInitializer @Inject constructor(
     private val getAccountsUseCase: GetAccountsUseCase,
+    private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
     private val context: Context
 ) {
     private val sharedPreferences by lazy {
@@ -44,25 +46,28 @@ class AccountInitializer @Inject constructor(
     suspend fun initialize() {
         try {
             val savedAccountId = sharedPreferences.getString("account_id", null)?.toInt()
-            val savedAccountName = sharedPreferences.getString("account_name", null)
-            val savedAccountCurrency = sharedPreferences.getString("account_currency", null)
 
-            if (savedAccountId != null && savedAccountName != null && savedAccountCurrency != null) {
-                AccountManager.selectedAccountId = savedAccountId
-                AccountManager.updateAcc(savedAccountCurrency, savedAccountName)
-                Log.d("Shared preference is OK","used shared preference")
-                return
+            if (savedAccountId != null) {
+                val detailsResult = getAccountDetailsUseCase.execute(savedAccountId)
+                if (detailsResult is ApiResult.Success) {
+                    val account = detailsResult.data
+                    AccountManager.selectedAccountId = account.id
+                    AccountManager.updateAcc(account.currency, account.name)
+                    Log.d("AccountInitializer", "Account details loaded from backend")
+                    return
+                }
+                sharedPreferences.edit().remove("account_id").apply()
+                Log.d("AccountInitializer", "Failed to get account details, clearing saved ID")
             }
-            Log.d("No shared preference", "init shared preference")
 
-            val result = getAccountsUseCase.execute()
-            if (result is ApiResult.Success && result.data.isNotEmpty()) {
-                val account = result.data.first()
+            Log.d("AccountInitializer", "No saved account ID, fetching accounts list")
+
+            val accountsResult = getAccountsUseCase.execute()
+            if (accountsResult is ApiResult.Success && accountsResult.data.isNotEmpty()) {
+                val account = accountsResult.data.first()
 
                 with(sharedPreferences.edit()) {
                     putString("account_id", account.id.toString())
-                    putString("account_name", account.name)
-                    putString("account_currency", account.currency)
                     apply()
                 }
 

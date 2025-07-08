@@ -9,7 +9,7 @@ package com.example.showmethemoney.navigation
  * @property route Уникальный идентификатор маршрута (используется в навигации)
  */
 sealed class Screen(
-    val route: String,
+    val route: String
 ) {
     object Expenses : Screen("expenses")
     object Income : Screen("income")

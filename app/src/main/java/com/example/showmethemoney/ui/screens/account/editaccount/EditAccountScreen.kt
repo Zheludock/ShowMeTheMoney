@@ -15,6 +15,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,11 +33,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.showmethemoney.R
+import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.components.UniversalListItem
+import com.example.showmethemoney.ui.screens.TopBarState
 import com.example.showmethemoney.ui.screens.account.AccountDetailsItem
 import com.example.showmethemoney.ui.theme.DividerGray
+import com.example.showmethemoney.ui.utils.AccountManager
 import com.example.showmethemoney.ui.utils.StringFormatter
+
 /**
  * Экран редактирования данных аккаунта.
  *
@@ -62,7 +67,8 @@ import com.example.showmethemoney.ui.utils.StringFormatter
 @Composable
 fun EditAccountScreen(
     viewModelFactory: ViewModelProvider.Factory,
-    navController: NavController
+    navController: NavController,
+    updateTopBar: (TopBarState) -> Unit
 ) {
     val viewModel: EditAccountViewModel = viewModel(factory = viewModelFactory)
 
@@ -78,6 +84,29 @@ fun EditAccountScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val errorMessage = stringResource(R.string.niumber_error_message)
+
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
+                title = "Редактирование счета",
+                onActionClick = {
+                    if (!viewModel.isValidBalance(accountBalance)) {
+                        showBalanceErrorSnackbar = true
+                    } else {
+                        val balance = accountBalance
+                            .replace(",", ".")
+                            .toBigDecimal()
+                        viewModel.updateAccount(
+                            accountName,
+                            currentCurrency,
+                            balance.toString()
+                        )
+                        navController.popBackStack()
+                    }
+                }
+            )
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadAccountDetails()
@@ -102,90 +131,74 @@ fun EditAccountScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .offset(y = (-200).dp)
-            )
-        },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            AppTopBar(
-                title = stringResource(R.string.edit_account),
-                onActionIconClick = {
-                    if (!viewModel.isValidBalance(accountBalance)) {
-                        showBalanceErrorSnackbar = true
-                    } else {
-                        val balance = accountBalance.replace(",", ".").toBigDecimal()
-                        viewModel.updateAccount(accountName, currentCurrency, balance.toString())
-                        navController.popBackStack()
-                    }
-                },
-                navController = navController
-            )
-        }
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            LazyColumn {
-                item {
-                    UniversalListItem(
-                        lead = "\uD83D\uDCB8",
-                        content = stringResource(R.string.account_name) to null,
-                        trail = null to {
-                            UpdateAccountTextField(
-                                value = accountName,
-                                onValueChange = { accountName = it }
-                            )
-                        },
-                        modifier = Modifier.height(56.dp),
-                    )
-                }
-                item {
-                    UniversalListItem(
-                        lead = "💰",
-                        content = stringResource(R.string.balance) to null,
-                        trail = null to {
-                            UpdateAccountTextField(
-                                value = accountBalance,
-                                onValueChange = { accountBalance = it },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
-                        },
-                        modifier = Modifier.height(56.dp),
-                    )
-                }
-                item {
-                    UniversalListItem(
-                        content = stringResource(R.string.currency) to null,
-                        trail = StringFormatter.getCurrencySymbol(currentCurrency) to {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_more_vert),
-                                contentDescription = stringResource(R.string.more),
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        modifier = Modifier.height(56.dp),
-                        onClick = { showChangeCurrencyModal = true }
-                    )
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        color = DividerGray,
-                        modifier = Modifier.zIndex(1f)
-                    )
-                }
-            }
 
-            if (showChangeCurrencyModal) {
-                ChangeCurrencyModal(
-                    onDismissRequest = { showChangeCurrencyModal = false },
-                    onElementSelected = { currency ->
-                        currentCurrency = currency
-                        showChangeCurrencyModal = false
-                    }
-                )
-            }
+    DisposableEffect(Unit) {
+        onDispose {
+            updateTopBar(
+                TopBarState(
+                    title = AccountManager.selectedAccountName.value,
+                    onActionClick = { navController.navigate(Screen.EditAccount.route) })
+            )
         }
+    }
+
+
+    LazyColumn {
+        item {
+            UniversalListItem(
+                lead = "\uD83D\uDCB8",
+                content = stringResource(R.string.account_name) to null,
+                trail = null to {
+                    UpdateAccountTextField(
+                        value = accountName,
+                        onValueChange = { accountName = it }
+                    )
+                },
+                modifier = Modifier.height(56.dp),
+            )
+        }
+        item {
+            UniversalListItem(
+                lead = "💰",
+                content = stringResource(R.string.balance) to null,
+                trail = null to {
+                    UpdateAccountTextField(
+                        value = accountBalance,
+                        onValueChange = { accountBalance = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+                },
+                modifier = Modifier.height(56.dp),
+            )
+        }
+        item {
+            UniversalListItem(
+                content = stringResource(R.string.currency) to null,
+                trail = StringFormatter.getCurrencySymbol(currentCurrency) to {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_more_vert),
+                        contentDescription = stringResource(R.string.more),
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                modifier = Modifier.height(56.dp),
+                onClick = { showChangeCurrencyModal = true }
+            )
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = DividerGray,
+                modifier = Modifier.zIndex(1f)
+            )
+        }
+    }
+
+    if (showChangeCurrencyModal) {
+        ChangeCurrencyModal(
+            onDismissRequest = { showChangeCurrencyModal = false },
+            onElementSelected = { currency ->
+                currentCurrency = currency
+                showChangeCurrencyModal = false
+            }
+        )
     }
 }

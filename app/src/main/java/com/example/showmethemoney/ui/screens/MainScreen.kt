@@ -20,8 +20,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
@@ -73,6 +75,8 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
 
     val viewModel: NetworkAwareViewModel = viewModel(factory = viewModelFactory)
 
+    var topBarState by remember { mutableStateOf(TopBarState(title = "Расходы сегодня")) }
+
     val isOnline by viewModel.isOnline.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -88,7 +92,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
     val showFab = currentNavItem?.showFab ?: false
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = { AppTopBar(navController, topBarState = topBarState) },
         bottomBar = {
             AppBottomNavigation(
                 navItems = BottomNavItems.items,
@@ -137,7 +141,9 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         Box(modifier = Modifier
             .padding(padding)
             .fillMaxSize()) {
-            AppNavHost(navController = navController, viewModelFactory = viewModelFactory)
+            AppNavHost(updateTopBar = { newState ->
+                topBarState = newState
+            }, navController = navController, viewModelFactory = viewModelFactory)
         }
         val message = stringResource(R.string.no_internet_connection)
         LaunchedEffect(isOnline) {
@@ -156,3 +162,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         }
     }
 }
+data class TopBarState(
+    val title: String,
+    val onActionClick: (() -> Unit)? = null
+)
