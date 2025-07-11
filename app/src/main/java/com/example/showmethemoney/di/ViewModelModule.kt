@@ -23,5 +23,6 @@ interface ViewModelModule {
      * @return Интерфейс фабрики для использования в Android компонентах
      */
     @Binds
+    @ActivityScope
     fun bindViewModelFactory(factory: DaggerViewModelFactory): ViewModelProvider.Factory
 }

@@ -40,6 +40,14 @@ android {
 }
 
 dependencies {
+    api(project(":feature:settings"))
+    api(project(":domain"))
+    api(project(":feature:category"))
+    api(project(":feature:account"))
+    api(project(":feature:transactions"))
+    implementation(project(":data"))
+    implementation(project(":core:ui"))
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -59,10 +67,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    api(project(":domain"))
     implementation (libs.dagger)
     ksp(libs.dagger.compiler)
-    implementation(project(":data"))
     implementation(libs.converter.gson)
     implementation(libs.gson)
 }

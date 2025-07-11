@@ -48,14 +48,14 @@ class TransactionRepositoryImpl @Inject constructor(
      */
     override suspend fun createTransaction(
         accountId: Int,
-        categoryId: String,
+        categoryId: Int,
         amount: String,
         transactionDate: String,
         comment: String?
     ): ApiResult<TransactionDomain> {
         val request = CreateTransactionRequest(
             accountId = accountId,
-            categoryId = categoryId.toInt(),
+            categoryId = categoryId,
             amount = amount,
             transactionDate = transactionDate,
             comment = comment

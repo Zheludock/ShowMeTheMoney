@@ -19,7 +19,7 @@ import javax.inject.Inject
 class GetAccountHistoryUseCase @Inject constructor(
     private val repository: AccountRepository
 ){
-    suspend fun execute(accountId: String): ApiResult<AccountHistoryDomain> {
-        return repository.getAccountHistory(accountId = accountId.toInt())
+    suspend fun execute(accountId: Int): ApiResult<AccountHistoryDomain> {
+        return repository.getAccountHistory(accountId = accountId)
     }
 }

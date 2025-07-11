@@ -41,35 +41,36 @@ import com.example.showmethemoney.ui.components.AppBottomNavigation
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
+import com.example.ui.TopBarState
 import kotlinx.coroutines.launch
 
 /**
-* Этот экран содержит:
-* - Scaffold с TopBar, BottomNavigation и FloatingActionButton
-* - Навигацию между экранами через NavController
-* - Отслеживание состояния сети (онлайн/оффлайн)
-* - Отображение снекбара при отсутствии интернета
-*
-* @param viewModelFactory Фабрика для создания [NetworkAwareViewModel], которая должна содержать
-* необходимые зависимости для работы ViewModel (включая мониторинг сети)
-*
-* Структура экрана:
-* 1. [AppTopBar] - верхняя панель с заголовком и кнопками действий
-* 2. [AppBottomNavigation] - нижняя навигационная панель
-* 3. [FloatingActionButton] - кнопка добавления (отображается только на определенных экранах)
-* 4. [AppNavHost] - контейнер для навигации между экранами
-* 5. Snackbar - уведомление о статусе сети
-*
-* Особенности:
-* - Автоматически показывает/скрывает снекбар при изменении состояния сети
-* - FAB отображается только на экранах, где [BottomNavItem.showFab] = true
-* - Поддерживает "чистую" навигацию (singleTop, restoreState)
-* - Динамически изменяет заголовок и действия в TopBar в зависимости от текущего экрана
-*
-* Состояния:
-* - При отсутствии интернета показывает снекбар с предупреждением
-* - При восстановлении соединения автоматически скрывает снекбар
-*/
+ * Этот экран содержит:
+ * - Scaffold с TopBar, BottomNavigation и FloatingActionButton
+ * - Навигацию между экранами через NavController
+ * - Отслеживание состояния сети (онлайн/оффлайн)
+ * - Отображение снекбара при отсутствии интернета
+ *
+ * @param viewModelFactory Фабрика для создания [NetworkAwareViewModel], которая должна содержать
+ * необходимые зависимости для работы ViewModel (включая мониторинг сети)
+ *
+ * Структура экрана:
+ * 1. [AppTopBar] - верхняя панель с заголовком и кнопками действий
+ * 2. [AppBottomNavigation] - нижняя навигационная панель
+ * 3. [FloatingActionButton] - кнопка добавления (отображается только на определенных экранах)
+ * 4. [AppNavHost] - контейнер для навигации между экранами
+ * 5. Snackbar - уведомление о статусе сети
+ *
+ * Особенности:
+ * - Автоматически показывает/скрывает снекбар при изменении состояния сети
+ * - FAB отображается только на экранах, где [BottomNavItem.showFab] = true
+ * - Поддерживает "чистую" навигацию (singleTop, restoreState)
+ * - Динамически изменяет заголовок и действия в TopBar в зависимости от текущего экрана
+ *
+ * Состояния:
+ * - При отсутствии интернета показывает снекбар с предупреждением
+ * - При восстановлении соединения автоматически скрывает снекбар
+ */
 @Composable
 fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
 
@@ -111,13 +112,17 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         floatingActionButton = {
             if (showFab) {
                 FloatingActionButton(
-                    onClick = { when (currentRoute) { // Не жми, а то пойдешь в Runtime
-                        Screen.Expenses.route -> navController
-                            .navigate(Screen.AddExpense.route)
-                        Screen.Income.route -> navController
-                            .navigate(Screen.AddExpense.route)
-                        else -> {}
-                    } },
+                    onClick = {
+                        when (currentRoute) {
+                            Screen.Expenses.route -> navController
+                                .navigate(Screen.AddExpense.route)
+
+                            Screen.Income.route -> navController
+                                .navigate(Screen.AddIncome.route)
+
+                            else -> {}
+                        }
+                    },
                     modifier = Modifier
                         .shadow(8.dp, CircleShape)
                         .size(56.dp),
@@ -138,9 +143,11 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
-        Box(modifier = Modifier
-            .padding(padding)
-            .fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
             AppNavHost(updateTopBar = { newState ->
                 topBarState = newState
             }, navController = navController, viewModelFactory = viewModelFactory)
@@ -162,7 +169,3 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         }
     }
 }
-data class TopBarState(
-    val title: String,
-    val onActionClick: (() -> Unit)? = null
-)

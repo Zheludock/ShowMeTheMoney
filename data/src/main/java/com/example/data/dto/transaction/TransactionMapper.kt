@@ -12,9 +12,10 @@ import com.example.domain.model.TransactionDomain
  */
 fun TransactionResponse.toDomain(): TransactionDomain {
     return TransactionDomain(
-        id = id.toString(),
+        id = id,
         emoji = category.emoji,
         categoryName = category.name,
+        categoryId = category.id,
         amount = amount,
         transactionDate = transactionDate,
         comment = comment,

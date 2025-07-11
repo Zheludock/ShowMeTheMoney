@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.domain.response.ApiResult
 import com.example.domain.usecase.GetAccountDetailsUseCase
 import com.example.domain.usecase.GetAccountsUseCase
+import com.example.ui.AccountManager
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 /**
@@ -12,7 +13,7 @@ import javax.inject.Inject
  *
  * ## Основная ответственность:
  * - Загрузка списка аккаунтов через [GetAccountsUseCase]
- * - Установка первого доступного аккаунта как выбранного в [AccountManager]
+ * - Установка первого доступного аккаунта как выбранного в [com.example.ui.AccountManager]
  * - Обработка и логирование ошибок инициализации
  *
  * ## Пример использования:

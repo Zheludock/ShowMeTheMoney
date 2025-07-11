@@ -11,7 +11,7 @@ package com.example.domain.model
  *                   - false: категория расходов (еда, транспорт)
  */
 data class CategoryDomain(
-    val categoryId: String,
+    val categoryId: Int,
     val categoryName: String,
     val emoji: String,
     val isIncome: Boolean,

@@ -20,10 +20,10 @@ class GetTransactionsUseCase @Inject constructor(
     private val repository: TransactionRepository
 ) {
     suspend fun execute(
-        accountId: String,
+        accountId: Int,
         startDate: String,
         endDate: String
     ): ApiResult<List<TransactionDomain>> {
-        return repository.getTransactions(accountId.toInt(), startDate, endDate)
+        return repository.getTransactions(accountId, startDate, endDate)
     }
 }

@@ -3,15 +3,18 @@ package com.example.showmethemoney.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.showmethemoney.ui.screens.TopBarState
-import com.example.showmethemoney.ui.screens.account.AccountScreen
-import com.example.showmethemoney.ui.screens.category.CategoryScreen
-import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountScreen
-import com.example.showmethemoney.ui.screens.settings.SettingsScreen
-import com.example.showmethemoney.ui.screens.transactions.transactionhistory.TransactionHistoryScreen
-import com.example.showmethemoney.ui.screens.transactions.TransactionScreen
+import androidx.navigation.navArgument
+import com.example.account.AccountScreen
+import com.example.account.editaccount.EditAccountScreen
+import com.example.category.CategoryScreen
+import com.example.settings.SettingsScreen
+import com.example.transactions.addtransaction.AddTransactionScreen
+import com.example.transactions.TransactionScreen
+import com.example.transactions.transactionhistory.TransactionHistoryScreen
+import com.example.ui.TopBarState
 
 /**
  * Главный компонент навигации приложения.
@@ -41,5 +44,29 @@ fun AppNavHost(navController: NavHostController,
         composable(Screen.Settings.route) { SettingsScreen(updateTopBar) }
         composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory, updateTopBar) }
         composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController, updateTopBar) }
+        composable(
+            route = "add_expense?transactionId={transactionId}",
+            arguments = listOf(
+                navArgument("transactionId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val transactionId = backStackEntry.arguments?.getString("transactionId")
+            AddTransactionScreen(viewModelFactory, navController, updateTopBar, transactionId?.toInt())}
+        composable(
+            route = "add_income?transactionId={transactionId}",
+            arguments = listOf(
+                navArgument("transactionId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val transactionId = backStackEntry.arguments?.getString("transactionId")
+            AddTransactionScreen(viewModelFactory, navController, updateTopBar, transactionId?.toInt())}
     }
 }

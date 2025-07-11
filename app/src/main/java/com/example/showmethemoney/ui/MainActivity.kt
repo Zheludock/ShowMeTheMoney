@@ -7,10 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.showmethemoney.ShowMeTheMoneyApp
@@ -20,10 +16,8 @@ import com.example.showmethemoney.ui.theme.BackgroundMainColor
 import com.example.showmethemoney.ui.theme.ShowMeTheMoneyTheme
 import com.example.showmethemoney.ui.utils.AccountInitializer
 import com.example.showmethemoney.ui.utils.UiConfigurator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 /**
  * Главная Activity приложения, отвечающая за:
  * - Инициализацию и настройку основных компонентов
@@ -56,7 +50,15 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var uiConfigurator: UiConfigurator
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as ShowMeTheMoneyApp).appComponent.inject(this)
+        val repositoryComponent = DaggerRepositoryComponent.factory()
+            .create((application as ShowMeTheMoneyApp).coreComponent)
+
+        val viewModelComponent = DaggerViewModelComponent.factory()
+            .create(repositoryComponent)
+
+        viewModelComponent.inject(this)
+
+
         super.onCreate(savedInstanceState)
 
         uiConfigurator.configure(this)

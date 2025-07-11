@@ -17,7 +17,7 @@ sealed class Screen(
     object Category : Screen("category")
     object Settings : Screen("settings")
     object History : Screen("history")
-    object AddExpense : Screen("add_expense")
+    object AddExpense : Screen("add_expense?transactionId={transactionId}")
     object AddIncome : Screen("add_income")
     object EditAccount : Screen("edit_account")
 }

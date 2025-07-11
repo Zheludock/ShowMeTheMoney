@@ -1,12 +1,12 @@
 package com.example.showmethemoney.di
 
 import androidx.lifecycle.ViewModel
+import com.example.account.AccountViewModel
+import com.example.account.editaccount.EditAccountViewModel
 import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
-import com.example.showmethemoney.ui.screens.account.AccountViewModel
-import com.example.showmethemoney.ui.screens.category.CategoryViewModel
-import com.example.showmethemoney.ui.screens.transactions.TransactionViewModel
-//import com.example.showmethemoney.ui.screens.transactions.addtransaction.AddTransactionViewModel
-import com.example.showmethemoney.ui.screens.account.editaccount.EditAccountViewModel
+import com.example.category.CategoryViewModel
+import com.example.transactions.TransactionViewModel
+import com.example.transactions.addtransaction.AddTransactionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -30,31 +30,37 @@ abstract class ViewModelBindingModule {
      * Далее - аналогично.
      */
     @Binds
+    @ActivityScope
     @IntoMap
     @ViewModelKey(TransactionViewModel::class)
     abstract fun bindExpensesViewModel(viewModel: TransactionViewModel): ViewModel
 
     @Binds
+    @ActivityScope
     @IntoMap
     @ViewModelKey(CategoryViewModel::class)
     abstract fun bindCategoryViewModel(viewModel: CategoryViewModel): ViewModel
 
     @Binds
+    @ActivityScope
     @IntoMap
     @ViewModelKey(AccountViewModel::class)
     abstract fun bindAccountViewModel(viewModel: AccountViewModel): ViewModel
 
     @Binds
+    @ActivityScope
     @IntoMap
     @ViewModelKey(NetworkAwareViewModel::class)
     abstract fun bindNetworkAwareViewModel(viewModel: NetworkAwareViewModel): ViewModel
 
-    /*@Binds
+    @Binds
+    @ActivityScope
     @IntoMap
     @ViewModelKey(AddTransactionViewModel::class)
-    abstract fun bindAddTransactionViewModel(viewModel: AddTransactionViewModel): ViewModel*/
+    abstract fun bindAddTransactionViewModel(viewModel: AddTransactionViewModel): ViewModel
 
     @Binds
+    @ActivityScope
     @IntoMap
     @ViewModelKey(EditAccountViewModel::class)
     abstract fun bindEditAccountViewModel(viewModel: EditAccountViewModel): ViewModel

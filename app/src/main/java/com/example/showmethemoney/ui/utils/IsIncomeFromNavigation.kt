@@ -14,10 +14,3 @@ import com.example.showmethemoney.navigation.Screen
  * @sample Пример использования:
  * val isIncome = IsIncomeFromNavigation(navController.currentBackStackEntry?.destination?.route)
  */
-@Composable
-fun IsIncomeFromNavigation(route: String?): Boolean {
-    return when (route) {
-            Screen.Income.route -> true
-            else -> false
-        }
-}

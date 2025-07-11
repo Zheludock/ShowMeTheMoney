@@ -1,21 +1,21 @@
 package com.example.showmethemoney
 
 import android.app.Application
-import com.example.showmethemoney.di.AppComponent
 import com.example.showmethemoney.di.AppModule
-import com.example.showmethemoney.di.DaggerAppComponent
+import com.example.showmethemoney.di.CoreComponent
+import com.example.showmethemoney.di.DaggerCoreComponent
+
 /**
  * Главный класс приложения, инициализирующий [appComponent] для внедрения зависимостей.
  */
 class ShowMeTheMoneyApp : Application() {
-
-    lateinit var appComponent: AppComponent
+    lateinit var coreComponent: CoreComponent
         private set
 
     override fun onCreate() {
         super.onCreate()
 
-        appComponent = DaggerAppComponent.factory()
-            .create(application = this, appModule = AppModule())
+        coreComponent = DaggerCoreComponent.factory()
+            .create(this, AppModule())
     }
 }

@@ -12,8 +12,8 @@ package com.example.domain.model
  * @property createdAt Времення создания записи
  */
 data class AccountHistoryItemDomain(
-    val id: String,
-    val accountId: String,
+    val id: Int,
+    val accountId: Int,
     val changeType: String,
     val previousState: AccountDomain?,
     val newState: AccountDomain,

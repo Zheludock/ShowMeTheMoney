@@ -1,10 +1,10 @@
 package com.example.data.di
 
 import com.example.data.retrofit.AccountApiService
-import com.example.data.retrofit.repository.AccountRepositoryImpl
 import com.example.data.retrofit.CategoriesApiService
-import com.example.data.retrofit.repository.CategoriesRepositoryImpl
 import com.example.data.retrofit.TransactionApiService
+import com.example.data.retrofit.repository.AccountRepositoryImpl
+import com.example.data.retrofit.repository.CategoriesRepositoryImpl
 import com.example.data.retrofit.repository.TransactionRepositoryImpl
 import com.example.data.safecaller.ApiCallHelper
 import com.example.domain.repository.AccountRepository
@@ -12,7 +12,7 @@ import com.example.domain.repository.CategoriesRepository
 import com.example.domain.repository.TransactionRepository
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
+
 /**
  * Dagger-модуль для предоставления репозиториев.
  * Содержит зависимости для:
@@ -27,7 +27,7 @@ import javax.inject.Singleton
 object RepositoryModule {
 
     @Provides
-    @Singleton
+    @FeatureScope
     fun provideAccountRepository(
         apiService: AccountApiService,
         apiCallHelper: ApiCallHelper
@@ -36,7 +36,7 @@ object RepositoryModule {
     }
 
     @Provides
-    @Singleton
+    @FeatureScope
     fun provideCategoriesRepository(
         apiService: CategoriesApiService,
         apiCallHelper: ApiCallHelper
@@ -45,7 +45,7 @@ object RepositoryModule {
     }
 
     @Provides
-    @Singleton
+    @FeatureScope
     fun provideTransactionRepository(
         apiService: TransactionApiService,
         apiCallHelper: ApiCallHelper

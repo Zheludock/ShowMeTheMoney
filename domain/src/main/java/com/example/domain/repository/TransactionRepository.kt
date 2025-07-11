@@ -27,7 +27,7 @@ interface TransactionRepository {
      */
     suspend fun createTransaction(
         accountId: Int,
-        categoryId: String,
+        categoryId: Int,
         amount: String,
         transactionDate: String,
         comment: String? = null
