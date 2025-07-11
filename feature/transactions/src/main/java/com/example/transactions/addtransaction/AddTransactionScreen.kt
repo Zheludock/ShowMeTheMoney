@@ -1,5 +1,6 @@
 package com.example.transactions.addtransaction
 
+import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -27,8 +29,10 @@ import com.example.domain.response.ApiResult
 import com.example.ui.CustomDatePickerDialog
 import com.example.utils.TopBarState
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +55,11 @@ fun AddTransactionScreen(
     val currentTransaction by viewModel.currentTransaction.collectAsState()
 
     var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        .apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
 
     LaunchedEffect(isIncome) {
         viewModel.updateIsIncome(isIncome)
@@ -129,11 +138,12 @@ fun AddTransactionScreen(
         }
     }
 
-    val currentDate = remember {
-        if (uiState.transactionDate.isNotEmpty()) {
-            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                .parse(uiState.transactionDate) ?: Date()
-        } else {
+    val currentDate = remember(uiState.transactionDate) {
+        try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            dateFormat.parse(uiState.transactionDate) ?: Date()
+        } catch (e: Exception) {
             Date()
         }
     }
@@ -160,6 +170,30 @@ fun AddTransactionScreen(
                 showDatePicker = false
             }
         )
+    }
+
+    if (showTimePicker) {
+        val calendar = Calendar.getInstance().apply {
+            time = currentDate
+        }
+
+        TimePickerDialog(
+            LocalContext.current,
+            { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+
+                val updatedDate = dateFormat.format(calendar.time)
+                viewModel.updateTransactionDate(updatedDate)
+
+                showTimePicker = false
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        ).show()
     }
 
     if (showCategoryDialog) {
@@ -196,6 +230,7 @@ fun AddTransactionScreen(
         onCategoryClick = { viewModel.showCategoryDialog(true) },
         onAmountChange = viewModel::updateAmount,
         onDateClick = { showDatePicker = true },
+        onTimeClick = { showTimePicker = true },
         onCommentChange = viewModel::updateComment,
         onDeleteClick = {
             if (currentTransactionId != null)

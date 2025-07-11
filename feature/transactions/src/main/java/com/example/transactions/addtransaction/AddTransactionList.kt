@@ -1,6 +1,5 @@
 package com.example.transactions.addtransaction
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +31,7 @@ fun AddTransactionList(
     onCategoryClick: () -> Unit,
     onAmountChange: (String) -> Unit,
     onDateClick: () -> Unit,
+    onTimeClick: () -> Unit,
     onCommentChange: (String) -> Unit,
     onDeleteClick: () -> Unit,
     currentTransactionId: Int?
@@ -87,7 +87,8 @@ fun AddTransactionList(
             item {
                 UniversalListItem(
                     content = "Время" to null,
-                    trail = state.getFormattedTime() to null
+                    trail = state.getFormattedTime() to null,
+                    onClick = onTimeClick
                 )
             }
             item {

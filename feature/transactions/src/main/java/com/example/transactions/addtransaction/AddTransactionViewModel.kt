@@ -161,7 +161,7 @@ class AddTransactionViewModel @Inject constructor(
         onComplete: () -> Unit
     ) {
         viewModelScope.launch {
-            updateTransactionUseCase.execute(
+            val result = updateTransactionUseCase.execute(
                 id = id,
                 accountId = AccountManager.selectedAccountId,
                 categoryId = categoryId,
@@ -169,7 +169,11 @@ class AddTransactionViewModel @Inject constructor(
                 date = date,
                 comment = comment
             )
-            onComplete()
+            if (result is ApiResult.Success) {
+                onComplete()
+            } else {
+                Log.e("AddTransaction", "Failed to update Transaction")
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
 import com.example.domain.repository.TransactionRepository
 import javax.inject.Inject
+
 /**
  * Реализация [TransactionRepository] для работы с транзакциями через сетевой API.
  * Обрабатывает все операции с транзакциями и преобразует данные между доменной моделью и API.
@@ -33,10 +34,12 @@ class TransactionRepositoryImpl @Inject constructor(
         startDate: String?,
         endDate: String?
     ): ApiResult<List<TransactionDomain>> {
-        return apiCallHelper.safeApiCall(block =
-            {apiService.getTransactions(accountId, startDate, endDate).map { it.toDomain() }}
+        return apiCallHelper.safeApiCall(
+            block =
+                { apiService.getTransactions(accountId, startDate, endDate).map { it.toDomain() } }
         )
     }
+
     /**
      * Создает новую транзакцию.
      * @param accountId Идентификатор аккаунта
@@ -64,6 +67,7 @@ class TransactionRepositoryImpl @Inject constructor(
             apiService.createTransaction(request).toDomain()
         })
     }
+
     /**
      * Получает детали конкретной транзакции.
      * @param transactionId Идентификатор транзакции
@@ -74,6 +78,7 @@ class TransactionRepositoryImpl @Inject constructor(
             apiService.getTransactionDetails(transactionId).toDomain()
         })
     }
+
     /**
      * Обновляет существующую транзакцию.
      * @param transactionInput Данные для обновления транзакции
@@ -91,6 +96,7 @@ class TransactionRepositoryImpl @Inject constructor(
             apiService.updateTransaction(transactionInput.transactionId, request).toDomain()
         })
     }
+
     /**
      * Удаляет транзакцию.
      * @param transactionId Идентификатор транзакции
