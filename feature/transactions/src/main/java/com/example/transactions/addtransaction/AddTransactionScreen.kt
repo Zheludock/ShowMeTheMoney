@@ -8,6 +8,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,7 +24,11 @@ import androidx.navigation.NavController
 import com.example.domain.model.CategoryDomain
 import com.example.domain.model.TransactionDomain
 import com.example.domain.response.ApiResult
-import com.example.ui.TopBarState
+import com.example.ui.CustomDatePickerDialog
+import com.example.utils.TopBarState
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,10 +73,11 @@ fun AddTransactionScreen(
         }
     }
 
-    val safeCurrentTransaction: TransactionDomain? = when (currentTransaction){
+    val safeCurrentTransaction: TransactionDomain? = when (currentTransaction) {
         is ApiResult.Success -> (currentTransaction as ApiResult.Success<TransactionDomain>).data
         else -> null
     }
+
 
     LaunchedEffect(Unit) {
         updateTopBar(
@@ -84,15 +90,18 @@ fun AddTransactionScreen(
                         amount = uiState.amount,
                         date = uiState.transactionDate,
                         comment = uiState.comment
-                    )
+                    ) {
+                        navController.popBackStack()
+                    }
                     else viewModel.createTransaction(
                         accountId = uiState.selectedAccountId,
                         categoryId = uiState.selectedCategoryId,
                         amount = uiState.amount,
                         transactionDate = uiState.transactionDate,
                         comment = uiState.comment
-                    )
-                    navController.popBackStack()
+                    ) {
+                        navController.popBackStack()
+                    }
                 }
             )
         )
@@ -118,6 +127,39 @@ fun AddTransactionScreen(
                 )
             }
         }
+    }
+
+    val currentDate = remember {
+        if (uiState.transactionDate.isNotEmpty()) {
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                .parse(uiState.transactionDate) ?: Date()
+        } else {
+            Date()
+        }
+    }
+
+    if (showDatePicker) {
+        CustomDatePickerDialog(
+            initialDate = currentDate,
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    return utcTimeMillis <= currentDate.time
+                }
+            },
+            onClear = {
+                viewModel.updateTransactionDate("")
+                showDatePicker = false
+            },
+            onCancel = {
+                showDatePicker = false
+            },
+            onConfirm = { date ->
+                val dateFormat =
+                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                viewModel.updateTransactionDate(dateFormat.format(date))
+                showDatePicker = false
+            }
+        )
     }
 
     if (showCategoryDialog) {
@@ -157,8 +199,9 @@ fun AddTransactionScreen(
         onCommentChange = viewModel::updateComment,
         onDeleteClick = {
             if (currentTransactionId != null)
-                viewModel.deleteTransaction(currentTransactionId)
-            navController.popBackStack()
+                viewModel.deleteTransaction(currentTransactionId) {
+                    navController.popBackStack()
+                }
         },
         currentTransactionId = currentTransactionId
     )

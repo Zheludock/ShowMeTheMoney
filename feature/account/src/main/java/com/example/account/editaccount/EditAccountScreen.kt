@@ -27,12 +27,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.account.AccountDetailsItem
 import com.example.domain.response.ApiResult
-import com.example.ui.AccountManager
 import com.example.ui.R
-import com.example.ui.StringFormatter
-import com.example.ui.TopBarState
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.DividerGray
+import com.example.utils.AccountManager
+import com.example.utils.StringFormatter
+import com.example.utils.TopBarState
 
 /**
  * Экран редактирования данных аккаунта.

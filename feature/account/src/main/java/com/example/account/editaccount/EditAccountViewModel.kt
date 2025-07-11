@@ -6,9 +6,9 @@ import com.example.account.AccountDetailsItem
 import com.example.domain.model.AccountDetailsDomain
 import com.example.domain.model.AccountDomain
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.GetAccountDetailsUseCase
-import com.example.domain.usecase.UpdateAccountUseCase
-import com.example.ui.AccountManager
+import com.example.domain.usecase.account.GetAccountDetailsUseCase
+import com.example.domain.usecase.account.UpdateAccountUseCase
+import com.example.utils.AccountManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

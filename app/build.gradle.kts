@@ -45,6 +45,7 @@ dependencies {
     api(project(":feature:category"))
     api(project(":feature:account"))
     api(project(":feature:transactions"))
+    implementation(project(":core:utils"))
     implementation(project(":data"))
     implementation(project(":core:ui"))
 

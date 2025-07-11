@@ -15,15 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.transactions.TransactionItem
-import com.example.ui.AccountManager
-import com.example.ui.DateUtils.formatDate
-import com.example.ui.DateUtils.formatDateForDisplay
-import com.example.ui.DateUtils.formatTime
-import com.example.ui.DateUtils.stringToDate
 import com.example.ui.R
-import com.example.ui.StringFormatter.formatAmount
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.Indicator
+import com.example.utils.AccountManager
+import com.example.utils.DateUtils
+import com.example.utils.StringFormatter
 
 /**
  * Компонент для отображения истории транзакций с возможностью выбора периода и подсчётом суммы.
@@ -47,7 +44,7 @@ import com.example.ui.theme.Indicator
  * - Названием категории и комментарием(опционально) в основном содержимом
  * - Отформатированной суммой и кнопкой действий справа
  * - Даты и общая сумма имеют особый стиль (фон [com.example.showmethemoney.ui.theme.Indicator])
- * - Форматирование сумм выполняется через [com.example.ui.StringFormatter]
+ * - Форматирование сумм выполняется через [com.example.utils.StringFormatter]
  */
 @Composable
 fun TransactionHistoryList(
@@ -119,15 +116,15 @@ fun formatTotalAmount(transactions: List<TransactionItem>): String {
     val currency = transactions.firstOrNull()?.accountCurrency
         ?: AccountManager.selectedAccountCurrency.value
 
-    return formatAmount(total, currency)
+    return StringFormatter.formatAmount(total, currency)
 }
 
 fun formatTransactionTrail(item: TransactionItem): String {
-    val amountStr = formatAmount(item.amount.toDoubleOrNull()
+    val amountStr = StringFormatter.formatAmount(item.amount.toDoubleOrNull()
         ?: 0.0, AccountManager.selectedAccountCurrency.value)
     val dateStr = item.createdAt.let { createdAt ->
-        stringToDate(createdAt)?.let { date ->
-            "${formatDateForDisplay(formatDate(date))} ${formatTime(date)}"
+        DateUtils.stringToDate(createdAt)?.let { date ->
+            "${DateUtils.formatDateForDisplay(DateUtils.formatDate(date))} ${DateUtils.formatTime(date)}"
         } ?: ""
     }
     val trailText = buildString {

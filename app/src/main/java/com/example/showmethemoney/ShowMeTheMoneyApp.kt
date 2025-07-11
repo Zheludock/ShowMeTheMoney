@@ -1,13 +1,13 @@
 package com.example.showmethemoney
 
 import android.app.Application
-import com.example.showmethemoney.di.CoreComponent
-import com.example.showmethemoney.di.DaggerCoreComponent
-import com.example.showmethemoney.di.DaggerRepositoryComponent
-import com.example.showmethemoney.di.RepositoryComponent
+import com.example.showmethemoney.di.component.CoreComponent
+import com.example.showmethemoney.di.component.DaggerCoreComponent
+import com.example.showmethemoney.di.component.DaggerRepositoryComponent
+import com.example.showmethemoney.di.component.RepositoryComponent
 
 /**
- * Главный класс приложения, инициализирующий [appComponent] для внедрения зависимостей.
+ * Главный класс приложения, инициализирующий [coreComponent] для внедрения зависимостей.
  */
 class ShowMeTheMoneyApp : Application() {
     lateinit var coreComponent: CoreComponent

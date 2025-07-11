@@ -1,7 +1,6 @@
 package com.example.showmethemoney.ui.screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,7 +40,7 @@ import com.example.showmethemoney.ui.components.AppBottomNavigation
 import com.example.showmethemoney.ui.components.AppTopBar
 import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.showmethemoney.ui.theme.White
-import com.example.ui.TopBarState
+import com.example.utils.TopBarState
 import kotlinx.coroutines.launch
 
 /**

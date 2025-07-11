@@ -13,10 +13,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.ui.AccountManager
-import com.example.ui.StringFormatter
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.Indicator
+import com.example.utils.AccountManager
+import com.example.utils.StringFormatter
 
 /**
  * Отображает список транзакций с заголовком, содержащим общую сумму.
@@ -33,7 +33,7 @@ import com.example.ui.theme.Indicator
  *   - Дополнительные действия (кнопка "ещё")
  *
  * @see UniversalListItem Базовый компонент для отображения элементов списка
- * @see StringFormatter Утилита для форматирования денежных сумм
+ * @see com.example.utils.StringFormatter Утилита для форматирования денежных сумм
  */
 @Composable
 fun TransactionList(transactions: List<TransactionItem>,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.CategoryDomain
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.GetAllCategoriesUseCase
+import com.example.domain.usecase.category.GetAllCategoriesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

@@ -10,8 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.showmethemoney.ShowMeTheMoneyApp
-import com.example.showmethemoney.di.DaggerRepositoryComponent
-import com.example.showmethemoney.di.DaggerViewModelComponent
+import com.example.showmethemoney.di.component.DaggerRepositoryComponent
+import com.example.showmethemoney.di.component.DaggerViewModelComponent
 import com.example.showmethemoney.ui.components.SplashScreen
 import com.example.showmethemoney.ui.screens.MainScreen
 import com.example.showmethemoney.ui.theme.BackgroundMainColor

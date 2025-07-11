@@ -14,7 +14,7 @@ import com.example.settings.SettingsScreen
 import com.example.transactions.addtransaction.AddTransactionScreen
 import com.example.transactions.TransactionScreen
 import com.example.transactions.transactionhistory.TransactionHistoryScreen
-import com.example.ui.TopBarState
+import com.example.utils.TopBarState
 
 /**
  * Главный компонент навигации приложения.

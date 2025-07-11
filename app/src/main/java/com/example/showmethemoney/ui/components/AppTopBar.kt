@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.theme.IconsGreen
-import com.example.ui.TopBarState
+import com.example.utils.TopBarState
 
 /**
  * Кастомный TopAppBar с динамическими иконками действий и навигации.

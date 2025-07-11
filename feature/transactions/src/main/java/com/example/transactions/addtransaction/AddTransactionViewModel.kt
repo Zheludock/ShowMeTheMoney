@@ -1,16 +1,17 @@
 package com.example.transactions.addtransaction
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.CategoryDomain
 import com.example.domain.model.TransactionDomain
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.CreateTransactionUseCase
-import com.example.domain.usecase.DeleteTransactionUseCase
-import com.example.domain.usecase.GetCategoriesByTypeUseCase
-import com.example.domain.usecase.GetTransactionDetailsUseCase
-import com.example.domain.usecase.UpdateTransactionUseCase
-import com.example.ui.AccountManager
+import com.example.domain.usecase.transaction.CreateTransactionUseCase
+import com.example.domain.usecase.transaction.DeleteTransactionUseCase
+import com.example.domain.usecase.category.GetCategoriesByTypeUseCase
+import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
+import com.example.domain.usecase.transaction.UpdateTransactionUseCase
+import com.example.utils.AccountManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,11 +43,15 @@ class AddTransactionViewModel @Inject constructor(
     )
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 
-    private val _incomeCategories = MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
-    val incomeCategories: StateFlow<ApiResult<List<CategoryDomain>>> = _incomeCategories.asStateFlow()
+    private val _incomeCategories =
+        MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
+    val incomeCategories: StateFlow<ApiResult<List<CategoryDomain>>> =
+        _incomeCategories.asStateFlow()
 
-    private val _expenseCategories = MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
-    val expenseCategories: StateFlow<ApiResult<List<CategoryDomain>>> = _expenseCategories.asStateFlow()
+    private val _expenseCategories =
+        MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
+    val expenseCategories: StateFlow<ApiResult<List<CategoryDomain>>> =
+        _expenseCategories.asStateFlow()
 
     private val _showCategoryDialog = MutableStateFlow(false)
     val showCategoryDialog: StateFlow<Boolean> = _showCategoryDialog.asStateFlow()
@@ -55,7 +60,8 @@ class AddTransactionViewModel @Inject constructor(
     val isIncome: StateFlow<Boolean> = _isIncome.asStateFlow()
 
     private val _currentTransaction = MutableStateFlow<ApiResult<TransactionDomain>?>(null)
-    val currentTransaction: StateFlow<ApiResult<TransactionDomain>?> = _currentTransaction.asStateFlow()
+    val currentTransaction: StateFlow<ApiResult<TransactionDomain>?> =
+        _currentTransaction.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -96,10 +102,11 @@ class AddTransactionViewModel @Inject constructor(
 
         viewModelScope.launch {
             _currentTransaction.value = ApiResult.Loading
-            when(val result = getTransactionDetailsUseCase.execute(transactionId)) {
+            when (val result = getTransactionDetailsUseCase.execute(transactionId)) {
                 is ApiResult.Success -> {
                     _currentTransaction.value = ApiResult.Success(result.data)
                 }
+
                 else -> {
                     _currentTransaction.value = result
                 }
@@ -126,16 +133,22 @@ class AddTransactionViewModel @Inject constructor(
         categoryId: Int,
         amount: String,
         transactionDate: String,
-        comment: String? = null
+        comment: String? = null,
+        onComplete: () -> Unit
     ) {
         viewModelScope.launch {
-            createTransactionUseCase.execute(
+            val result = createTransactionUseCase.execute(
                 accountId = accountId,
                 categoryId = categoryId,
                 amount = amount,
                 transactionDate = transactionDate,
                 comment = comment
             )
+            if (result is ApiResult.Success) {
+                onComplete()
+            } else {
+                Log.e("AddTransaction", "Failed to create Transaction")
+            }
         }
     }
 
@@ -144,7 +157,8 @@ class AddTransactionViewModel @Inject constructor(
         categoryId: Int,
         amount: String,
         date: String,
-        comment: String?
+        comment: String?,
+        onComplete: () -> Unit
     ) {
         viewModelScope.launch {
             updateTransactionUseCase.execute(
@@ -155,12 +169,14 @@ class AddTransactionViewModel @Inject constructor(
                 date = date,
                 comment = comment
             )
+            onComplete()
         }
     }
 
-    fun deleteTransaction(id: Int) {
+    fun deleteTransaction(id: Int, onComplete: () -> Unit) {
         viewModelScope.launch {
             deleteTransactionUseCase.execute(id)
+            onComplete()
         }
     }
 

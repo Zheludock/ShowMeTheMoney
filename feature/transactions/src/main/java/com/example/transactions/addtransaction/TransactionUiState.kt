@@ -1,6 +1,6 @@
 package com.example.transactions.addtransaction
 
-import com.example.ui.AccountManager
+import com.example.utils.AccountManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 

@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.TransactionDomain
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.GetTransactionsUseCase
-import com.example.ui.AccountManager
-import com.example.ui.DateUtils
+import com.example.domain.usecase.transaction.GetTransactionsUseCase
+import com.example.utils.AccountManager
+import com.example.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

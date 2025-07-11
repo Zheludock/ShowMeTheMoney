@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.account.editaccount.toAccountDetailsItem
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.GetAccountDetailsUseCase
-import com.example.ui.AccountManager
+import com.example.domain.usecase.account.GetAccountDetailsUseCase
+import com.example.utils.AccountManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

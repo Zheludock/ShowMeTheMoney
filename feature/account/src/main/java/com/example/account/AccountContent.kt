@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.ui.StringFormatter
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.Indicator
+import com.example.utils.StringFormatter
 
 /**
  * Компонент для отображения основной информации о счете:

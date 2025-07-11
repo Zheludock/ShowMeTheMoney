@@ -1,5 +1,6 @@
 package com.example.data.dto.transaction
 
+import android.util.Log
 import com.example.domain.model.TransactionDomain
 /**
  * Преобразует DTO транзакции из API в доменную модель.
@@ -11,6 +12,7 @@ import com.example.domain.model.TransactionDomain
  * @return [TransactionDomain] - доменная модель транзакции
  */
 fun TransactionResponse.toDomain(): TransactionDomain {
+    Log.d("Mapper started", "Start")
     return TransactionDomain(
         id = id,
         emoji = category.emoji,

@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
-import com.example.ui.AccountManager
 import com.example.ui.ErrorView
 import com.example.ui.LoadingIndicator
-import com.example.ui.TopBarState
+import com.example.utils.AccountManager
+import com.example.utils.TopBarState
 
 /**
  * Экран отображения истории аккаунта.

@@ -1,5 +1,6 @@
 package com.example.data.safecaller
 
+import android.util.Log
 import com.example.data.safecaller.errorhandler.ErrorHandler
 import com.example.data.safecaller.retrypolicy.RetryPolicy
 import com.example.domain.response.ApiError
@@ -67,6 +68,7 @@ class ApiCallHelper @Inject constructor(
             }
             ApiResult.Success(result)
         } catch (e: Throwable) {
+            Log.e("safeApiCall", "Exception: ${e.message}", e)
             errorHandler.handle(e)
         }
     }
