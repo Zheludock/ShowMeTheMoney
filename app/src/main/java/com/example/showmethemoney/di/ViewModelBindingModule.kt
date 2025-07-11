@@ -26,7 +26,7 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class ViewModelBindingModule {
     /**
-     * Привязывает [TransactionViewModel] к мультибиндингу ViewModel.
+     * Привязывает [com.example.transactions.TransactionViewModel] к мультибиндингу ViewModel.
      * Далее - аналогично.
      */
     @Binds

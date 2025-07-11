@@ -6,6 +6,7 @@ import com.example.data.dto.account.AccountHistoryResponse
 import com.example.data.dto.account.AccountResponse
 import com.example.data.dto.account.CreateAccountRequest
 import com.example.data.dto.account.UpdateAccountRequest
+import dagger.Provides
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

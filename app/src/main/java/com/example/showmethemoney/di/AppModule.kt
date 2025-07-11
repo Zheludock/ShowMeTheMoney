@@ -22,7 +22,7 @@ class AppModule {
      */
     @Provides
     @Singleton
-    fun provideApplicationContext(app: Application): Context = app
+    fun provideContext(application: Application): Context = application.applicationContext
 
     /**
      * Предоставляет [ConnectivityManager] для работы с сетевым состоянием.

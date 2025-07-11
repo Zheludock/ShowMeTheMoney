@@ -4,6 +4,8 @@ import com.example.domain.repository.NetworkMonitor
 import com.example.data.network.AndroidNetworkMonitor
 import dagger.Binds
 import dagger.Module
+import javax.inject.Singleton
+
 /**
  * Dagger-модуль для предоставления зависимости [NetworkMonitor].
  *
@@ -22,6 +24,7 @@ abstract class NetworkMonitorModule {
      * @return Абстракция [NetworkMonitor] для внедрения в другие классы.
      */
     @Binds
+    @Singleton
     abstract fun bindNetworkMonitor(
         monitor: AndroidNetworkMonitor
     ): NetworkMonitor

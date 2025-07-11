@@ -28,45 +28,77 @@ import com.example.ui.TopBarState
  * @see ViewModelProvider.Factory Стандартный интерфейс фабрики ViewModel
  */
 @Composable
-fun AppNavHost(navController: NavHostController,
-               viewModelFactory: ViewModelProvider.Factory,
-               updateTopBar: (TopBarState) -> Unit) {
+fun AppNavHost(
+    navController: NavHostController,
+    viewModelFactory: ViewModelProvider.Factory,
+    updateTopBar: (TopBarState) -> Unit
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.Expenses.route
     ) {
-        composable(Screen.Expenses.route) { TransactionScreen(viewModelFactory,
-            false, navController, updateTopBar) }
-        composable(Screen.Income.route) { TransactionScreen(viewModelFactory,
-            true, navController, updateTopBar) }
+        composable(Screen.Expenses.route) {
+            TransactionScreen(
+                viewModelFactory,
+                false, navController, updateTopBar
+            )
+        }
+        composable(Screen.Income.route) {
+            TransactionScreen(
+                viewModelFactory,
+                true, navController, updateTopBar
+            )
+        }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory, updateTopBar) }
-        composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController, updateTopBar) }
+        composable(Screen.Account.route) {
+            AccountScreen(
+                viewModelFactory,
+                navController,
+                updateTopBar
+            )
+        }
         composable(Screen.Settings.route) { SettingsScreen(updateTopBar) }
-        composable(Screen.History.route) { TransactionHistoryScreen(navController, viewModelFactory, updateTopBar) }
-        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController, updateTopBar) }
+        composable(Screen.History.route) {
+            TransactionHistoryScreen(
+                navController,
+                viewModelFactory,
+                updateTopBar
+            )
+        }
+        composable(Screen.EditAccount.route) {
+            EditAccountScreen(
+                viewModelFactory,
+                navController,
+                updateTopBar
+            )
+        }
         composable(
             route = "add_expense?transactionId={transactionId}",
             arguments = listOf(
                 navArgument("transactionId") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
+                    type = NavType.IntType
+                    nullable = false
+                    defaultValue = -1
                 }
             )
         ) { backStackEntry ->
-            val transactionId = backStackEntry.arguments?.getString("transactionId")
-            AddTransactionScreen(viewModelFactory, navController, updateTopBar, transactionId?.toInt())}
+            val transactionId = backStackEntry.arguments?.getInt("transactionId") ?: -1
+            val realTransactionId = if (transactionId == -1) null else transactionId
+            AddTransactionScreen(viewModelFactory, navController, updateTopBar, realTransactionId)
+        }
         composable(
             route = "add_income?transactionId={transactionId}",
             arguments = listOf(
                 navArgument("transactionId") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
+                    type = NavType.IntType
+                    nullable = false
+                    defaultValue = -1
                 }
             )
         ) { backStackEntry ->
-            val transactionId = backStackEntry.arguments?.getString("transactionId")
-            AddTransactionScreen(viewModelFactory, navController, updateTopBar, transactionId?.toInt())}
+            val transactionId = backStackEntry.arguments?.getInt("transactionId") ?: -1
+            val realTransactionId = if (transactionId == -1) null else transactionId
+            AddTransactionScreen(viewModelFactory, navController, updateTopBar, realTransactionId)
+        }
     }
 }

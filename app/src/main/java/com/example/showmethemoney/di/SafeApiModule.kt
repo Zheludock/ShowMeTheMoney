@@ -1,4 +1,4 @@
-package com.example.data.di
+package com.example.showmethemoney.di
 
 import com.example.data.safecaller.ApiCallHelper
 import com.example.data.safecaller.ApiCaller
@@ -8,6 +8,8 @@ import com.example.data.safecaller.retrypolicy.ExponentialBackoffRetryPolicy
 import com.example.data.safecaller.retrypolicy.RetryPolicy
 import dagger.Binds
 import dagger.Module
+import javax.inject.Singleton
+
 /**
  * Dagger-модуль для безопасного взаимодействия с API.
  *
@@ -30,16 +32,19 @@ import dagger.Module
 @Module
 abstract class SafeApiModule {
 
+    @Singleton
     @Binds
     abstract fun provideApiCaller(
         apiCallHelper: ApiCallHelper
     ): ApiCaller
 
+    @Singleton
     @Binds
     abstract fun bindErrorHandler(
         defaultErrorHandler: DefaultErrorHandler
     ): ErrorHandler
 
+    @Singleton
     @Binds
     abstract fun bindRetryPolicy(
         exponentialBackoffRetryPolicy: ExponentialBackoffRetryPolicy

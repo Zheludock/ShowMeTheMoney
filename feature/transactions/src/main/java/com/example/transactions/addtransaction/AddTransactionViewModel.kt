@@ -14,12 +14,12 @@ import com.example.ui.AccountManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 import javax.inject.Inject
 
 class AddTransactionViewModel @Inject constructor(
@@ -29,31 +29,63 @@ class AddTransactionViewModel @Inject constructor(
     private val createTransactionUseCase: CreateTransactionUseCase,
     private val getTransactionDetailsUseCase: GetTransactionDetailsUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(TransactionUiState(
-        selectedAccountId = AccountManager.selectedAccountId,
-        accountName = AccountManager.selectedAccountName.value,
-        selectedCategoryId = -1,
-        categoryName = "",
-        amount = "",
-        transactionDate = "",
-        comment = ""
-    ))
+    private val _uiState = MutableStateFlow(
+        TransactionUiState(
+            selectedAccountId = AccountManager.selectedAccountId,
+            accountName = AccountManager.selectedAccountName.value,
+            selectedCategoryId = -1,
+            categoryName = "",
+            amount = "",
+            transactionDate = "",
+            comment = ""
+        )
+    )
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 
-    private val _categories = MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
-    val categories: StateFlow<ApiResult<List<CategoryDomain>>> = _categories
+    private val _incomeCategories = MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
+    val incomeCategories: StateFlow<ApiResult<List<CategoryDomain>>> = _incomeCategories.asStateFlow()
+
+    private val _expenseCategories = MutableStateFlow<ApiResult<List<CategoryDomain>>>(ApiResult.Loading)
+    val expenseCategories: StateFlow<ApiResult<List<CategoryDomain>>> = _expenseCategories.asStateFlow()
 
     private val _showCategoryDialog = MutableStateFlow(false)
     val showCategoryDialog: StateFlow<Boolean> = _showCategoryDialog.asStateFlow()
 
     private val _isIncome = MutableStateFlow(false)
-    val isIncome: StateFlow<Boolean> = _isIncome
+    val isIncome: StateFlow<Boolean> = _isIncome.asStateFlow()
 
     private val _currentTransaction = MutableStateFlow<ApiResult<TransactionDomain>?>(null)
     val currentTransaction: StateFlow<ApiResult<TransactionDomain>?> = _currentTransaction.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            _isIncome.collectLatest { income ->
+                loadIncomeCategories()
+                loadExpenseCategories()
+            }
+        }
+    }
+
     fun updateIsIncome(isIncome: Boolean) {
         _isIncome.value = isIncome
+    }
+
+    private suspend fun loadIncomeCategories() {
+        _incomeCategories.value = ApiResult.Loading
+        when (val result = getCategoriesByTypeUseCase.execute(true)) {
+            is ApiResult.Success -> _incomeCategories.value = ApiResult.Success(result.data)
+            is ApiResult.Error -> _incomeCategories.value = result
+            else -> Unit
+        }
+    }
+
+    private suspend fun loadExpenseCategories() {
+        _expenseCategories.value = ApiResult.Loading
+        when (val result = getCategoriesByTypeUseCase.execute(false)) {
+            is ApiResult.Success -> _expenseCategories.value = ApiResult.Success(result.data)
+            is ApiResult.Error -> _expenseCategories.value = result
+            else -> Unit
+        }
     }
 
     fun loadCurrentTransaction(transactionId: Int?) {
@@ -75,30 +107,17 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    fun loadCategories() {
-        viewModelScope.launch {
-            _categories.value = ApiResult.Loading
-            when (val result = getCategoriesByTypeUseCase.execute(isIncome.value)) {
-                is ApiResult.Success -> {
-                    _categories.value = ApiResult.Success(result.data)
-                }
-                is ApiResult.Error -> {
-                    _categories.value = result
-                }
-                ApiResult.Loading -> Unit
-            }
-        }
-    }
-
     fun showCategoryDialog(show: Boolean) {
         _showCategoryDialog.value = show
     }
 
     fun updateSelectedCategory(categoryId: Int, categoryName: String) {
-        _uiState.update { it.copy(
-            selectedCategoryId = categoryId,
-            categoryName = categoryName
-        ) }
+        _uiState.update {
+            it.copy(
+                selectedCategoryId = categoryId,
+                categoryName = categoryName
+            )
+        }
         showCategoryDialog(false)
     }
 
@@ -120,24 +139,26 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    fun updateTransaction(id: Int,
-                          categoryId: Int,
-                          amount: String,
-                          date: String,
-                          comment: String?){
+    fun updateTransaction(
+        id: Int,
+        categoryId: Int,
+        amount: String,
+        date: String,
+        comment: String?
+    ) {
         viewModelScope.launch {
             updateTransactionUseCase.execute(
                 id = id,
                 accountId = AccountManager.selectedAccountId,
                 categoryId = categoryId,
                 amount = amount,
-                date = date.toString(),
+                date = date,
                 comment = comment
             )
         }
     }
 
-    fun deleteTransaction(id: Int){
+    fun deleteTransaction(id: Int) {
         viewModelScope.launch {
             deleteTransactionUseCase.execute(id)
         }
@@ -149,12 +170,6 @@ class AddTransactionViewModel @Inject constructor(
 
     fun updateTransactionDate(date: String) {
         _uiState.update { it.copy(transactionDate = date) }
-    }
-
-    fun getBackendFormattedDate(): String {
-        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.format(_uiState.value.transactionDate)
     }
 
     fun updateComment(comment: String) {

@@ -10,6 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.showmethemoney.ShowMeTheMoneyApp
+import com.example.showmethemoney.di.DaggerRepositoryComponent
+import com.example.showmethemoney.di.DaggerViewModelComponent
 import com.example.showmethemoney.ui.components.SplashScreen
 import com.example.showmethemoney.ui.screens.MainScreen
 import com.example.showmethemoney.ui.theme.BackgroundMainColor
@@ -50,6 +52,8 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var uiConfigurator: UiConfigurator
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         val repositoryComponent = DaggerRepositoryComponent.factory()
             .create((application as ShowMeTheMoneyApp).coreComponent)
 
@@ -57,9 +61,6 @@ class MainActivity : ComponentActivity() {
             .create(repositoryComponent)
 
         viewModelComponent.inject(this)
-
-
-        super.onCreate(savedInstanceState)
 
         uiConfigurator.configure(this)
 

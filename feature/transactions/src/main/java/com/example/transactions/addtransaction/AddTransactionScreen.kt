@@ -35,10 +35,13 @@ fun AddTransactionScreen(
 ) {
     val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
 
-    val isIncome = navController.currentBackStackEntry?.destination?.route == "add_income"
+    val currentRoute = navController.currentBackStackEntry?.destination?.route?.substringBefore("?")
+
+    val isIncome = currentRoute == "add_income"
 
     val uiState by viewModel.uiState.collectAsState()
-    val categories by viewModel.categories.collectAsState()
+    val incomeCategories by viewModel.incomeCategories.collectAsState()
+    val expenseCategories by viewModel.expenseCategories.collectAsState()
     val showCategoryDialog by viewModel.showCategoryDialog.collectAsState()
     val currentTransaction by viewModel.currentTransaction.collectAsState()
 
@@ -46,14 +49,25 @@ fun AddTransactionScreen(
 
     LaunchedEffect(isIncome) {
         viewModel.updateIsIncome(isIncome)
-        viewModel.loadCategories()
         viewModel.loadCurrentTransaction(currentTransactionId)
     }
 
+    val categories = if (isIncome) incomeCategories else expenseCategories
+
     val safeCategoryList: List<CategoryDomain> = when (categories) {
-        is ApiResult.Success -> (categories as ApiResult.Success<List<CategoryDomain>>).data
+        is ApiResult.Success -> categories.data
         else -> emptyList()
     }
+
+    LaunchedEffect(isIncome, safeCategoryList) {
+        if (safeCategoryList.isNotEmpty()) {
+            viewModel.updateSelectedCategory(
+                safeCategoryList.first().categoryId,
+                safeCategoryList.first().categoryName
+            )
+        }
+    }
+
     val safeCurrentTransaction: TransactionDomain? = when (currentTransaction){
         is ApiResult.Success -> (currentTransaction as ApiResult.Success<TransactionDomain>).data
         else -> null
@@ -89,7 +103,6 @@ fun AddTransactionScreen(
             viewModel.updateTransactionDate(it.createdAt)
             viewModel.updateAmount(it.amount)
             viewModel.updateComment(it.comment ?: "")
-            viewModel.updateTransactionDate(it.createdAt)
             viewModel.updateSelectedCategory(
                 categoryId = it.categoryId,
                 categoryName = it.categoryName
@@ -99,8 +112,10 @@ fun AddTransactionScreen(
             viewModel.updateComment("")
             viewModel.setCurrentDate()
             if (safeCategoryList.isNotEmpty()) {
-                viewModel.updateSelectedCategory(safeCategoryList.first().categoryId.toInt(),
-                    safeCategoryList.first().categoryName)
+                viewModel.updateSelectedCategory(
+                    safeCategoryList.first().categoryId,
+                    safeCategoryList.first().categoryName
+                )
             }
         }
     }
@@ -115,8 +130,10 @@ fun AddTransactionScreen(
                         ListItem(
                             headlineContent = { Text(category.categoryName) },
                             modifier = Modifier.clickable {
-                                viewModel.updateSelectedCategory(category.categoryId.toInt(),
-                                    categoryName = category.categoryName)
+                                viewModel.updateSelectedCategory(
+                                    category.categoryId,
+                                    categoryName = category.categoryName
+                                )
                             }
                         )
                         HorizontalDivider()
@@ -140,9 +157,7 @@ fun AddTransactionScreen(
         onCommentChange = viewModel::updateComment,
         onDeleteClick = {
             if (currentTransactionId != null)
-                viewModel.deleteTransaction(
-                    currentTransactionId
-                )
+                viewModel.deleteTransaction(currentTransactionId)
             navController.popBackStack()
         },
         currentTransactionId = currentTransactionId

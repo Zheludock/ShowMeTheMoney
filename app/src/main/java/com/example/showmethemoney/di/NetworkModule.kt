@@ -1,4 +1,4 @@
-package com.example.data.di
+package com.example.showmethemoney.di
 
 import com.example.data.retrofit.AccountApiService
 import com.example.data.retrofit.CategoriesApiService
