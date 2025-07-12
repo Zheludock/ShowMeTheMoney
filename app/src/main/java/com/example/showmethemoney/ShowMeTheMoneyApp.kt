@@ -1,7 +1,6 @@
 package com.example.showmethemoney
 
 import android.app.Application
-import android.os.StrictMode
 import com.example.showmethemoney.di.component.CoreComponent
 import com.example.showmethemoney.di.component.DaggerCoreComponent
 import com.example.showmethemoney.di.component.DaggerRepositoryComponent
