@@ -1,9 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
 }
+
+val localProperties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
+}
+
 
 android {
     namespace = "com.example.showmethemoney"
@@ -17,6 +24,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_TOKEN",
+            "\"${localProperties.getProperty("api.token")}\"")
     }
     buildTypes {
         release {
@@ -36,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -68,7 +79,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    debugImplementation ("com.squareup.leakcanary:leakcanary-android:2.14")
     implementation (libs.dagger)
     ksp(libs.dagger.compiler)
     implementation(libs.converter.gson)

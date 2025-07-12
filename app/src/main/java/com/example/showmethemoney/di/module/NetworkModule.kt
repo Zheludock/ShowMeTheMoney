@@ -3,6 +3,7 @@ package com.example.showmethemoney.di.module
 import com.example.data.retrofit.AccountApiService
 import com.example.data.retrofit.CategoriesApiService
 import com.example.data.retrofit.TransactionApiService
+import com.example.showmethemoney.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -20,7 +21,7 @@ import javax.inject.Singleton
 @Module
 object NetworkModule {
     private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
-    private const val TOKEN = "AALqE9czebsipeTL4BJaTxCn"
+    private val TOKEN: String = BuildConfig.API_TOKEN
     private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
     /**
