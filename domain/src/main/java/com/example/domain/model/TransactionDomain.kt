@@ -18,9 +18,10 @@ package com.example.domain.model
  *
  */
 data class TransactionDomain(
-    val id: String,
+    val id: Int,
     val emoji: String,
     val categoryName: String,
+    val categoryId: Int,
     val amount: String,
     val transactionDate: String,
     val comment: String?,

@@ -24,6 +24,7 @@ import javax.inject.Inject
  * @see NetworkMonitor Интерфейс монитора сети
  * @see ConnectivityManager Системный сервис для работы с сетевыми подключениями
  */
+@OptIn(FlowPreview::class)
 class AndroidNetworkMonitor @Inject constructor(
     context: Context
 ) : NetworkMonitor  {
@@ -36,13 +37,11 @@ class AndroidNetworkMonitor @Inject constructor(
      * При изменении состояния сети поток автоматически обновляет значение.
      */
     override val isOnline: Flow<Boolean> = callbackFlow {
-        // Инициализация начального состояния
         val currentState = connectivityManager.activeNetwork?.let { network ->
             connectivityManager.getNetworkCapabilities(network)
                 ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         } ?: false
         trySend(currentState).isSuccess
-        // Callback для отслеживания изменений состояния сети
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 trySend(true).isSuccess
@@ -52,13 +51,11 @@ class AndroidNetworkMonitor @Inject constructor(
                 trySend(false).isSuccess
             }
         }
-        // Регистрация callback
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
 
         connectivityManager.registerNetworkCallback(request, callback)
-        // Отмена регистрации при закрытии потока
         awaitClose {
             connectivityManager.unregisterNetworkCallback(callback)
         }

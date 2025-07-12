@@ -9,7 +9,7 @@ package com.example.domain.model
  * @property amount Суммарная сумма операций в этой категории.
  */
 data class CategoryStatsDomain(
-    val categoryId: String,
+    val categoryId: Int,
     val categoryName: String,
     val emoji: String,
     val amount: String

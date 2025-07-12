@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.Screen
-import com.example.showmethemoney.ui.screens.TopBarState
 import com.example.showmethemoney.ui.theme.IconsGreen
+import com.example.utils.TopBarState
 
 /**
  * Кастомный TopAppBar с динамическими иконками действий и навигации.
@@ -25,19 +25,19 @@ fun AppTopBar(
     navController: NavController,
     topBarState: TopBarState
 ) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    val currentRoute = navController.currentBackStackEntry?.destination?.route?.substringBefore("?")
 
     val actionIcon = when (currentRoute) {
         Screen.Expenses.route, Screen.Income.route -> R.drawable.ic_history
         Screen.Account.route -> R.drawable.ic_edit
         Screen.History.route -> R.drawable.ic_history_calendar
-        Screen.EditAccount.route -> R.drawable.ic_accept
+        Screen.EditAccount.route, "add_expense", "add_income" -> R.drawable.ic_accept
         else -> null
     }
 
     val navigationIcon = when(currentRoute) {
         Screen.History.route -> R.drawable.ic_back
-        Screen.EditAccount.route -> R.drawable.ic_close
+        Screen.EditAccount.route, "add_expense", "add_income" -> R.drawable.ic_close
         else -> null
     }
 

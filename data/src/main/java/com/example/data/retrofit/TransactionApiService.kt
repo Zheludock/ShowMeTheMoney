@@ -1,6 +1,7 @@
 package com.example.data.retrofit
 
 import com.example.data.dto.transaction.CreateTransactionRequest
+import com.example.data.dto.transaction.CreateTransactionResponse
 import com.example.data.dto.transaction.TransactionResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -38,7 +39,7 @@ interface TransactionApiService {
     @POST("transactions")
     suspend fun createTransaction(
         @Body request: CreateTransactionRequest
-    ): TransactionResponse
+    ): CreateTransactionResponse
     /**
      * Получает детали конкретной транзакции.
      *

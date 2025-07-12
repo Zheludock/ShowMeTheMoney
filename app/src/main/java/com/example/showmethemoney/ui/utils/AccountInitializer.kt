@@ -3,16 +3,18 @@ package com.example.showmethemoney.ui.utils
 import android.content.Context
 import android.util.Log
 import com.example.domain.response.ApiResult
-import com.example.domain.usecase.GetAccountDetailsUseCase
-import com.example.domain.usecase.GetAccountsUseCase
+import com.example.domain.usecase.account.GetAccountDetailsUseCase
+import com.example.domain.usecase.account.GetAccountsUseCase
+import com.example.utils.AccountManager
 import kotlinx.coroutines.delay
 import javax.inject.Inject
+
 /**
  * Сервис инициализации аккаунта пользователя при старте приложения.
  *
  * ## Основная ответственность:
  * - Загрузка списка аккаунтов через [GetAccountsUseCase]
- * - Установка первого доступного аккаунта как выбранного в [AccountManager]
+ * - Установка первого доступного аккаунта как выбранного в [com.example.utils.AccountManager]
  * - Обработка и логирование ошибок инициализации
  *
  * ## Пример использования:

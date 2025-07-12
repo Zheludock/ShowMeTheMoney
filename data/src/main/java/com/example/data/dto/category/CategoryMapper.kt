@@ -10,7 +10,7 @@ import com.example.domain.model.CategoryStatsDomain
  */
 fun CategoryResponse.toDomain(): CategoryDomain {
     return CategoryDomain(
-        categoryId = id.toString(),
+        categoryId = id,
         categoryName = name,
         emoji = emoji,
         isIncome = isIncome
@@ -24,7 +24,7 @@ fun CategoryResponse.toDomain(): CategoryDomain {
  */
 fun CategoryStats.toDomain(): CategoryStatsDomain {
     return CategoryStatsDomain(
-        categoryId = categoryId.toString(),
+        categoryId = categoryId,
         categoryName = categoryName,
         emoji = emoji,
         amount = amount

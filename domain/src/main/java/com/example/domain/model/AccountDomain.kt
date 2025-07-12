@@ -13,7 +13,7 @@ package com.example.domain.model
  */
 data class AccountDomain(
     val id: Int,
-    val userId: String,
+    val userId: Int,
     var name: String,
     var balance : String,
     var currency: String,

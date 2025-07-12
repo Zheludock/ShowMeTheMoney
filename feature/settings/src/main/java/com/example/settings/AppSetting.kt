@@ -53,7 +53,7 @@ enum class AppSetting(
  *
  * @return Новый объект SettingsDomain с теми же свойствами.
  */
-    fun toDomain() = SettingsDomain(
+    fun toItem() = SettingsItem(
         name = key,
         title = title,
         isSwitch = isSwitch

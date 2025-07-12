@@ -1,21 +1,26 @@
 package com.example.showmethemoney
 
 import android.app.Application
-import com.example.showmethemoney.di.AppComponent
-import com.example.showmethemoney.di.AppModule
-import com.example.showmethemoney.di.DaggerAppComponent
+import com.example.showmethemoney.di.component.CoreComponent
+import com.example.showmethemoney.di.component.DaggerCoreComponent
+import com.example.showmethemoney.di.component.DaggerRepositoryComponent
+import com.example.showmethemoney.di.component.RepositoryComponent
+
 /**
- * Главный класс приложения, инициализирующий [appComponent] для внедрения зависимостей.
+ * Главный класс приложения, инициализирующий [coreComponent] для внедрения зависимостей.
  */
 class ShowMeTheMoneyApp : Application() {
+    lateinit var coreComponent: CoreComponent
+        private set
 
-    lateinit var appComponent: AppComponent
+    lateinit var repositoryComponent: RepositoryComponent
         private set
 
     override fun onCreate() {
         super.onCreate()
 
-        appComponent = DaggerAppComponent.factory()
-            .create(application = this, appModule = AppModule())
+        coreComponent = DaggerCoreComponent.factory().create(this)
+
+        repositoryComponent = DaggerRepositoryComponent.factory().create(coreComponent)
     }
 }

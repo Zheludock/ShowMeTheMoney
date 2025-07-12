@@ -10,14 +10,35 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.UniversalListItem
+import com.example.utils.TopBarState
 
+/**
+ * Экран настроек приложения.
+ *
+ * Отображает список настроек, включая переключатель для темы
+ * и кнопки навигации (например, "О приложении").
+ *
+ * @param listSettings Список настроек для отображения.
+ */
 @Composable
-fun SettingsScreen() {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+fun SettingsScreen(updateTopBar: (TopBarState) -> Unit) {
+
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
+                title = "Настройки"
+            )
+        )
+    }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
         items(listSettings) { item ->
             UniversalListItem(
                 content = item.title to null,
@@ -36,7 +57,7 @@ fun SettingsScreen() {
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                painter = painterResource(com.example.showmethemoney.R.drawable.ic_arrow_right),
+                                painter = painterResource(com.example.ui.R.drawable.ic_arrow_right),
                                 contentDescription = "Подробнее",
                                 modifier = Modifier.size(24.dp)
                             )
