@@ -2,8 +2,10 @@ package com.example.data.repository
 
 import com.example.data.retrofit.TransactionApiService
 import com.example.data.dto.transaction.CreateTransactionRequest
+import com.example.data.dto.transaction.CreateTransactionResponse
 import com.example.data.dto.transaction.toDomain
 import com.example.data.safecaller.ApiCallHelper
+import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.response.ApiResult
 import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
@@ -55,7 +57,7 @@ class TransactionRepositoryImpl @Inject constructor(
         amount: String,
         transactionDate: String,
         comment: String?
-    ): ApiResult<TransactionDomain> {
+    ): ApiResult<CreateTransactionDomain> {
         return apiCallHelper.safeApiCall(block = {
             val request = CreateTransactionRequest(
                 accountId = accountId,

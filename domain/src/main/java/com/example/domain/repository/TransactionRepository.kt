@@ -1,5 +1,6 @@
 package com.example.domain.repository
 
+import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.response.ApiResult
 import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
@@ -31,7 +32,7 @@ interface TransactionRepository {
         amount: String,
         transactionDate: String,
         comment: String? = null
-    ): ApiResult<TransactionDomain>
+    ): ApiResult<CreateTransactionDomain>
     /**
      * Получает детали транзакции по ID
      * @param transactionId ID транзакции

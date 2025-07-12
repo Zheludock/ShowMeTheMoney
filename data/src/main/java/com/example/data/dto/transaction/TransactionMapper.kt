@@ -1,6 +1,7 @@
 package com.example.data.dto.transaction
 
 import android.util.Log
+import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.model.TransactionDomain
 /**
  * Преобразует DTO транзакции из API в доменную модель.
@@ -25,5 +26,18 @@ fun TransactionResponse.toDomain(): TransactionDomain {
         createdAt = createdAt,
         updatedAt = updatedAt,
         isIncome = category.isIncome
+    )
+}
+
+fun CreateTransactionResponse.toDomain(): CreateTransactionDomain {
+    return CreateTransactionDomain(
+        id = id,
+        accountId = accountId,
+        categoryId = categoryId,
+        amount = amount,
+        transactionDate = transactionDate,
+        comment = comment,
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 }
