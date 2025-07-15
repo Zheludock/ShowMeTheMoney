@@ -4,6 +4,8 @@ import com.example.data.retrofit.AccountApiService
 import com.example.data.dto.account.CreateAccountRequest
 import com.example.data.dto.account.UpdateAccountRequest
 import com.example.data.dto.account.toDomain
+import com.example.data.dto.account.toEntity
+import com.example.data.room.dao.AccountDao
 import com.example.data.safecaller.ApiCallHelper
 import com.example.domain.response.ApiResult
 import com.example.domain.model.AccountDetailsDomain
@@ -22,7 +24,8 @@ import javax.inject.Inject
  */
 class AccountRepositoryImpl @Inject constructor(
     private val apiService: AccountApiService,
-    private val apiCallHelper: ApiCallHelper
+    private val apiCallHelper: ApiCallHelper,
+    private val accountDao: AccountDao
 ) : AccountRepository {
     /**
      * Получает список всех счетов пользователя.
@@ -30,7 +33,14 @@ class AccountRepositoryImpl @Inject constructor(
      */
     override suspend fun getAccounts(): ApiResult<List<AccountDomain>> {
         return apiCallHelper.safeApiCall(block = {
-            apiService.getAccounts().map { it.toDomain() }
+            val cachedAccounts = accountDao.getAllAccounts()
+            if (cachedAccounts.isNotEmpty()) {
+                cachedAccounts.map { it.toDomain() }
+            } else {
+                val remoteAccounts = apiService.getAccounts()
+                accountDao.insertAccounts(remoteAccounts.map { it.toEntity() })
+                remoteAccounts.map { it.toDomain() }
+            }
         })
     }
     /**
@@ -63,8 +73,14 @@ class AccountRepositoryImpl @Inject constructor(
         currency: String
     ): ApiResult<AccountDomain> {
         return apiCallHelper.safeApiCall(block = {
-            val request = UpdateAccountRequest(name, balance, currency)
-            apiService.updateAccount(accountId, request).toDomain()
+            val request = UpdateAccountRequest(
+                name = name,
+                balance = balance,
+                currency = currency
+            )
+            val updated = apiService.updateAccount(accountId, request)
+            accountDao.updateAccount(updated.toEntity())
+            updated.toDomain()
         })
     }
     /**
@@ -84,8 +100,17 @@ class AccountRepositoryImpl @Inject constructor(
      * @return [ApiResult] с [AccountHistoryDomain] или ошибкой
      */
     override suspend fun getAccountHistory(accountId: Int): ApiResult<AccountHistoryDomain> {
-        return apiCallHelper.safeApiCall(block = {
-            apiService.getAccountHistory(accountId).toDomain()
+        return apiCallHelper.safeApiCall({
+            val cached = accountDao.getAccountHistory(accountId)
+            if (cached != null) {
+                cached.toDomain()
+            } else {
+                val remote = apiService.getAccountHistory(accountId)
+                val historyEntity = remote.toEntity()
+                val itemsEntity = remote.history.map { it.toEntity() }
+                accountDao.insertFullHistory(historyEntity, itemsEntity)
+                remote.toDomain()
+            }
         })
     }
     /**
@@ -93,9 +118,21 @@ class AccountRepositoryImpl @Inject constructor(
      * @param accountId ID счета
      * @return [ApiResult] с [AccountDetailsDomain] или ошибкой
      */
+
+
     override suspend fun getAccountDetails(accountId: Int): ApiResult<AccountDetailsDomain> {
-        return apiCallHelper.safeApiCall(block = {
-            apiService.getAccountDetails(accountId).toDomain()
+        return apiCallHelper.safeApiCall({
+            val cached = accountDao.getAccountDetails(accountId)
+            if (cached != null) {
+                cached.toDomain()
+            } else {
+                val remote = apiService.getAccountDetails(accountId)
+                val detailsEntity = remote.toEntity()
+                val statsEntity = remote.incomeStats.map { it.toEntity(remote.id, true) } +
+                        remote.expenseStats.map { it.toEntity(remote.id, false) }
+                accountDao.insertFullDetails(detailsEntity, statsEntity)
+                remote.toDomain()
+            }
         })
     }
 }

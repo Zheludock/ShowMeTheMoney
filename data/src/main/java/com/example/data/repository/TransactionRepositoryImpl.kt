@@ -1,15 +1,16 @@
 package com.example.data.repository
 
-import com.example.data.retrofit.TransactionApiService
 import com.example.data.dto.transaction.CreateTransactionRequest
-import com.example.data.dto.transaction.CreateTransactionResponse
 import com.example.data.dto.transaction.toDomain
+import com.example.data.dto.transaction.toEntity
+import com.example.data.retrofit.TransactionApiService
+import com.example.data.room.dao.TransactionDao
 import com.example.data.safecaller.ApiCallHelper
 import com.example.domain.model.CreateTransactionDomain
-import com.example.domain.response.ApiResult
 import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
 import com.example.domain.repository.TransactionRepository
+import com.example.domain.response.ApiResult
 import javax.inject.Inject
 
 /**
@@ -22,7 +23,8 @@ import javax.inject.Inject
  */
 class TransactionRepositoryImpl @Inject constructor(
     private val apiService: TransactionApiService,
-    private val apiCallHelper: ApiCallHelper
+    private val apiCallHelper: ApiCallHelper,
+    private val transactionDao: TransactionDao
 ) : TransactionRepository {
     /**
      * Получает список транзакций с возможностью фильтрации по дате.
@@ -36,21 +38,18 @@ class TransactionRepositoryImpl @Inject constructor(
         startDate: String?,
         endDate: String?
     ): ApiResult<List<TransactionDomain>> {
-        return apiCallHelper.safeApiCall(
-            block =
-                { apiService.getTransactions(accountId, startDate, endDate).map { it.toDomain() } }
-        )
+        val cached = transactionDao.getTransactions(accountId, startDate, endDate)
+        if (cached.isNotEmpty()) {
+            return ApiResult.Success(cached.map { it.toDomain() })
+        }
+
+        return apiCallHelper.safeApiCall(block = {
+            val remote = apiService.getTransactions(accountId, startDate, endDate)
+            transactionDao.insertTransactions(remote.map { it.toEntity() })
+            remote.map { it.toDomain() }
+        })
     }
 
-    /**
-     * Создает новую транзакцию.
-     * @param accountId Идентификатор аккаунта
-     * @param categoryId Идентификатор категории
-     * @param amount Сумма транзакции
-     * @param transactionDate Дата транзакции
-     * @param comment Комментарий к транзакции (опционально)
-     * @return [ApiResult] с созданной [TransactionDomain] или ошибкой
-     */
     override suspend fun createTransaction(
         accountId: Int,
         categoryId: Int,
@@ -66,26 +65,26 @@ class TransactionRepositoryImpl @Inject constructor(
                 transactionDate = transactionDate,
                 comment = comment
             )
-            apiService.createTransaction(request).toDomain()
+            val response = apiService.createTransaction(request)
+            // Сохраняем в БД
+            transactionDao.insertTransaction(response.toEntity())
+            response.toDomain()
         })
     }
 
-    /**
-     * Получает детали конкретной транзакции.
-     * @param transactionId Идентификатор транзакции
-     * @return [ApiResult] с [TransactionDomain] или ошибкой
-     */
     override suspend fun getTransactionDetails(transactionId: Int): ApiResult<TransactionDomain> {
         return apiCallHelper.safeApiCall(block = {
-            apiService.getTransactionDetails(transactionId).toDomain()
+            val cached = transactionDao.getTransactionWithDetails(transactionId)
+            if (cached != null) {
+                cached.toDomain()
+            } else {
+                val remote = apiService.getTransactionDetails(transactionId)
+                transactionDao.insertTransaction(remote.toEntity())
+                remote.toDomain()
+            }
         })
     }
 
-    /**
-     * Обновляет существующую транзакцию.
-     * @param transactionInput Данные для обновления транзакции
-     * @return [ApiResult] с обновленной [TransactionDomain] или ошибкой
-     */
     override suspend fun updateTransaction(transactionInput: TransactionInput): ApiResult<TransactionDomain> {
         return apiCallHelper.safeApiCall(block = {
             val request = CreateTransactionRequest(
@@ -95,19 +94,20 @@ class TransactionRepositoryImpl @Inject constructor(
                 transactionDate = transactionInput.transactionDate,
                 comment = transactionInput.comment
             )
-            apiService.updateTransaction(transactionInput.transactionId, request).toDomain()
+            val updated = apiService.updateTransaction(transactionInput.transactionId, request)
+            transactionDao.updateTransaction(updated.toEntity())
+            updated.toDomain()
         })
     }
 
-    /**
-     * Удаляет транзакцию.
-     * @param transactionId Идентификатор транзакции
-     * @return [ApiResult] с результатом операции (true/false) или ошибкой
-     */
     override suspend fun deleteTransaction(transactionId: Int): ApiResult<Boolean> {
         return apiCallHelper.safeApiCall(block = {
             val response = apiService.deleteTransaction(transactionId)
+            if (response.isSuccessful) {
+                transactionDao.deleteTransaction(transactionId)
+            }
             response.isSuccessful
         })
     }
 }
+

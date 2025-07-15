@@ -16,13 +16,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
 import com.example.ui.UniversalListItem
-import com.example.ui.theme.Red
 
 @Composable
 fun AddTransactionList(
@@ -36,7 +36,7 @@ fun AddTransactionList(
     onDeleteClick: () -> Unit,
     currentTransactionId: Int?
 ) {
-    val isVisible = currentTransactionId != null
+    val showDeleteButton = currentTransactionId != null
 
     Column(
         modifier = Modifier
@@ -57,8 +57,7 @@ fun AddTransactionList(
                         Icon(
                             painter = painterResource(R.drawable.ic_more_vert),
                             contentDescription = "Выбрать категорию",
-                            modifier = Modifier
-                                .size(24.dp),
+                            modifier = Modifier.size(24.dp),
                         )
                     },
                     onClick = onCategoryClick
@@ -103,16 +102,14 @@ fun AddTransactionList(
                     }
                 )
             }
-            if (isVisible) {
+            if (showDeleteButton) {
                 item {
                     Button(
                         onClick = onDeleteClick,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Red
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                     ) {
                         Text(
                             text = if (isIncome) "Удалить доход" else "Удалить расход",

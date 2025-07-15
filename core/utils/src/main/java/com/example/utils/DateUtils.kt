@@ -36,6 +36,28 @@ import java.util.TimeZone
  * - Время: "HH:mm" (24-часовой формат)
  */
 object DateUtils {
+    private val utcFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
+
+    private val displayDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    private val displayTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    fun parseDate(dateString: String): Date? = try {
+        utcFormat.parse(dateString)
+    } catch (e: Exception) {
+        null
+    }
+
+    fun formatToUtc(date: Date): String = utcFormat.format(date)
+
+    fun formatDisplayDate(dateString: String): String = parseDate(dateString)?.let {
+        displayDateFormat.format(it)
+    } ?: dateString
+
+    fun formatDisplayTime(dateString: String): String = parseDate(dateString)?.let {
+        displayTimeFormat.format(it)
+    } ?: dateString
 
     private val defaultLocale = Locale.getDefault()
 

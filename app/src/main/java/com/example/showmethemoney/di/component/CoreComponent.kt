@@ -5,6 +5,10 @@ import android.content.Context
 import com.example.data.retrofit.AccountApiService
 import com.example.data.retrofit.CategoriesApiService
 import com.example.data.retrofit.TransactionApiService
+import com.example.data.room.dao.AccountDao
+import com.example.data.room.dao.CategoryDao
+import com.example.data.room.dao.TransactionDao
+import com.example.data.room.di.DatabaseModule
 import com.example.data.safecaller.ApiCallHelper
 import com.example.domain.repository.NetworkMonitor
 import com.example.showmethemoney.di.module.AppModule
@@ -21,7 +25,8 @@ import javax.inject.Singleton
     AppModule::class,
     NetworkModule::class,
     SafeApiModule::class,
-    NetworkMonitorModule::class
+    NetworkMonitorModule::class,
+    DatabaseModule::class
 ])
 interface CoreComponent {
     @Component.Factory
@@ -39,4 +44,7 @@ interface CoreComponent {
     fun categoriesApiService(): CategoriesApiService
     fun transactionApiService(): TransactionApiService
     fun networkMonitor(): NetworkMonitor
+    fun accountDao(): AccountDao
+    fun transactionDao(): TransactionDao
+    fun categoryDao(): CategoryDao
 }

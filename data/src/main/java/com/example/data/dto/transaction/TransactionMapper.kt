@@ -1,6 +1,8 @@
 package com.example.data.dto.transaction
 
 import android.util.Log
+import com.example.data.room.entityes.TransactionEntity
+import com.example.data.room.entityes.TransactionWithCategoryAndAccount
 import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.model.TransactionDomain
 /**
@@ -41,3 +43,40 @@ fun CreateTransactionResponse.toDomain(): CreateTransactionDomain {
         updatedAt = updatedAt
     )
 }
+
+fun TransactionResponse.toEntity() = TransactionEntity(
+    id = id,
+    accountId = account.id,
+    categoryId = category.id,
+    amount = amount,
+    transactionDate = transactionDate,
+    comment = comment,
+    createdAt = createdAt,
+    updatedAt = updatedAt
+)
+
+fun TransactionWithCategoryAndAccount.toDomain() = TransactionDomain(
+    id = transaction.id,
+    emoji = category.emoji,
+    categoryName = category.name,
+    categoryId = category.id,
+    amount = transaction.amount,
+    transactionDate = transaction.transactionDate,
+    comment = transaction.comment,
+    currency = account.currency,
+    createdAt = transaction.createdAt,
+    updatedAt = transaction.updatedAt,
+    isIncome = category.isIncome
+)
+
+
+fun CreateTransactionResponse.toEntity(): TransactionEntity = TransactionEntity(
+    id = id,
+    accountId = accountId,
+    categoryId = categoryId,
+    amount = amount,
+    transactionDate = transactionDate,
+    comment = comment,
+    createdAt = createdAt,
+    updatedAt = updatedAt
+)

@@ -27,6 +27,7 @@ import com.example.domain.model.CategoryDomain
 import com.example.domain.model.TransactionDomain
 import com.example.domain.response.ApiResult
 import com.example.ui.CustomDatePickerDialog
+import com.example.utils.DateUtils
 import com.example.utils.TopBarState
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -45,7 +46,6 @@ fun AddTransactionScreen(
     val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
 
     val currentRoute = navController.currentBackStackEntry?.destination?.route?.substringBefore("?")
-
     val isIncome = currentRoute == "add_income"
 
     val uiState by viewModel.uiState.collectAsState()
@@ -56,127 +56,90 @@ fun AddTransactionScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        .apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
 
-    LaunchedEffect(isIncome) {
+    LaunchedEffect(isIncome, currentTransactionId) {
         viewModel.updateIsIncome(isIncome)
         viewModel.loadCurrentTransaction(currentTransactionId)
     }
 
-    val categories = if (isIncome) incomeCategories else expenseCategories
+    val categoriesResult = if (isIncome) incomeCategories else expenseCategories
+    val categories = (categoriesResult as? ApiResult.Success)?.data.orEmpty()
 
-    val safeCategoryList: List<CategoryDomain> = when (categories) {
-        is ApiResult.Success -> categories.data
-        else -> emptyList()
-    }
-
-    LaunchedEffect(isIncome, safeCategoryList) {
-        if (safeCategoryList.isNotEmpty()) {
-            viewModel.updateSelectedCategory(
-                safeCategoryList.first().categoryId,
-                safeCategoryList.first().categoryName
-            )
+    LaunchedEffect(categories) {
+        if (categories.isNotEmpty()) {
+            viewModel.updateSelectedCategory(categories.first().categoryId, categories.first().categoryName)
         }
     }
 
-    val safeCurrentTransaction: TransactionDomain? = when (currentTransaction) {
-        is ApiResult.Success -> (currentTransaction as ApiResult.Success<TransactionDomain>).data
-        else -> null
+    val transactionData = (currentTransaction as? ApiResult.Success)?.data
+
+    LaunchedEffect(transactionData, categories) {
+        if (transactionData != null) {
+            viewModel.updateTransactionDate(transactionData.createdAt)
+            viewModel.updateAmount(transactionData.amount)
+            viewModel.updateComment(transactionData.comment ?: "")
+            viewModel.updateSelectedCategory(transactionData.categoryId, transactionData.categoryName)
+        } else {
+            viewModel.updateAmount("")
+            viewModel.updateComment("")
+            viewModel.setCurrentDate()
+            if (categories.isNotEmpty()) {
+                viewModel.updateSelectedCategory(categories.first().categoryId, categories.first().categoryName)
+            }
+        }
     }
 
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(isIncome, uiState) {
         updateTopBar(
             TopBarState(
                 title = if (isIncome) "Мои доходы" else "Мои расходы",
                 onActionClick = {
-                    if (currentTransactionId != null) viewModel.updateTransaction(
-                        id = currentTransactionId,
-                        categoryId = uiState.selectedCategoryId,
-                        amount = uiState.amount,
-                        date = uiState.transactionDate,
-                        comment = uiState.comment
-                    ) {
-                        navController.popBackStack()
-                    }
-                    else viewModel.createTransaction(
-                        accountId = uiState.selectedAccountId,
-                        categoryId = uiState.selectedCategoryId,
-                        amount = uiState.amount,
-                        transactionDate = uiState.transactionDate,
-                        comment = uiState.comment
-                    ) {
-                        navController.popBackStack()
+                    if (currentTransactionId != null) {
+                        viewModel.updateTransaction(
+                            id = currentTransactionId,
+                            categoryId = uiState.selectedCategoryId,
+                            amount = uiState.amount,
+                            date = uiState.transactionDate,
+                            comment = uiState.comment
+                        ) { navController.popBackStack() }
+                    } else {
+                        viewModel.createTransaction(
+                            accountId = uiState.selectedAccountId,
+                            categoryId = uiState.selectedCategoryId,
+                            amount = uiState.amount,
+                            transactionDate = uiState.transactionDate,
+                            comment = uiState.comment
+                        ) { navController.popBackStack() }
                     }
                 }
             )
         )
     }
 
-    LaunchedEffect(safeCurrentTransaction, safeCategoryList) {
-        safeCurrentTransaction?.let {
-            viewModel.updateTransactionDate(it.createdAt)
-            viewModel.updateAmount(it.amount)
-            viewModel.updateComment(it.comment ?: "")
-            viewModel.updateSelectedCategory(
-                categoryId = it.categoryId,
-                categoryName = it.categoryName
-            )
-        } ?: run {
-            viewModel.updateAmount("")
-            viewModel.updateComment("")
-            viewModel.setCurrentDate()
-            if (safeCategoryList.isNotEmpty()) {
-                viewModel.updateSelectedCategory(
-                    safeCategoryList.first().categoryId,
-                    safeCategoryList.first().categoryName
-                )
-            }
-        }
-    }
-
     val currentDate = remember(uiState.transactionDate) {
-        try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-            dateFormat.parse(uiState.transactionDate) ?: Date()
-        } catch (e: Exception) {
-            Date()
-        }
+        DateUtils.parseDate(uiState.transactionDate) ?: Date()
     }
 
     if (showDatePicker) {
         CustomDatePickerDialog(
             initialDate = currentDate,
             selectableDates = object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    return utcTimeMillis <= currentDate.time
-                }
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis <= currentDate.time
             },
             onClear = {
                 viewModel.updateTransactionDate("")
                 showDatePicker = false
             },
-            onCancel = {
-                showDatePicker = false
-            },
+            onCancel = { showDatePicker = false },
             onConfirm = { date ->
-                val dateFormat =
-                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                viewModel.updateTransactionDate(dateFormat.format(date))
+                viewModel.updateTransactionDate(DateUtils.formatToUtc(date))
                 showDatePicker = false
             }
         )
     }
 
     if (showTimePicker) {
-        val calendar = Calendar.getInstance().apply {
-            time = currentDate
-        }
-
+        val calendar = Calendar.getInstance().apply { time = currentDate }
         TimePickerDialog(
             LocalContext.current,
             { _, hourOfDay, minute ->
@@ -184,10 +147,7 @@ fun AddTransactionScreen(
                 calendar.set(Calendar.MINUTE, minute)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
-
-                val updatedDate = dateFormat.format(calendar.time)
-                viewModel.updateTransactionDate(updatedDate)
-
+                viewModel.updateTransactionDate(DateUtils.formatToUtc(calendar.time))
                 showTimePicker = false
             },
             calendar.get(Calendar.HOUR_OF_DAY),
@@ -202,14 +162,11 @@ fun AddTransactionScreen(
             title = { Text("Выберите категорию") },
             text = {
                 LazyColumn {
-                    items(safeCategoryList) { category ->
+                    items(categories) { category ->
                         ListItem(
                             headlineContent = { Text(category.categoryName) },
                             modifier = Modifier.clickable {
-                                viewModel.updateSelectedCategory(
-                                    category.categoryId,
-                                    categoryName = category.categoryName
-                                )
+                                viewModel.updateSelectedCategory(category.categoryId, category.categoryName)
                             }
                         )
                         HorizontalDivider()
@@ -233,10 +190,9 @@ fun AddTransactionScreen(
         onTimeClick = { showTimePicker = true },
         onCommentChange = viewModel::updateComment,
         onDeleteClick = {
-            if (currentTransactionId != null)
-                viewModel.deleteTransaction(currentTransactionId) {
-                    navController.popBackStack()
-                }
+            currentTransactionId?.let {
+                viewModel.deleteTransaction(it) { navController.popBackStack() }
+            }
         },
         currentTransactionId = currentTransactionId
     )

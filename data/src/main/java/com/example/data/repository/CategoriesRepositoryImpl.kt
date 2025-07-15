@@ -2,6 +2,8 @@ package com.example.data.repository
 
 import com.example.data.retrofit.CategoriesApiService
 import com.example.data.dto.category.toDomain
+import com.example.data.dto.category.toEntity
+import com.example.data.room.dao.CategoryDao
 import com.example.data.safecaller.ApiCallHelper
 import com.example.domain.response.ApiResult
 import com.example.domain.model.CategoryDomain
@@ -19,7 +21,8 @@ import javax.inject.Singleton
 @Singleton
 class CategoriesRepositoryImpl @Inject constructor(
     private val apiService: CategoriesApiService,
-    private val apiCallHelper: ApiCallHelper
+    private val apiCallHelper: ApiCallHelper,
+    private val categoryDao: CategoryDao
 ) : CategoriesRepository {
     /**
      * Получает все доступные категории.
@@ -27,17 +30,27 @@ class CategoriesRepositoryImpl @Inject constructor(
      */
     override suspend fun getAllCategories(): ApiResult<List<CategoryDomain>> {
         return apiCallHelper.safeApiCall(block = {
-            apiService.getAllCategories().map { it.toDomain() }
+            val cached = categoryDao.getAllCategories()
+            if (cached.isNotEmpty()) {
+                cached.map { it.toDomain() }
+            } else {
+                val remote = apiService.getAllCategories()
+                categoryDao.insertCategories(remote.map { it.toEntity() })
+                remote.map { it.toDomain() }
+            }
         })
     }
-    /**
-     * Получает категории определенного типа (доходы/расходы).
-     * @param isIncome true - категории доходов, false - категории расходов
-     * @return [ApiResult] с отфильтрованным списком [CategoryDomain] или ошибкой
-     */
+
     override suspend fun getCategoriesByType(isIncome: Boolean): ApiResult<List<CategoryDomain>> {
         return apiCallHelper.safeApiCall(block = {
-            apiService.getCategoriesByType(isIncome).map { it.toDomain() }
+            val cached = categoryDao.getCategoriesByType(isIncome)
+            if (cached.isNotEmpty()) {
+                cached.map { it.toDomain() }
+            } else {
+                val remote = apiService.getCategoriesByType(isIncome)
+                categoryDao.insertCategories(remote.map { it.toEntity() })
+                remote.map { it.toDomain() }
+            }
         })
     }
 }
