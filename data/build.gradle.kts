@@ -45,10 +45,13 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.dagger)
     implementation (libs.androidx.room.runtime)
+    implementation(libs.androidx.work.runtime.ktx)
     ksp (libs.androidx.room.compiler)
     implementation (libs.androidx.room.ktx)
     ksp(libs.dagger.compiler)
     implementation(project(":domain"))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.runtime)
+    implementation (libs.assisted.inject.annotations.dagger2)
+    ksp (libs.assisted.inject.processor.dagger2)
 }

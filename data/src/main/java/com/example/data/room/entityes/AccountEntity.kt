@@ -1,9 +1,11 @@
 package com.example.data.room.entityes
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "accounts")
+@Entity(tableName = "accounts",
+    indices = [Index("id")])
 data class AccountEntity(
     @PrimaryKey val id: Int,
     val userId: Int,

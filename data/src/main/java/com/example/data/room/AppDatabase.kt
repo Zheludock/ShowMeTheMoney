@@ -23,7 +23,8 @@ import com.example.data.room.entityes.TransactionEntity
         AccountHistoryItemEntity::class,
         CategoryStatsEntity::class,
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao

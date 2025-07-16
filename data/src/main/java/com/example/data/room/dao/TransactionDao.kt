@@ -11,11 +11,11 @@ import com.example.data.room.entityes.TransactionWithCategoryAndAccount
 
 @Dao
 interface TransactionDao {
+    @Transaction
     @Query("""
     SELECT * FROM transactions
     WHERE accountId = :accountId
-    AND transactionDate >= :startDate
-    AND transactionDate <= :endDate
+    AND transactionDate BETWEEN :startDate AND :endDate
     """)
     suspend fun getTransactions(accountId: Int,
                                 startDate: String?,

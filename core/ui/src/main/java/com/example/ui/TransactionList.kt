@@ -1,4 +1,4 @@
-package com.example.transactions
+package com.example.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.ui.UniversalListItem
 import com.example.ui.theme.Indicator
 import com.example.utils.AccountManager
 import com.example.utils.StringFormatter
@@ -37,14 +35,13 @@ import com.example.utils.StringFormatter
  */
 @Composable
 fun TransactionList(transactions: List<TransactionItem>,
-                    navController: NavController,
-                    isIncome: Boolean) {
+                    onElementClick: (TransactionItem) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
         item {
             UniversalListItem(
-                content = stringResource(com.example.ui.R.string.amount) to null,
+                content = stringResource(R.string.amount) to null,
                 trail = StringFormatter.formatAmount(
                     transactions.sumOf { it.amount.toDoubleOrNull() ?: 0.0 },
                     transactions.firstOrNull()?.accountCurrency
@@ -61,13 +58,12 @@ fun TransactionList(transactions: List<TransactionItem>,
                 content = item.categoryName to item.comment,
                 trail = StringFormatter.formatAmount(item.amount.toDouble(), item.accountCurrency)  to {
                     Icon(
-                        painter = painterResource(com.example.ui.R.drawable.ic_more_vert),
-                        contentDescription = stringResource(com.example.ui.R.string.more),
+                        painter = painterResource(R.drawable.ic_more_vert),
+                        contentDescription = stringResource(R.string.more),
                         modifier = Modifier.size(24.dp)
                     )
                 },
-                onClick = { navController.navigate(if(isIncome) "add_income?transactionId=${item.id}"
-                else "add_expense?transactionId=${item.id}") }
+                onClick = { onElementClick(item) }
             )
         }
     }

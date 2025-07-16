@@ -27,6 +27,7 @@ class AccountRepositoryImpl @Inject constructor(
     private val apiCallHelper: ApiCallHelper,
     private val accountDao: AccountDao
 ) : AccountRepository {
+    suspend fun syncPendingData(){}
     /**
      * Получает список всех счетов пользователя.
      * @return [ApiResult] со списком [AccountDomain] или ошибкой

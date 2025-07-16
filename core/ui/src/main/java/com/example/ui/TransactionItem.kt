@@ -1,4 +1,6 @@
-package com.example.transactions
+package com.example.ui
+
+import com.example.domain.model.TransactionDomain
 
 /**
  * Данные финансовой транзакции.
@@ -23,3 +25,16 @@ data class TransactionItem(
     val createdAt: String,
     val isIncome: Boolean
 )
+fun TransactionDomain.toTransactionItem(): TransactionItem {
+    return TransactionItem(
+        id = id,
+        categoryEmoji = emoji,
+        categoryName = categoryName,
+        categoryId = categoryId,
+        comment = comment,
+        amount = amount,
+        accountCurrency = currency,
+        createdAt = createdAt,
+        isIncome = isIncome
+    )
+}

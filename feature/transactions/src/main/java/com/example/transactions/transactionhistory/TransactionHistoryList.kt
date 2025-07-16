@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.transactions.TransactionItem
+import com.example.ui.TransactionItem
 import com.example.ui.R
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.Indicator

@@ -10,10 +10,12 @@ import androidx.navigation.navArgument
 import com.example.account.AccountScreen
 import com.example.account.editaccount.EditAccountScreen
 import com.example.category.CategoryScreen
+import com.example.expenses.ExpensesScreen
+import com.example.expenseshistory.ExpensesHistoryScreen
+import com.example.incomes.IncomesScreen
+import com.example.incomeshistory.IncomesHistoryScreen
 import com.example.settings.SettingsScreen
 import com.example.transactions.addtransaction.AddTransactionScreen
-import com.example.transactions.TransactionScreen
-import com.example.transactions.transactionhistory.TransactionHistoryScreen
 import com.example.utils.TopBarState
 
 /**
@@ -37,41 +39,14 @@ fun AppNavHost(
         navController = navController,
         startDestination = Screen.Expenses.route
     ) {
-        composable(Screen.Expenses.route) {
-            TransactionScreen(
-                viewModelFactory,
-                false, navController, updateTopBar
-            )
-        }
-        composable(Screen.Income.route) {
-            TransactionScreen(
-                viewModelFactory,
-                true, navController, updateTopBar
-            )
-        }
+        composable(Screen.Expenses.route) { ExpensesScreen(viewModelFactory, navController, updateTopBar) }
+        composable(Screen.Income.route) { IncomesScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory, updateTopBar) }
-        composable(Screen.Account.route) {
-            AccountScreen(
-                viewModelFactory,
-                navController,
-                updateTopBar
-            )
-        }
+        composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.Settings.route) { SettingsScreen(updateTopBar) }
-        composable(Screen.History.route) {
-            TransactionHistoryScreen(
-                navController,
-                viewModelFactory,
-                updateTopBar
-            )
-        }
-        composable(Screen.EditAccount.route) {
-            EditAccountScreen(
-                viewModelFactory,
-                navController,
-                updateTopBar
-            )
-        }
+        composable(Screen.ExpenseHistory.route) { ExpensesHistoryScreen(navController, viewModelFactory, updateTopBar) }
+        composable(Screen.IncomeHistory.route) { IncomesHistoryScreen(navController, viewModelFactory, updateTopBar) }
+        composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController, updateTopBar) }
         composable(
             route = "add_expense?transactionId={transactionId}",
             arguments = listOf(

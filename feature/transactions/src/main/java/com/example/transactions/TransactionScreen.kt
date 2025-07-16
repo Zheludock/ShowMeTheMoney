@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import com.example.domain.response.ApiResult
 import com.example.ui.ErrorView
 import com.example.ui.LoadingIndicator
+import com.example.ui.TransactionList
 import com.example.utils.TopBarState
 
 /**
@@ -65,7 +66,7 @@ fun TransactionScreen(
 
     when (val state = transactionState) {
         is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> TransactionList(state.data, navController,isIncome)
+        is ApiResult.Success -> TransactionList(state.data, navController, isIncome)
         is ApiResult.Error -> ErrorView(state.error) {
             viewModel.loadTransactions(
                 viewModel.isIncome.value,

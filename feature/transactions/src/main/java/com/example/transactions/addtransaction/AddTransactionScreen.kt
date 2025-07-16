@@ -12,6 +12,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,20 +21,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.domain.model.CategoryDomain
-import com.example.domain.model.TransactionDomain
 import com.example.domain.response.ApiResult
 import com.example.ui.CustomDatePickerDialog
 import com.example.utils.DateUtils
 import com.example.utils.TopBarState
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +42,9 @@ fun AddTransactionScreen(
     updateTopBar: (TopBarState) -> Unit,
     currentTransactionId: Int? = null,
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+
     val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
 
     val currentRoute = navController.currentBackStackEntry?.destination?.route?.substringBefore("?")
@@ -57,6 +59,21 @@ fun AddTransactionScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
+    // Обработчик жизненного цикла для отмены корутин при выходе с экрана
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                viewModel.resetPendingOperations()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    // Инициализация экрана
     LaunchedEffect(isIncome, currentTransactionId) {
         viewModel.updateIsIncome(isIncome)
         viewModel.loadCurrentTransaction(currentTransactionId)
@@ -65,53 +82,57 @@ fun AddTransactionScreen(
     val categoriesResult = if (isIncome) incomeCategories else expenseCategories
     val categories = (categoriesResult as? ApiResult.Success)?.data.orEmpty()
 
+    // Инициализация категорий
     LaunchedEffect(categories) {
-        if (categories.isNotEmpty()) {
+        if (categories.isNotEmpty() && uiState.selectedCategoryId == -1) {
             viewModel.updateSelectedCategory(categories.first().categoryId, categories.first().categoryName)
         }
     }
 
     val transactionData = (currentTransaction as? ApiResult.Success)?.data
 
+    // Инициализация данных транзакции
     LaunchedEffect(transactionData, categories) {
         if (transactionData != null) {
-            viewModel.updateTransactionDate(transactionData.createdAt)
-            viewModel.updateAmount(transactionData.amount)
-            viewModel.updateComment(transactionData.comment ?: "")
-            viewModel.updateSelectedCategory(transactionData.categoryId, transactionData.categoryName)
+            viewModel.updateFromTransaction(transactionData)
         } else {
             viewModel.updateAmount("")
             viewModel.updateComment("")
             viewModel.setCurrentDate()
-            if (categories.isNotEmpty()) {
+            if (categories.isNotEmpty() && uiState.selectedCategoryId == -1) {
                 viewModel.updateSelectedCategory(categories.first().categoryId, categories.first().categoryName)
             }
         }
     }
 
-    LaunchedEffect(isIncome, uiState) {
+    // Настройка TopBar с фиксированным колбэком
+    val saveAction = remember {
+        {
+            if (currentTransactionId != null) {
+                viewModel.updateTransaction(
+                    id = currentTransactionId,
+                    categoryId = uiState.selectedCategoryId,
+                    amount = uiState.amount,
+                    date = uiState.transactionDate,
+                    comment = uiState.comment
+                ) { navController.popBackStack() }
+            } else {
+                viewModel.createTransaction(
+                    accountId = uiState.selectedAccountId,
+                    categoryId = uiState.selectedCategoryId,
+                    amount = uiState.amount,
+                    transactionDate = uiState.transactionDate,
+                    comment = uiState.comment
+                ) { navController.popBackStack() }
+            }
+        }
+    }
+
+    LaunchedEffect(isIncome) {
         updateTopBar(
             TopBarState(
                 title = if (isIncome) "Мои доходы" else "Мои расходы",
-                onActionClick = {
-                    if (currentTransactionId != null) {
-                        viewModel.updateTransaction(
-                            id = currentTransactionId,
-                            categoryId = uiState.selectedCategoryId,
-                            amount = uiState.amount,
-                            date = uiState.transactionDate,
-                            comment = uiState.comment
-                        ) { navController.popBackStack() }
-                    } else {
-                        viewModel.createTransaction(
-                            accountId = uiState.selectedAccountId,
-                            categoryId = uiState.selectedCategoryId,
-                            amount = uiState.amount,
-                            transactionDate = uiState.transactionDate,
-                            comment = uiState.comment
-                        ) { navController.popBackStack() }
-                    }
-                }
+                onActionClick = saveAction
             )
         )
     }
@@ -120,6 +141,7 @@ fun AddTransactionScreen(
         DateUtils.parseDate(uiState.transactionDate) ?: Date()
     }
 
+    // Диалог выбора даты
     if (showDatePicker) {
         CustomDatePickerDialog(
             initialDate = currentDate,
@@ -138,10 +160,11 @@ fun AddTransactionScreen(
         )
     }
 
+    // Диалог выбора времени
     if (showTimePicker) {
         val calendar = Calendar.getInstance().apply { time = currentDate }
         TimePickerDialog(
-            LocalContext.current,
+            context,
             { _, hourOfDay, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
@@ -156,6 +179,7 @@ fun AddTransactionScreen(
         ).show()
     }
 
+    // Диалог выбора категории
     if (showCategoryDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.showCategoryDialog(false) },
@@ -167,6 +191,7 @@ fun AddTransactionScreen(
                             headlineContent = { Text(category.categoryName) },
                             modifier = Modifier.clickable {
                                 viewModel.updateSelectedCategory(category.categoryId, category.categoryName)
+                                viewModel.showCategoryDialog(false)
                             }
                         )
                         HorizontalDivider()
@@ -181,6 +206,7 @@ fun AddTransactionScreen(
         )
     }
 
+    // Основной контент
     AddTransactionList(
         isIncome = isIncome,
         state = uiState,

@@ -23,7 +23,7 @@ class GetTransactionsUseCase @Inject constructor(
         accountId: Int,
         startDate: String,
         endDate: String
-    ): ApiResult<List<TransactionDomain>> {
+    ): List<TransactionDomain> {
         return repository.getTransactions(accountId, startDate, endDate)
     }
 }
