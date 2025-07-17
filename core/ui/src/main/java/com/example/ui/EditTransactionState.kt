@@ -6,7 +6,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-data class AddTransactionState(
+data class EditTransactionState(
+    val id: Int = -1,
     val accountId: Int = AccountManager.selectedAccountId,
     val accountName: String = AccountManager.selectedAccountName.value,
     val categoryId: Int = -1,

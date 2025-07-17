@@ -18,7 +18,9 @@ sealed class Screen(
     object Settings : Screen("settings")
     object ExpenseHistory : Screen("expenses_history")
     object IncomeHistory : Screen("incomes_history")
-    object AddExpense : Screen("add_expense?transactionId={transactionId}")
-    object AddIncome : Screen("add_income?transactionId={transactionId}")
+    object AddExpense : Screen("add_expense")
+    object AddIncome : Screen("add_income")
     object EditAccount : Screen("edit_account")
+    object EditExpense : Screen("edit_expense?transactionId={transactionId}")
+    object EditIncome : Screen("edit_income?transactionId={transactionId}")
 }

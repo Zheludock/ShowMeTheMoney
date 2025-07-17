@@ -91,6 +91,6 @@ fun ExpensesHistoryScreen(
         endDate = endDateForUI,
         onStartDateClick = { showStartDatePicker = true },
         onEndDateClick = { showEndDatePicker = true },
-        onElementClick = { item -> navController.navigate("add_expense?transactionId=${item.id}") }
+        onElementClick = { item -> navController.navigate("edit_expense?transactionId=${item.id}") }
     )
 }

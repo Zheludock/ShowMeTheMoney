@@ -1,4 +1,4 @@
-package com.example.addexpense
+package com.example.addincome
 
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
@@ -41,14 +41,14 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AddExpenseScreen(
+fun AddIncomeScreen(
     viewModelFactory: ViewModelProvider.Factory,
     navController: NavController,
     updateTopBar: (TopBarState) -> Unit
 ) {
-    val viewModel: AddExpenseViewModel = viewModel(factory = viewModelFactory)
+    val viewModel: AddIncomeViewModel = viewModel(factory = viewModelFactory)
 
-    val categories = viewModel.expenseCategories
+    val categories = viewModel.incomeCategories
 
 
     var showCategoryDialog by remember { mutableStateOf(false) }
@@ -60,7 +60,7 @@ fun AddExpenseScreen(
     LaunchedEffect(Unit) {
         updateTopBar(
             TopBarState(
-                title = "Мои расходы",
+                title = "Мои доходы",
                 onActionClick = {
                     viewModel.createTransaction()
                     navController.popBackStack()

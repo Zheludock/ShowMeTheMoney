@@ -36,7 +36,7 @@ fun IncomesScreen(
     TransactionList(
         transactions = transactionState,
         onElementClick = { item ->
-            navController.navigate("add_income?transactionId=${item.id}")
+            navController.navigate("edit_income?transactionId=${item.id}")
         }
     )
 }

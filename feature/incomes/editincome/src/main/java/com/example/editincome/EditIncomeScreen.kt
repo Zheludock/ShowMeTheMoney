@@ -1,4 +1,4 @@
-package com.example.addexpense
+package com.example.editincome
 
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
@@ -41,12 +41,13 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AddExpenseScreen(
+fun EditIncomeScreen(
     viewModelFactory: ViewModelProvider.Factory,
     navController: NavController,
-    updateTopBar: (TopBarState) -> Unit
+    updateTopBar: (TopBarState) -> Unit,
+    transactionId: Int
 ) {
-    val viewModel: AddExpenseViewModel = viewModel(factory = viewModelFactory)
+    val viewModel: EditIncomeViewModel = viewModel(factory = viewModelFactory)
 
     val categories = viewModel.expenseCategories
 
@@ -58,11 +59,12 @@ fun AddExpenseScreen(
     val datePickerFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
     LaunchedEffect(Unit) {
+        viewModel.loadTransactionById(transactionId)
         updateTopBar(
             TopBarState(
                 title = "Мои расходы",
                 onActionClick = {
-                    viewModel.createTransaction()
+                    viewModel.editTransaction()
                     navController.popBackStack()
                 }
             )

@@ -21,9 +21,11 @@
             <option value="$PROJECT_DIR$/feature/category" />
             <option value="$PROJECT_DIR$/feature/expenses" />
             <option value="$PROJECT_DIR$/feature/expenses/addexpense" />
+            <option value="$PROJECT_DIR$/feature/expenses/editexpense" />
             <option value="$PROJECT_DIR$/feature/expenses/expenseshistory" />
             <option value="$PROJECT_DIR$/feature/incomes" />
             <option value="$PROJECT_DIR$/feature/incomes/addincome" />
+            <option value="$PROJECT_DIR$/feature/incomes/editincome" />
             <option value="$PROJECT_DIR$/feature/incomes/incomeshistory" />
             <option value="$PROJECT_DIR$/feature/settings" />
             <option value="$PROJECT_DIR$/feature/transactions" />

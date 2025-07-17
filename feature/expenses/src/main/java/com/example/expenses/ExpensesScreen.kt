@@ -36,7 +36,7 @@ fun ExpensesScreen(
     TransactionList(
         transactions = transactionState,
         onElementClick = { item ->
-            navController.navigate("add_expence?transactionId=${item.id}")
+            navController.navigate("edit_expense?transactionId=${item.id}")
         }
     )
 }
