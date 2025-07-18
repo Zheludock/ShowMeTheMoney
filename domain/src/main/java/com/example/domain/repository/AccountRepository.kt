@@ -26,13 +26,6 @@ interface AccountRepository {
      */
     suspend fun getAccounts(): ApiResult<List<AccountDomain>>
     /**
-     * Создает новый аккаунт
-     * @param name Название аккаунта
-     * @param currency Валюта аккаунта (код валюты, например "RUB")
-     * @return ApiResult с созданным AccountDomain или ошибкой
-     */
-    suspend fun createAccount(name: String, currency: String): ApiResult<AccountDomain>
-    /**
      * Обновляет данные аккаунта
      * @param accountId ID редактируемого аккаунта
      * @param name Новое название
@@ -45,14 +38,7 @@ interface AccountRepository {
         balance: String,
         currency: String
     ): ApiResult<AccountDomain>
-    /**
-     * Удаляет аккаунт
-     * @param accountId ID удаляемого аккаунта
-     * @return ApiResult с Boolean:
-     *         - true при успешном удалении
-     *         - Error с ApiError при ошибке
-     */
-    suspend fun deleteAccount(accountId: Int): ApiResult<Boolean>
+
     /**
      * Получает историю операций и информацию об аккаунте по id аккаунта
      * @param accountId ID аккаунта

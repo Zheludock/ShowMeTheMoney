@@ -42,13 +42,7 @@ fun CategoryScreen(
     }
     val categoriesState by viewModel.categories.collectAsState()
 
-    when (val state = categoriesState) {
-        is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> CategoryList(state.data)
-        is ApiResult.Error -> ErrorView(state.error) {
-            viewModel.loadCategories()
-        }
-    }
+    CategoryList(categoriesState)
 }
 
 

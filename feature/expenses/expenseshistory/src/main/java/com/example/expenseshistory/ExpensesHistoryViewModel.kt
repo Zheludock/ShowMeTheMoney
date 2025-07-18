@@ -40,7 +40,7 @@ class ExpensesHistoryViewModel@Inject constructor(
             val result = getTransactionsUseCase.execute(accountId, startDate, endDate)
                 .filter { !it.isIncome }
                 .map { it.toTransactionItem() }
-                .sortedByDescending { it.createdAt }
+                .sortedByDescending { it.transactionDate }
             _transactions.value = result
         }
     }

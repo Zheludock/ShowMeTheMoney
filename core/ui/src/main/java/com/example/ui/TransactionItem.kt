@@ -22,7 +22,7 @@ data class TransactionItem(
     val comment: String?,
     val amount: String,
     val accountCurrency: String,
-    val createdAt: String,
+    val transactionDate: String,
     val isIncome: Boolean
 )
 fun TransactionDomain.toTransactionItem(): TransactionItem {
@@ -34,7 +34,7 @@ fun TransactionDomain.toTransactionItem(): TransactionItem {
         comment = comment,
         amount = amount,
         accountCurrency = currency,
-        createdAt = createdAt,
+        transactionDate = transactionDate,
         isIncome = isIncome
     )
 }

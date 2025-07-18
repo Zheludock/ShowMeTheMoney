@@ -3,13 +3,8 @@ package com.example.showmethemoney.di.module
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.work.ListenableWorker
-import androidx.work.WorkerFactory
-import com.example.data.sync.AppWorkerFactory
-import com.example.data.sync.BaseWorkerFactory
 import dagger.Module
 import dagger.Provides
-import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
@@ -38,12 +33,4 @@ class AppModule {
     fun provideConnectivityManager(
         context: Context
     ): ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-    @Provides
-    @Singleton
-    fun provideWorkerFactory(
-        workerFactories: Map<Class<out ListenableWorker>, @JvmSuppressWildcards Provider<BaseWorkerFactory<*>>>
-    ): WorkerFactory {
-        return AppWorkerFactory(workerFactories)
-    }
 }

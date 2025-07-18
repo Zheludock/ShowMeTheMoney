@@ -19,7 +19,6 @@ import com.example.expenseshistory.ExpensesHistoryScreen
 import com.example.incomes.IncomesScreen
 import com.example.incomeshistory.IncomesHistoryScreen
 import com.example.settings.SettingsScreen
-import com.example.transactions.addtransaction.AddTransactionScreen
 import com.example.utils.TopBarState
 
 /**

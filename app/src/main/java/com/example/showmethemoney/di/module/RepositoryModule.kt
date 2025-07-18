@@ -10,7 +10,6 @@ import com.example.data.room.dao.AccountDao
 import com.example.data.room.dao.CategoryDao
 import com.example.data.room.dao.TransactionDao
 import com.example.data.safecaller.ApiCallHelper
-import com.example.data.sync.SyncManager
 import com.example.domain.repository.AccountRepository
 import com.example.domain.repository.CategoriesRepository
 import com.example.domain.repository.TransactionRepository
@@ -57,8 +56,7 @@ object RepositoryModule {
         apiService: TransactionApiService,
         apiCallHelper: ApiCallHelper,
         transactionDao: TransactionDao,
-        syncManager: SyncManager,
     ): TransactionRepository {
-        return TransactionRepositoryImpl(apiService, apiCallHelper, transactionDao, syncManager)
+        return TransactionRepositoryImpl(apiService, apiCallHelper, transactionDao)
     }
 }

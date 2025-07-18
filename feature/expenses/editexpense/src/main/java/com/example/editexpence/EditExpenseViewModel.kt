@@ -21,8 +21,9 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import javax.inject.Inject
 
-class EditExpenseViewModel(
+class EditExpenseViewModel @Inject constructor(
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase,
     private val getTransactionDetailsUseCase: GetTransactionDetailsUseCase
@@ -61,7 +62,7 @@ class EditExpenseViewModel(
                 categoryId = currentTransaction.value!!.categoryId,
                 categoryName = currentTransaction.value!!.categoryName,
                 amount = currentTransaction.value!!.amount,
-                transactionDate = currentTransaction.value!!.createdAt,
+                transactionDate = currentTransaction.value!!.transactionDate,
                 comment = currentTransaction.value!!.comment
             )
         }

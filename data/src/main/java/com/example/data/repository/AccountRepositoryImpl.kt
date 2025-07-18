@@ -45,21 +45,6 @@ class AccountRepositoryImpl @Inject constructor(
         })
     }
     /**
-     * Создает новый счет.
-     * @param name Название счета
-     * @param currency Валюта счета (3-буквенный код, например "RUB")
-     * @return [ApiResult] с созданным [AccountDomain] или ошибкой
-     */
-    override suspend fun createAccount(name: String, currency: String): ApiResult<AccountDomain> {
-        return apiCallHelper.safeApiCall(block = {apiService.createAccount(
-            CreateAccountRequest(
-                name,
-                currency)
-                ).toDomain()
-            }
-        )
-    }
-    /**
      * Обновляет существующий счет.
      * @param accountId ID счета
      * @param name Новое название (опционально)
@@ -82,17 +67,6 @@ class AccountRepositoryImpl @Inject constructor(
             val updated = apiService.updateAccount(accountId, request)
             accountDao.updateAccount(updated.toEntity())
             updated.toDomain()
-        })
-    }
-    /**
-     * Удаляет счет.
-     * @param accountId ID счета для удаления
-     * @return [ApiResult] с результатом операции (true/false) или ошибкой
-     */
-    override suspend fun deleteAccount(accountId: Int): ApiResult<Boolean> {
-        return apiCallHelper.safeApiCall(block = {
-            val response = apiService.deleteAccount(accountId)
-            response.isSuccessful
         })
     }
     /**

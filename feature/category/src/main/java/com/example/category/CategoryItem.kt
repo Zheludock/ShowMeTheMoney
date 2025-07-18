@@ -1,5 +1,7 @@
 package com.example.category
 
+import com.example.domain.model.CategoryDomain
+
 /**
  * Модель категории для доходов/расходов.
  *

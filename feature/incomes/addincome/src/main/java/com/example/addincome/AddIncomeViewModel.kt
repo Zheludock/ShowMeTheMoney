@@ -18,8 +18,9 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import javax.inject.Inject
 
-class AddIncomeViewModel(
+class AddIncomeViewModel @Inject constructor(
     private val createTransactionUseCase: CreateTransactionUseCase,
     private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase
 ) : ViewModel() {

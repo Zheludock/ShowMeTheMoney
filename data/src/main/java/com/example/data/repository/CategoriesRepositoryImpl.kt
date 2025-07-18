@@ -28,29 +28,39 @@ class CategoriesRepositoryImpl @Inject constructor(
      * Получает все доступные категории.
      * @return [ApiResult] с списком [CategoryDomain] или ошибкой
      */
-    override suspend fun getAllCategories(): ApiResult<List<CategoryDomain>> {
-        return apiCallHelper.safeApiCall(block = {
-            val cached = categoryDao.getAllCategories()
-            if (cached.isNotEmpty()) {
-                cached.map { it.toDomain() }
-            } else {
-                val remote = apiService.getAllCategories()
-                categoryDao.insertCategories(remote.map { it.toEntity() })
-                remote.map { it.toDomain() }
+    override suspend fun getAllCategories(): List<CategoryDomain> {
+        val cached = categoryDao.getAllCategories()
+        if (cached.isNotEmpty()) {
+            return cached.map { it.toDomain() }
+        }
+
+        val apiResult = apiCallHelper.safeApiCall({ apiService.getAllCategories() })
+        return when (apiResult) {
+            is ApiResult.Success -> {
+                categoryDao.insertCategories(apiResult.data.map { it.toEntity() })
+                apiResult.data.map { it.toDomain() }
             }
-        })
+            else -> {
+                emptyList()
+            }
+        }
     }
 
-    override suspend fun getCategoriesByType(isIncome: Boolean): ApiResult<List<CategoryDomain>> {
-        return apiCallHelper.safeApiCall(block = {
-            val cached = categoryDao.getCategoriesByType(isIncome)
-            if (cached.isNotEmpty()) {
-                cached.map { it.toDomain() }
-            } else {
-                val remote = apiService.getCategoriesByType(isIncome)
-                categoryDao.insertCategories(remote.map { it.toEntity() })
-                remote.map { it.toDomain() }
+    override suspend fun getCategoriesByType(isIncome: Boolean): List<CategoryDomain> {
+        val cached = categoryDao.getCategoriesByType(isIncome)
+        if (cached.isNotEmpty()) {
+            return cached.map { it.toDomain() }
+        }
+
+        val apiResult = apiCallHelper.safeApiCall({ apiService.getAllCategories() })
+        return when (apiResult) {
+            is ApiResult.Success -> {
+                categoryDao.insertCategories(apiResult.data.map { it.toEntity() })
+                categoryDao.getCategoriesByType(isIncome).map { it.toDomain() }
             }
-        })
+            else -> {
+                emptyList()
+            }
+        }
     }
 }

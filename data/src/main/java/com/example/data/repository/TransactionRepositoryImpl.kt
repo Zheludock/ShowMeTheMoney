@@ -1,5 +1,6 @@
 package com.example.data.repository
 
+import android.util.Log
 import com.example.data.dto.transaction.CreateTransactionRequest
 import com.example.data.dto.transaction.toDomain
 import com.example.data.dto.transaction.toEntity
@@ -7,11 +8,12 @@ import com.example.data.retrofit.TransactionApiService
 import com.example.data.room.dao.TransactionDao
 import com.example.data.room.entityes.TransactionEntity
 import com.example.data.safecaller.ApiCallHelper
-import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
 import com.example.domain.repository.TransactionRepository
 import com.example.domain.response.ApiResult
+import com.example.utils.AccountManager
+import com.example.utils.DateUtils
 import javax.inject.Inject
 
 /**
@@ -32,10 +34,31 @@ class TransactionRepositoryImpl @Inject constructor(
         accountId: Int,
         startDate: String?,
         endDate: String?
-    ): ApiResult<List<TransactionDomain>> {
-        // Всегда читаем из локальной базы
-        val cached = transactionDao.getTransactions(accountId, startDate, endDate)
-        return ApiResult.Success(cached.filter { !it.isDeleted }.map { it.toDomain() })
+    ): List<TransactionDomain> {
+        val start = DateUtils.formatDateToIso8601startDay(startDate)
+        val end = DateUtils.formatDateToEndOfDayIso8601(endDate)
+        val count = transactionDao.transactionsCountByAccount(AccountManager.selectedAccountId)
+
+        if(count > 0){
+            Log.d("Room", "Запрос в ROOM с параметрами $startDate, $endDate")
+            val cached = transactionDao.getTransactions(accountId,
+                start,
+                end)
+            return cached.filter { !it.transaction.isDeleted }.map { it.toDomain() }
+        }
+
+        val apiResult = apiCallHelper.safeApiCall({ apiService.getTransactions(accountId, "2025-06-01",
+            DateUtils.formatCurrentDate()) })
+        return when (apiResult) {
+            is ApiResult.Success -> {
+                transactionDao.insertTransactions(apiResult.data.map { it.toEntity() })
+                Log.d("Room", "Данные загружены в Room")
+                transactionDao.getTransactions(accountId,
+                    start,
+                    end).map { it.toDomain() }
+            }
+            else -> emptyList()
+        }
     }
 
     override suspend fun createTransaction(
@@ -44,56 +67,61 @@ class TransactionRepositoryImpl @Inject constructor(
         amount: String,
         transactionDate: String,
         comment: String?
-    ): ApiResult<CreateTransactionDomain> {
-        // Создаём локально с pendingSync = true
+    ) {
         val newTransaction = TransactionEntity(
-            id = 0, // временный id, например можно генерировать отрицательные id для локальных транзакций
+            id = 0,
             accountId = accountId,
             categoryId = categoryId,
             amount = amount,
-            transactionDate = transactionDate,
             comment = comment,
-            createdAt = ,
+            transactionDate = transactionDate,
+            createdAt = DateUtils.formatCurrentDate(),
+            updatedAt = null,
             pendingSync = true,
             isDeleted = false
         )
         transactionDao.insertTransaction(newTransaction)
-        // Возвращаем локальный результат (можно расширить для генерации временного id)
-        return ApiResult.Success(newTransaction.toDomain())
     }
 
-    override suspend fun getTransactionDetails(transactionId: Int): ApiResult<TransactionDomain> {
+    override suspend fun getTransactionDetails(transactionId: Int): TransactionDomain {
         val cached = transactionDao.getTransactionWithDetails(transactionId)
-        return if (cached != null && !cached.isDeleted) {
-            ApiResult.Success(cached.toDomain())
-        } else {
-            ApiResult.Error(Throwable("Transaction not found"))
+        if (cached != null) {
+            if (cached.transaction.isDeleted) {
+                throw Exception("Transaction $transactionId has been deleted")
+            }
+            return cached.toDomain()
+        }
+
+        val apiResult = apiCallHelper.safeApiCall({ apiService.getTransactionDetails(transactionId) })
+        return when (apiResult) {
+            is ApiResult.Success -> {
+                val transaction = apiResult.data
+                transactionDao.insertTransaction(transaction.toEntity())
+                transaction.toDomain()
+            }
+            else -> {
+                throw Exception("Failed to fetch transaction $transactionId: $apiResult")
+            }
         }
     }
 
-    override suspend fun updateTransaction(transactionInput: TransactionInput): ApiResult<TransactionDomain> {
-        // Обновляем локально и ставим pendingSync
-        val updatedEntity = TransactionEntity(
-            id = transactionInput.transactionId,
-            accountId = transactionInput.accountId,
+    override suspend fun updateTransaction(transactionInput: TransactionInput) {
+        val updatedEntity = transactionDao.getTransactionById(transactionInput.transactionId)
+        updatedEntity.copy(
             categoryId = transactionInput.categoryId,
             amount = transactionInput.amount,
             transactionDate = transactionInput.transactionDate,
             comment = transactionInput.comment,
             pendingSync = true,
-            isDeleted = false
         )
         transactionDao.updateTransaction(updatedEntity)
-        return ApiResult.Success(updatedEntity.toDomain())
     }
 
-    override suspend fun deleteTransaction(transactionId: Int): ApiResult<Boolean> {
-        // Мягко удаляем локально и ставим pendingSync
+    override suspend fun deleteTransaction(transactionId: Int): Boolean {
         transactionDao.markTransactionDeleted(transactionId)
-        return ApiResult.Success(true)
+        return transactionDao.getTransactionById(transactionId).isDeleted
     }
 
-    // Новый метод для синхронизации
     suspend fun syncPendingTransactions() {
         val pending = transactionDao.getPendingSyncTransactions()
 
@@ -104,8 +132,7 @@ class TransactionRepositoryImpl @Inject constructor(
                     if (response.isSuccessful) {
                         transactionDao.deleteTransaction(transaction.id)
                     }
-                } else if (transaction.transactionId < 0) {
-                    // Локальная новая транзакция с временным id
+                } else if (transaction.id < 0) {
                     val request = CreateTransactionRequest(
                         accountId = transaction.accountId,
                         categoryId = transaction.categoryId,
@@ -113,11 +140,14 @@ class TransactionRepositoryImpl @Inject constructor(
                         transactionDate = transaction.transactionDate,
                         comment = transaction.comment
                     )
-                    val response = apiService.createTransaction(request)
-                    transactionDao.deleteTransaction(transaction.transactionId) // удаляем старую с временным id
-                    transactionDao.insertTransaction(response.toEntity()) // вставляем с новым id с сервера
+                    val response = apiCallHelper.safeApiCall({ apiService.createTransaction(request) })
+                    transactionDao.deleteTransaction(transaction.id)
+                    when (response){
+                        is ApiResult.Success -> transactionDao.insertTransaction(response.data.toEntity())
+                        else -> {}
+                    }
+
                 } else {
-                    // Обновление существующей
                     val request = CreateTransactionRequest(
                         accountId = transaction.accountId,
                         categoryId = transaction.categoryId,
@@ -125,7 +155,7 @@ class TransactionRepositoryImpl @Inject constructor(
                         transactionDate = transaction.transactionDate,
                         comment = transaction.comment
                     )
-                    val updated = apiService.updateTransaction(transaction.transactionId, request)
+                    val updated = apiService.updateTransaction(transaction.id, request)
                     transactionDao.updateTransaction(updated.toEntity())
                 }
             } catch (e: Exception) {

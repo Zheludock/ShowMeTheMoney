@@ -26,7 +26,7 @@ fun IncomesScreen(
         updateTopBar(
             TopBarState(
                 title = "Доходы сегодня",
-                onActionClick = { navController.navigate("income_history") }
+                onActionClick = { navController.navigate("incomes_history") }
             )
         )
     }

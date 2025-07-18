@@ -1,5 +1,6 @@
 package com.example.expenses
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.transaction.GetTransactionsUseCase
@@ -27,8 +28,10 @@ class ExpensesViewModel @Inject constructor(
             val result = getTransactionsUseCase.execute(accountId, startDate, endDate)
                 .filter { !it.isIncome }
                 .map{ it.toTransactionItem() }
-                .sortedByDescending { it.createdAt }
+                .sortedByDescending { it.transactionDate }
             _expenses.value = result
+
+            Log.d("Room", "Данные загружены из Room в количестве ${result.size}")
         }
     }
 }

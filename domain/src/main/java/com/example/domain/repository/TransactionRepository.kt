@@ -1,6 +1,5 @@
 package com.example.domain.repository
 
-import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
 
@@ -30,11 +29,11 @@ interface TransactionRepository {
         amount: String,
         transactionDate: String,
         comment: String?
-    ): CreateTransactionDomain
+    )
 
     suspend fun getTransactionDetails(transactionId: Int): TransactionDomain
 
-    suspend fun updateTransaction(transactionInput: TransactionInput): TransactionDomain
+    suspend fun updateTransaction(transactionInput: TransactionInput)
 
     suspend fun deleteTransaction(transactionId: Int): Boolean
 }

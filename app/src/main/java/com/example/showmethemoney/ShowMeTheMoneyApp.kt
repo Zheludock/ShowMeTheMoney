@@ -2,6 +2,8 @@ package com.example.showmethemoney
 
 import android.app.Application
 import com.example.showmethemoney.di.component.CoreComponent
+import com.example.showmethemoney.di.component.DaggerCoreComponent
+import com.example.showmethemoney.di.component.DaggerRepositoryComponent
 import com.example.showmethemoney.di.component.RepositoryComponent
 
 /**

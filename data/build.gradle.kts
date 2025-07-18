@@ -50,6 +50,7 @@ dependencies {
     implementation (libs.androidx.room.ktx)
     ksp(libs.dagger.compiler)
     implementation(project(":domain"))
+    implementation(project(":core:utils"))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.runtime)
     implementation (libs.assisted.inject.annotations.dagger2)

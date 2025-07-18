@@ -26,7 +26,7 @@ fun ExpensesScreen(
         updateTopBar(
             TopBarState(
                 title = "Расходы сегодня",
-                onActionClick = { navController.navigate("expense_history") }
+                onActionClick = { navController.navigate("expenses_history") }
             )
         )
     }

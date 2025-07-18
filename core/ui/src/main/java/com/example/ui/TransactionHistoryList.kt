@@ -57,7 +57,7 @@ fun TransactionHistoryList(
         item {
             UniversalListItem(
                 content = stringResource(R.string.start) to null,
-                trail = startDate to null,
+                trail = DateUtils.formatDateForDisplay(startDate) to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -68,7 +68,7 @@ fun TransactionHistoryList(
         item {
             UniversalListItem(
                 content = stringResource(R.string.end) to null,
-                trail = endDate to null,
+                trail = DateUtils.formatDateForDisplay(endDate) to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -118,8 +118,8 @@ private fun formatTransactionTrail(item: TransactionItem): String {
         item.amount.toDoubleOrNull() ?: 0.0,
         item.accountCurrency ?: AccountManager.selectedAccountCurrency.value
     )
-    val dateStr = item.createdAt.let { createdAt ->
-        DateUtils.stringToDate(createdAt)?.let { date ->
+    val dateStr = item.transactionDate.let { transactionDate ->
+        DateUtils.stringToDate(transactionDate)?.let { date ->
             "${DateUtils.formatDateForDisplay(DateUtils.formatDate(date))} ${
                 DateUtils.formatTime(date)
             }"

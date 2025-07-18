@@ -25,8 +25,6 @@ fun TransactionResponse.toDomain(): TransactionDomain {
         transactionDate = transactionDate,
         comment = comment,
         currency = account.currency,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
         isIncome = category.isIncome
     )
 }
@@ -64,8 +62,6 @@ fun TransactionWithCategoryAndAccount.toDomain() = TransactionDomain(
     transactionDate = transaction.transactionDate,
     comment = transaction.comment,
     currency = account.currency,
-    createdAt = transaction.createdAt,
-    updatedAt = transaction.updatedAt,
     isIncome = category.isIncome
 )
 
