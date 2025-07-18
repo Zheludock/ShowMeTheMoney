@@ -28,16 +28,6 @@ class AddIncomeViewModel @Inject constructor(
     private val _incomeCategories = MutableStateFlow<List<CategoryDomain>>(emptyList())
     val incomeCategories: StateFlow<List<CategoryDomain>> = _incomeCategories.asStateFlow()
 
-    private val apiDateFormat = SimpleDateFormat(
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-        Locale.getDefault()
-    ).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
-
-    private val displayDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    private val displayTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
     init {
         loadCategories()
     }
@@ -61,38 +51,9 @@ class AddIncomeViewModel @Inject constructor(
     }
 
     fun updateDate(newDate: String) {
-        val currentDateTime = parseApiDate(state.transactionDate)
-        val newDateObj = apiDateFormat.parse(newDate) ?: Date()
-
-        val calendar = Calendar.getInstance().apply {
-            time = currentDateTime
-            set(Calendar.YEAR, newDateObj.year + 1900)
-            set(Calendar.MONTH, newDateObj.month)
-            set(Calendar.DAY_OF_MONTH, newDateObj.date)
-        }
-
         state = state.copy(
-            transactionDate = apiDateFormat.format(calendar.time),
-            displayDate = displayDateFormat.format(calendar.time)
+            transactionDate = newDate
         )
-    }
-
-    fun updateTime(newTime: String) {
-        val currentDateTime = parseApiDate(state.transactionDate)
-        val calendar = Calendar.getInstance().apply { time = currentDateTime }
-
-        val (hours, minutes) = newTime.split(":").map { it.toInt() }
-        calendar.set(Calendar.HOUR_OF_DAY, hours)
-        calendar.set(Calendar.MINUTE, minutes)
-
-        state = state.copy(
-            transactionDate = apiDateFormat.format(calendar.time),
-            displayTime = displayTimeFormat.format(calendar.time)
-        )
-    }
-
-    private fun parseApiDate(dateString: String): Date {
-        return apiDateFormat.parse(dateString) ?: Date()
     }
 
     fun onCommentChange(comment: String) {

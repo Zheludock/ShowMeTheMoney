@@ -157,7 +157,8 @@ fun AddIncomeScreen(
                 calendar.set(Calendar.MINUTE, minute)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
-                viewModel.updateTime(DateUtils.formatToUtc(calendar.time))
+                val updatedDate = DateUtils.utcFormat.format(calendar.time)
+                viewModel.updateDate(updatedDate)
                 showTimePicker = false
             },
             calendar.get(Calendar.HOUR_OF_DAY),

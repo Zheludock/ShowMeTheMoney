@@ -56,10 +56,7 @@ class AddExpenseViewModel @Inject constructor(
     }
 
     fun createTransaction() {
-        val accountId = state.accountId
-        val categoryId = state.categoryId
         val amount = state.amount
-        val date = state.transactionDate
 
         if (amount.isBlank()) {
             return
@@ -71,10 +68,10 @@ class AddExpenseViewModel @Inject constructor(
 
         viewModelScope.launch {
             createTransactionUseCase.execute(
-                accountId = accountId,
-                categoryId = categoryId,
+                accountId = state.accountId,
+                categoryId = state.categoryId,
                 amount = amount,
-                transactionDate = date,
+                transactionDate = state.transactionDate,
                 comment = state.comment
             )
         }
