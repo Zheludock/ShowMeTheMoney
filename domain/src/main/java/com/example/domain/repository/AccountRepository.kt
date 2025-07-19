@@ -24,14 +24,7 @@ interface AccountRepository {
      *         - Error с ApiError при ошибке
      *         - Loading во время выполнения запроса
      */
-    suspend fun getAccounts(): ApiResult<List<AccountDomain>>
-    /**
-     * Создает новый аккаунт
-     * @param name Название аккаунта
-     * @param currency Валюта аккаунта (код валюты, например "RUB")
-     * @return ApiResult с созданным AccountDomain или ошибкой
-     */
-    suspend fun createAccount(name: String, currency: String): ApiResult<AccountDomain>
+    suspend fun getAccounts(): List<AccountDomain>
     /**
      * Обновляет данные аккаунта
      * @param accountId ID редактируемого аккаунта
@@ -44,25 +37,18 @@ interface AccountRepository {
         name: String,
         balance: String,
         currency: String
-    ): ApiResult<AccountDomain>
-    /**
-     * Удаляет аккаунт
-     * @param accountId ID удаляемого аккаунта
-     * @return ApiResult с Boolean:
-     *         - true при успешном удалении
-     *         - Error с ApiError при ошибке
-     */
-    suspend fun deleteAccount(accountId: Int): ApiResult<Boolean>
+    ): AccountDomain
+
     /**
      * Получает историю операций и информацию об аккаунте по id аккаунта
      * @param accountId ID аккаунта
      * @return ApiResult с AccountHistoryDomain (содержит историю операций) или ошибкой
      */
-    suspend fun getAccountHistory(accountId: Int): ApiResult<AccountHistoryDomain>
+    suspend fun getAccountHistory(accountId: Int): AccountHistoryDomain
     /**
      * Получает детальную информацию об аккаунте
      * @param accountId ID аккаунта
      * @return ApiResult с AccountDetailsDomain (расширенная информация) или ошибкой
      */
-    suspend fun getAccountDetails(accountId: Int): ApiResult<AccountDetailsDomain>
+    suspend fun getAccountDetails(accountId: Int): AccountDetailsDomain
 }

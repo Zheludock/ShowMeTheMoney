@@ -1,9 +1,9 @@
 package com.example.domain.usecase.account
 
-import com.example.domain.response.ApiResult
 import com.example.domain.model.AccountDomain
 import com.example.domain.repository.AccountRepository
 import javax.inject.Inject
+
 /**
  * UseCase для получения списка всех аккаунтов пользователя.
  *
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class GetAccountsUseCase @Inject constructor(
     private val repository: AccountRepository
 ){
-    suspend fun execute(): ApiResult<List<AccountDomain>> {
+    suspend fun execute(): List<AccountDomain> {
         return repository.getAccounts()
     }
 }

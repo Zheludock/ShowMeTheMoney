@@ -9,6 +9,7 @@ import com.example.domain.response.ApiResult
 import com.example.domain.usecase.account.GetAccountDetailsUseCase
 import com.example.domain.usecase.account.UpdateAccountUseCase
 import com.example.utils.AccountManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,23 +35,12 @@ class EditAccountViewModel @Inject constructor(
 ) : ViewModel() {
     val accountId = AccountManager.selectedAccountId
 
-    private val _accountDetails = MutableStateFlow<ApiResult<AccountDetailsItem>>(ApiResult.Loading)
-    val accountDetails: StateFlow<ApiResult<AccountDetailsItem>> = _accountDetails
+    private val _accountDetails = MutableStateFlow<AccountDetailsItem?>(null)
+    val accountDetails: StateFlow<AccountDetailsItem?> = _accountDetails
 
     fun loadAccountDetails() {
-        viewModelScope.launch {
-            _accountDetails.value = ApiResult.Loading
-            when (val result = getAccountDetailsUseCase.execute(accountId)) {
-                is ApiResult.Success -> {
-                    _accountDetails.value = ApiResult.Success(result.data.toAccountDetailsItem())
-                }
-
-                is ApiResult.Error -> {
-                    _accountDetails.value = result
-                }
-
-                ApiResult.Loading -> Unit
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            _accountDetails.value = getAccountDetailsUseCase.execute(accountId).toAccountDetailsItem()
         }
     }
 
@@ -59,27 +49,13 @@ class EditAccountViewModel @Inject constructor(
         currency: String,
         balance: String
     ) {
-        viewModelScope.launch {
-            _accountDetails.value = ApiResult.Loading
-            when (val result = updateAccountUseCase.execute(
+        viewModelScope.launch(Dispatchers.IO) {
+            _accountDetails.value = updateAccountUseCase.execute(
                 id = accountId,
                 currency = currency,
                 name = name,
                 balance = balance
-            )) {
-                is ApiResult.Success -> {
-                    val updatedItem = result.data.toAccountDetailsItem()
-                    _accountDetails.value = ApiResult.Success(updatedItem)
-
-                    AccountManager.updateAcc(updatedItem.currency, updatedItem.name)
-                }
-
-                is ApiResult.Error -> {
-                    _accountDetails.value = result
-                }
-
-                ApiResult.Loading -> Unit
-            }
+            ).toAccountDetailsItem()
         }
     }
 

@@ -2,9 +2,11 @@ package com.example.showmethemoney.ui.utils
 
 import android.content.Context
 import android.util.Log
+import com.example.category.toCategoryItem
 import com.example.domain.response.ApiResult
 import com.example.domain.usecase.account.GetAccountDetailsUseCase
 import com.example.domain.usecase.account.GetAccountsUseCase
+import com.example.domain.usecase.category.GetAllCategoriesUseCase
 import com.example.utils.AccountManager
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -35,6 +37,7 @@ import javax.inject.Inject
 class AccountInitializer @Inject constructor(
     private val getAccountsUseCase: GetAccountsUseCase,
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
+    private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val context: Context
 ) {
     private val sharedPreferences by lazy {
@@ -47,32 +50,27 @@ class AccountInitializer @Inject constructor(
      */
     suspend fun initialize() {
         try {
+            val category = getAllCategoriesUseCase.execute()
+
             val savedAccountId = sharedPreferences.getString("account_id", null)?.toInt()
 
             if (savedAccountId != null) {
                 val detailsResult = getAccountDetailsUseCase.execute(savedAccountId)
-                if (detailsResult is ApiResult.Success) {
-                    val account = detailsResult.data
-                    AccountManager.selectedAccountId = account.id
-                    AccountManager.updateAcc(account.currency, account.name)
-                    Log.d("AccountInitializer", "Account details loaded from backend")
-                    return
-                }
-                sharedPreferences.edit().remove("account_id").apply()
-                Log.d("AccountInitializer", "Failed to get account details, clearing saved ID")
+                AccountManager.selectedAccountId = detailsResult.id
+                AccountManager.updateAcc(detailsResult.currency, detailsResult.name)
+                Log.d("AccountInitializer", "Account details loaded from backend")
             }
 
             Log.d("AccountInitializer", "No saved account ID, fetching accounts list")
 
             val accountsResult = getAccountsUseCase.execute()
-            if (accountsResult is ApiResult.Success && accountsResult.data.isNotEmpty()) {
-                val account = accountsResult.data.first()
+            if (accountsResult != null) {
+                val account = accountsResult.first()
 
                 with(sharedPreferences.edit()) {
                     putString("account_id", account.id.toString())
                     apply()
                 }
-
                 AccountManager.selectedAccountId = account.id
                 AccountManager.updateAcc(account.currency, account.name)
             } else {

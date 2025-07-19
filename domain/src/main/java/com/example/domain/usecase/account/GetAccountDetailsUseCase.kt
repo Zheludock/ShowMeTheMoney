@@ -19,7 +19,7 @@ import javax.inject.Inject
 class GetAccountDetailsUseCase @Inject constructor(
     private val repository: AccountRepository
 ){
-    suspend fun execute(id: Int): ApiResult<AccountDetailsDomain> {
+    suspend fun execute(id: Int): AccountDetailsDomain {
         return repository.getAccountDetails(accountId = id)
     }
 }

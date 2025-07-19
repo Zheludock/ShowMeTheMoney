@@ -1,6 +1,11 @@
 package com.example.utils
 
+import android.util.Log
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -36,6 +41,28 @@ import java.util.TimeZone
  * - Время: "HH:mm" (24-часовой формат)
  */
 object DateUtils {
+    val utcFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
+
+    private val displayDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    private val displayTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    fun parseDate(dateString: String): Date? = try {
+        utcFormat.parse(dateString)
+    } catch (e: Exception) {
+        null
+    }
+
+    fun formatToUtc(date: Date): String = utcFormat.format(date)
+
+    fun formatDisplayDate(dateString: String): String = parseDate(dateString)?.let {
+        displayDateFormat.format(it)
+    } ?: dateString
+
+    fun formatDisplayTime(dateString: String): String = parseDate(dateString)?.let {
+        displayTimeFormat.format(it)
+    } ?: dateString
 
     private val defaultLocale = Locale.getDefault()
 
@@ -48,9 +75,12 @@ object DateUtils {
     }
 
     fun stringToDate(dateString: String): Date? {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", defaultLocale)
-        format.timeZone = TimeZone.getTimeZone("UTC")
-        return format.parse(dateString)
+        return try {
+            utcFormat.parse(dateString)
+        } catch (e: Exception) {
+            Log.e("DateUtils", "Failed to parse date: $dateString", e)
+            null // Return null if parsing fails
+        }
     }
 
     fun formatDateForDisplay(dateString: String): String {
@@ -68,5 +98,23 @@ object DateUtils {
 
     fun formatCurrentDate(): String {
         return formatDate(Date())
+    }
+
+    fun formatDateToIso8601startDay(inputDate: String?): String {
+        val localDate = LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE)
+        val zonedDateTime = localDate.atStartOfDay(ZoneOffset.UTC)
+        return DateTimeFormatter.ISO_INSTANT.format(zonedDateTime)
+    }
+
+    fun formatDateToEndOfDayIso8601(inputDate: String?): String? {
+        return try {
+            val localDate = LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE)
+
+            val endOfDay = localDate.atTime(LocalTime.MAX)
+
+            DateTimeFormatter.ISO_INSTANT.format(endOfDay.atZone(ZoneOffset.UTC))
+        } catch (e: Exception) {
+            null
+        }
     }
 }

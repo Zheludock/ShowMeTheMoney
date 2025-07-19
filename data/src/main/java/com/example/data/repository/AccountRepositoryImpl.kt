@@ -1,16 +1,21 @@
 package com.example.data.repository
 
-import com.example.data.retrofit.AccountApiService
-import com.example.data.dto.account.CreateAccountRequest
 import com.example.data.dto.account.UpdateAccountRequest
 import com.example.data.dto.account.toDomain
+import com.example.data.dto.account.toEntity
+import com.example.data.retrofit.AccountApiService
+import com.example.data.room.dao.AccountDao
+import com.example.data.room.entityes.AccountEntity
 import com.example.data.safecaller.ApiCallHelper
-import com.example.domain.response.ApiResult
 import com.example.domain.model.AccountDetailsDomain
 import com.example.domain.model.AccountDomain
 import com.example.domain.model.AccountHistoryDomain
 import com.example.domain.repository.AccountRepository
+import com.example.domain.response.ApiResult
+import com.example.utils.DateUtils
+import java.util.Date
 import javax.inject.Inject
+
 /**
  * Реализация [AccountRepository] для работы с банковскими счетами через API.
  * Обрабатывает все операции со счетами: создание, чтение, обновление, удаление,
@@ -22,31 +27,28 @@ import javax.inject.Inject
  */
 class AccountRepositoryImpl @Inject constructor(
     private val apiService: AccountApiService,
-    private val apiCallHelper: ApiCallHelper
+    private val apiCallHelper: ApiCallHelper,
+    private val accountDao: AccountDao
 ) : AccountRepository {
     /**
      * Получает список всех счетов пользователя.
      * @return [ApiResult] со списком [AccountDomain] или ошибкой
      */
-    override suspend fun getAccounts(): ApiResult<List<AccountDomain>> {
-        return apiCallHelper.safeApiCall(block = {
-            apiService.getAccounts().map { it.toDomain() }
-        })
-    }
-    /**
-     * Создает новый счет.
-     * @param name Название счета
-     * @param currency Валюта счета (3-буквенный код, например "RUB")
-     * @return [ApiResult] с созданным [AccountDomain] или ошибкой
-     */
-    override suspend fun createAccount(name: String, currency: String): ApiResult<AccountDomain> {
-        return apiCallHelper.safeApiCall(block = {apiService.createAccount(
-            CreateAccountRequest(
-                name,
-                currency)
-                ).toDomain()
+    override suspend fun getAccounts(): List<AccountDomain> {
+        val result = accountDao.getAllAccounts().map { it.toDomain() }
+
+        if(result.isNotEmpty()){
+            return result
+        }
+
+        val apiResult = apiCallHelper.safeApiCall({ apiService.getAccounts() })
+        return when (apiResult){
+            is ApiResult.Success -> {
+                accountDao.insertAccounts(apiResult.data.map { it.toEntity() })
+                accountDao.getAllAccounts().map{ it.toDomain() }
             }
-        )
+            else -> emptyList()
+        }
     }
     /**
      * Обновляет существующий счет.
@@ -61,41 +63,109 @@ class AccountRepositoryImpl @Inject constructor(
         name: String,
         balance: String,
         currency: String
-    ): ApiResult<AccountDomain> {
-        return apiCallHelper.safeApiCall(block = {
-            val request = UpdateAccountRequest(name, balance, currency)
-            apiService.updateAccount(accountId, request).toDomain()
-        })
-    }
-    /**
-     * Удаляет счет.
-     * @param accountId ID счета для удаления
-     * @return [ApiResult] с результатом операции (true/false) или ошибкой
-     */
-    override suspend fun deleteAccount(accountId: Int): ApiResult<Boolean> {
-        return apiCallHelper.safeApiCall(block = {
-            val response = apiService.deleteAccount(accountId)
-            response.isSuccessful
-        })
+    ): AccountDomain {
+        val acc = accountDao.getAccountById(accountId)
+        val updated = acc.copy(
+            name = name,
+            balance = balance,
+            currency = currency,
+            updatedAt = DateUtils.formatToUtc(Date())
+        )
+        accountDao.updateAccount(updated)
+        return updated.toDomain()
     }
     /**
      * Получает историю операций по счету.
      * @param accountId ID счета
      * @return [ApiResult] с [AccountHistoryDomain] или ошибкой
      */
-    override suspend fun getAccountHistory(accountId: Int): ApiResult<AccountHistoryDomain> {
-        return apiCallHelper.safeApiCall(block = {
-            apiService.getAccountHistory(accountId).toDomain()
-        })
+    override suspend fun getAccountHistory(accountId: Int): AccountHistoryDomain {
+        val cached = accountDao.getAccountHistory(accountId)
+        if(cached != null){
+            return cached.toDomain()
+        }
+        val apiResult = apiCallHelper.safeApiCall({ apiService.getAccountHistory(accountId) })
+        return when (apiResult){
+            is ApiResult.Success -> {
+                accountDao.insertAccountHistory(apiResult.data.toEntity())
+                accountDao.getAccountHistory(accountId)?.toDomain() ?: throw Exception("Can't find nothing")
+            }
+            else -> throw Exception("Can't find nothing")
+        }
     }
     /**
      * Получает детальную информацию о счете.
      * @param accountId ID счета
      * @return [ApiResult] с [AccountDetailsDomain] или ошибкой
      */
-    override suspend fun getAccountDetails(accountId: Int): ApiResult<AccountDetailsDomain> {
-        return apiCallHelper.safeApiCall(block = {
-            apiService.getAccountDetails(accountId).toDomain()
-        })
+    override suspend fun getAccountDetails(accountId: Int): AccountDetailsDomain {
+        val cached = accountDao.getAccountDetails(accountId)
+        if(cached != null){
+            return cached.toDomain()
+        }
+        val apiResult = apiCallHelper.safeApiCall({apiService.getAccountDetails(accountId)})
+        return when (apiResult){
+            is ApiResult.Success -> {
+                accountDao.insertAccountDetails(apiResult.data.toEntity())
+                accountDao.getAccountDetails(accountId)?.toDomain() ?: throw Exception("Can't find nothing")
+            }
+            else  -> throw Exception("Can't find nothing")
+        }
+    }
+
+
+    suspend fun syncPendingData() {
+        val localAccounts = accountDao.getAllAccounts().filter { it.updatedAt != null }
+
+        localAccounts.forEach { localAccount ->
+            try {
+                val apiResult = apiCallHelper.safeApiCall({
+                    apiService.getAccountDetails(localAccount.id)
+                })
+
+                when (apiResult) {
+                    is ApiResult.Success -> {
+                        val serverAccount = apiResult.data.toEntity()
+
+                        val finalAccount = if (localAccount.updatedAt != null && serverAccount.updatedAt != null) {
+                            val localUpdated = localAccount.updatedAt
+                            val serverUpdated = serverAccount.updatedAt
+
+                            if (localUpdated > serverUpdated) {
+                                localAccount
+                            } else {
+                                AccountEntity(
+                                    id = serverAccount.id,
+                                    userId = localAccount.userId,
+                                    name = serverAccount.name,
+                                    balance = serverAccount.balance,
+                                    currency = serverAccount.currency,
+                                    createdAt = serverAccount.createdAt,
+                                    updatedAt = serverAccount.updatedAt
+                                )
+                            }
+                        } else {
+                            localAccount
+                        }
+
+                        if (finalAccount == localAccount) {
+                            apiCallHelper.safeApiCall ({
+                                apiService.updateAccount(accountId = localAccount.id,
+                                    request = UpdateAccountRequest(
+                                        name = localAccount.name,
+                                        balance = localAccount.balance,
+                                        currency = localAccount.currency
+                                    )
+                                )
+                            })
+                        }
+                        accountDao.updateAccount(finalAccount)
+                    }
+                    else -> {}
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }

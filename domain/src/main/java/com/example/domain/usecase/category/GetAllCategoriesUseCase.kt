@@ -1,9 +1,9 @@
 package com.example.domain.usecase.category
 
-import com.example.domain.response.ApiResult
 import com.example.domain.model.CategoryDomain
 import com.example.domain.repository.CategoriesRepository
 import javax.inject.Inject
+
 /**
  * UseCase для получения полного списка всех категорий.
  *
@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 class GetAllCategoriesUseCase @Inject constructor(
         private val repository: CategoriesRepository) {
-    suspend fun execute(): ApiResult<List<CategoryDomain>> {
+    suspend fun execute(): List<CategoryDomain> {
         return repository.getAllCategories()
     }
 }

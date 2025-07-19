@@ -1,9 +1,9 @@
 package com.example.domain.usecase.account
 
-import com.example.domain.response.ApiResult
 import com.example.domain.model.AccountHistoryDomain
 import com.example.domain.repository.AccountRepository
 import javax.inject.Inject
+
 /**
  * UseCase для получения истории операций по конкретному аккаунту.
  *
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class GetAccountHistoryUseCase @Inject constructor(
     private val repository: AccountRepository
 ){
-    suspend fun execute(accountId: Int): ApiResult<AccountHistoryDomain> {
+    suspend fun execute(accountId: Int): AccountHistoryDomain {
         return repository.getAccountHistory(accountId = accountId)
     }
 }

@@ -26,7 +26,5 @@ data class TransactionDomain(
     val transactionDate: String,
     val comment: String?,
     val currency: String,
-    val createdAt: String,
-    val updatedAt: String,
     val isIncome: Boolean
 )

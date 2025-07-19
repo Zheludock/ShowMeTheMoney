@@ -1,7 +1,9 @@
 package com.example.data.dto.category
 
+import com.example.data.room.entityes.CategoryEntity
 import com.example.domain.model.CategoryDomain
 import com.example.domain.model.CategoryStatsDomain
+
 /**
  * Преобразует DTO категории из API в доменную модель.
  *
@@ -28,5 +30,23 @@ fun CategoryStats.toDomain(): CategoryStatsDomain {
         categoryName = categoryName,
         emoji = emoji,
         amount = amount
+    )
+}
+
+fun CategoryEntity.toDomain(): CategoryDomain{
+    return CategoryDomain(
+        categoryId = id,
+        categoryName = name,
+        emoji = emoji,
+        isIncome = isIncome
+    )
+}
+
+fun CategoryResponse.toEntity(): CategoryEntity{
+    return CategoryEntity(
+        id = id,
+        name = name,
+        emoji = emoji,
+        isIncome = isIncome
     )
 }

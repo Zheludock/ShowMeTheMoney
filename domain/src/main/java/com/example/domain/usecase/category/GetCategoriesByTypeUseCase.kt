@@ -21,7 +21,7 @@ class GetCategoriesByTypeUseCase @Inject constructor(
 ) {
     suspend fun execute(
         isIncome: Boolean
-    ): ApiResult<List<CategoryDomain>> {
+    ): List<CategoryDomain> {
         return repository.getCategoriesByType(isIncome)
     }
 }

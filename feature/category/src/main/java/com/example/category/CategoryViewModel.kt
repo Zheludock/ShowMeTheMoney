@@ -24,8 +24,8 @@ class CategoryViewModel @Inject constructor(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {
 
-    private val _categories = MutableStateFlow<ApiResult<List<CategoryItem>>>(ApiResult.Loading)
-    val categories: StateFlow<ApiResult<List<CategoryItem>>> = _categories
+    private val _categories = MutableStateFlow<List<CategoryItem>>(emptyList())
+    val categories: StateFlow<List<CategoryItem>> = _categories
 
     init {
         loadCategories()
@@ -33,17 +33,7 @@ class CategoryViewModel @Inject constructor(
 
     fun loadCategories() {
         viewModelScope.launch {
-            _categories.value = ApiResult.Loading
-            when (val result = getAllCategoriesUseCase.execute()) {
-                is ApiResult.Success -> {
-                    val mappedItems = result.data.map { it.toCategoryItem() }
-                    _categories.value = ApiResult.Success(mappedItems)
-                }
-                is ApiResult.Error -> {
-                    _categories.value = result
-                }
-                ApiResult.Loading -> Unit
-            }
+            _categories.value =  getAllCategoriesUseCase.execute().map { it.toCategoryItem() }
         }
     }
 }

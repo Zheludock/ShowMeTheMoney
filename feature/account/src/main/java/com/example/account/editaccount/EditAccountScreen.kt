@@ -105,12 +105,10 @@ fun EditAccountScreen(
     }
 
     LaunchedEffect(accountDetailsState) {
-        if (accountDetailsState is ApiResult.Success) {
-            val data = (accountDetailsState as ApiResult.Success<AccountDetailsItem>).data
-            accountName = data.name
-            accountBalance = data.balance
-            currentCurrency = data.currency
-        }
+            val data = accountDetailsState
+        data?.let { accountName = it.name }
+        data?.let { accountBalance = it.balance }
+        data?.let { currentCurrency = it.currency }
     }
 
     LaunchedEffect(showBalanceErrorSnackbar) {
@@ -123,6 +121,13 @@ fun EditAccountScreen(
         }
     }
 
+    LaunchedEffect(accountDetailsState) {
+        accountDetailsState?.let {
+            accountName = it.name
+            accountBalance = it.balance
+            currentCurrency = it.currency
+        }
+    }
 
     DisposableEffect(Unit) {
         onDispose {

@@ -25,23 +25,19 @@ class AccountViewModel @Inject constructor(
 ) : ViewModel() {
     val accountId = AccountManager.selectedAccountId
 
-    private val _accountDetails =
-        MutableStateFlow<ApiResult<AccountDetailsItem>>(ApiResult.Loading)
-    val accountDetails: StateFlow<ApiResult<AccountDetailsItem>> = _accountDetails
+    private val _accountDetails = MutableStateFlow<AccountDetailsItem?>(null)
+    val accountDetails: StateFlow<AccountDetailsItem?> = _accountDetails
 
     fun loadAccountDetails() {
         viewModelScope.launch {
-            _accountDetails.value = ApiResult.Loading
-            when (val result = getAccountDetailsUseCase.execute(accountId)) {
-                is ApiResult.Success -> {
-                    _accountDetails.value = ApiResult.Success(result.data.toAccountDetailsItem())
-                    AccountManager.updateAcc(result.data.currency,
-                        result.data.name)
+            _accountDetails.value = getAccountDetailsUseCase.execute(accountId).toAccountDetailsItem()
+            accountDetails.value?.currency?.let {
+                accountDetails.value?.name?.let { newName ->
+                    AccountManager.updateAcc(
+                        it,
+                        newName
+                    )
                 }
-                is ApiResult.Error -> {
-                    _accountDetails.value = result
-                }
-                ApiResult.Loading -> Unit
             }
         }
     }

@@ -5,7 +5,7 @@ import com.example.domain.response.ApiResult
 import javax.inject.Inject
 
 class DeleteTransactionUseCase @Inject constructor(private val repository: TransactionRepository) {
-    suspend fun execute(id: Int): ApiResult<Boolean>{
+    suspend fun execute(id: Int): Boolean{
         return repository.deleteTransaction(id)
     }
 }

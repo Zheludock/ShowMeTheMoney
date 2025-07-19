@@ -6,6 +6,9 @@ import com.example.data.retrofit.TransactionApiService
 import com.example.data.repository.AccountRepositoryImpl
 import com.example.data.repository.CategoriesRepositoryImpl
 import com.example.data.repository.TransactionRepositoryImpl
+import com.example.data.room.dao.AccountDao
+import com.example.data.room.dao.CategoryDao
+import com.example.data.room.dao.TransactionDao
 import com.example.data.safecaller.ApiCallHelper
 import com.example.domain.repository.AccountRepository
 import com.example.domain.repository.CategoriesRepository
@@ -31,26 +34,29 @@ object RepositoryModule {
     @FeatureScope
     fun provideAccountRepository(
         apiService: AccountApiService,
-        apiCallHelper: ApiCallHelper
+        apiCallHelper: ApiCallHelper,
+        accountDao: AccountDao
     ): AccountRepository {
-        return AccountRepositoryImpl(apiService, apiCallHelper)
+        return AccountRepositoryImpl(apiService, apiCallHelper, accountDao )
     }
 
     @Provides
     @FeatureScope
     fun provideCategoriesRepository(
         apiService: CategoriesApiService,
-        apiCallHelper: ApiCallHelper
+        apiCallHelper: ApiCallHelper,
+        categoryDao: CategoryDao
     ): CategoriesRepository {
-        return CategoriesRepositoryImpl(apiService, apiCallHelper)
+        return CategoriesRepositoryImpl(apiService, apiCallHelper, categoryDao)
     }
 
     @Provides
     @FeatureScope
     fun provideTransactionRepository(
         apiService: TransactionApiService,
-        apiCallHelper: ApiCallHelper
+        apiCallHelper: ApiCallHelper,
+        transactionDao: TransactionDao,
     ): TransactionRepository {
-        return TransactionRepositoryImpl(apiService, apiCallHelper)
+        return TransactionRepositoryImpl(apiService, apiCallHelper, transactionDao)
     }
 }
