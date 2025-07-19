@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,10 +12,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ui.DatePickerDialog
 import com.example.ui.UniversalListItem
+import com.example.ui.theme.Red
 import com.example.utils.DateUtils
 import com.example.utils.TopBarState
 import java.text.SimpleDateFormat
@@ -51,7 +55,6 @@ fun EditIncomeScreen(
 
     val categories = viewModel.expenseCategories
 
-
     var showCategoryDialog by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
@@ -62,13 +65,18 @@ fun EditIncomeScreen(
         viewModel.loadTransactionById(transactionId)
         updateTopBar(
             TopBarState(
-                title = "Мои расходы",
+                title = "Мои доходы",
                 onActionClick = {
                     viewModel.editTransaction()
-                    navController.popBackStack()
                 }
             )
         )
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.transactionEdited.collect {
+            navController.popBackStack()
+        }
     }
 
     val state = viewModel.state
@@ -101,8 +109,7 @@ fun EditIncomeScreen(
                         value = state.amount,
                         onValueChange = viewModel::onAmountChange,
                         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
             )
@@ -132,11 +139,26 @@ fun EditIncomeScreen(
                     BasicTextField(
                         value = state.comment ?: "",
                         onValueChange = viewModel::onCommentChange,
-                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                        modifier = Modifier.fillMaxWidth()
+                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End)
                     )
                 }
             )
+        }
+        item {
+            Button(
+                onClick = { viewModel.deleteIncome() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Red
+                )
+            ) {
+                Text(
+                    text = "Удалить доход",
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
     }
 
@@ -159,7 +181,8 @@ fun EditIncomeScreen(
                 calendar.set(Calendar.MINUTE, minute)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
-                viewModel.updateTime(DateUtils.formatToUtc(calendar.time))
+                val updatedDate = DateUtils.utcFormat.format(calendar.time)
+                viewModel.updateDate(updatedDate)
                 showTimePicker = false
             },
             calendar.get(Calendar.HOUR_OF_DAY),

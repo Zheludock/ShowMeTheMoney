@@ -9,21 +9,22 @@ import com.example.domain.model.CategoryDomain
 import com.example.domain.usecase.category.GetCategoriesByTypeUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.ui.AddTransactionState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 import javax.inject.Inject
 
 class AddIncomeViewModel @Inject constructor(
     private val createTransactionUseCase: CreateTransactionUseCase,
     private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase
 ) : ViewModel() {
+
+    private val _transactionCreated = MutableSharedFlow<Unit>()
+    val transactionCreated: SharedFlow<Unit> = _transactionCreated.asSharedFlow()
 
     private val _incomeCategories = MutableStateFlow<List<CategoryDomain>>(emptyList())
     val incomeCategories: StateFlow<List<CategoryDomain>> = _incomeCategories.asStateFlow()
@@ -60,6 +61,10 @@ class AddIncomeViewModel @Inject constructor(
         state = state.copy(comment = comment)
     }
 
+    fun resetState() {
+        state = AddTransactionState()
+    }
+
     fun createTransaction() {
         val amount = state.amount
 
@@ -79,6 +84,8 @@ class AddIncomeViewModel @Inject constructor(
                 transactionDate = state.transactionDate,
                 comment = state.comment
             )
+            _transactionCreated.emit(Unit)
+            resetState()
         }
     }
 }

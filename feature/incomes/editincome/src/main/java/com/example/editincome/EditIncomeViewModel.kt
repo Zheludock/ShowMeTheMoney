@@ -8,25 +8,28 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.CategoryDomain
 import com.example.domain.model.TransactionDomain
 import com.example.domain.usecase.category.GetCategoriesByTypeUseCase
+import com.example.domain.usecase.transaction.DeleteTransactionUseCase
 import com.example.domain.usecase.transaction.GetTransactionDetailsUseCase
 import com.example.domain.usecase.transaction.UpdateTransactionUseCase
 import com.example.ui.EditTransactionState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 import javax.inject.Inject
 
 class EditIncomeViewModel @Inject constructor(
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase,
-    private val getTransactionDetailsUseCase: GetTransactionDetailsUseCase
+    private val getTransactionDetailsUseCase: GetTransactionDetailsUseCase,
+    private val deleteTransactionUseCase: DeleteTransactionUseCase
 ) : ViewModel() {
+    private val _transactionEdited = MutableSharedFlow<Unit>()
+    val transactionEdited: SharedFlow<Unit> = _transactionEdited.asSharedFlow()
 
     private val _expenseCategories = MutableStateFlow<List<CategoryDomain>>(emptyList())
     val expenseCategories: StateFlow<List<CategoryDomain>> = _expenseCategories.asStateFlow()
@@ -37,22 +40,12 @@ class EditIncomeViewModel @Inject constructor(
     var state by mutableStateOf(EditTransactionState())
         private set
 
-    private val apiDateFormat = SimpleDateFormat(
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-        Locale.getDefault()
-    ).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
-
-    private val displayDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    private val displayTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
     init {
         loadCategories()
     }
 
     fun loadTransactionById(id: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _currentTransaction.value = getTransactionDetailsUseCase.execute(id)
         }
         if (currentTransaction.value != null) {
@@ -68,7 +61,7 @@ class EditIncomeViewModel @Inject constructor(
     }
 
     private fun loadCategories() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _expenseCategories.value = getCategoriesByTypeUseCase.execute(true)
         }
     }
@@ -83,42 +76,17 @@ class EditIncomeViewModel @Inject constructor(
     }
 
     fun updateDate(newDate: String) {
-        val currentDateTime = parseApiDate(state.transactionDate)
-        val newDateObj = apiDateFormat.parse(newDate) ?: Date()
-
-        val calendar = Calendar.getInstance().apply {
-            time = currentDateTime
-            set(Calendar.YEAR, newDateObj.year + 1900)
-            set(Calendar.MONTH, newDateObj.month)
-            set(Calendar.DAY_OF_MONTH, newDateObj.date)
-        }
-
         state = state.copy(
-            transactionDate = apiDateFormat.format(calendar.time),
-            displayDate = displayDateFormat.format(calendar.time)
+            transactionDate = newDate
         )
-    }
-
-    fun updateTime(newTime: String) {
-        val currentDateTime = parseApiDate(state.transactionDate)
-        val calendar = Calendar.getInstance().apply { time = currentDateTime }
-
-        val (hours, minutes) = newTime.split(":").map { it.toInt() }
-        calendar.set(Calendar.HOUR_OF_DAY, hours)
-        calendar.set(Calendar.MINUTE, minutes)
-
-        state = state.copy(
-            transactionDate = apiDateFormat.format(calendar.time),
-            displayTime = displayTimeFormat.format(calendar.time)
-        )
-    }
-
-    private fun parseApiDate(dateString: String): Date {
-        return apiDateFormat.parse(dateString) ?: Date()
     }
 
     fun onCommentChange(comment: String) {
         state = state.copy(comment = comment)
+    }
+
+    fun resetState() {
+        state = EditTransactionState()
     }
 
     fun editTransaction() {
@@ -135,7 +103,7 @@ class EditIncomeViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             updateTransactionUseCase.execute(
                 id = state.id,
                 accountId = accountId,
@@ -144,6 +112,16 @@ class EditIncomeViewModel @Inject constructor(
                 date = date,
                 comment = state.comment
             )
+            _transactionEdited.emit(Unit)
+            resetState()
+        }
+    }
+
+    fun deleteIncome(){
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteTransactionUseCase.execute(state.id)
+            _transactionEdited.emit(Unit)
+            resetState()
         }
     }
 }

@@ -11,6 +11,8 @@ import com.example.account.AccountScreen
 import com.example.account.editaccount.EditAccountScreen
 import com.example.addexpense.AddExpenseScreen
 import com.example.addincome.AddIncomeScreen
+import com.example.analysis.ExpenseAnalysisScreen
+import com.example.analysis.IncomeAnalysisScreen
 import com.example.category.CategoryScreen
 import com.example.editexpence.EditExpenseScreen
 import com.example.editincome.EditIncomeScreen
@@ -78,5 +80,7 @@ fun AppNavHost(
             val transactionId = backStackEntry.arguments?.getInt("transactionId")
             EditIncomeScreen(viewModelFactory, navController, updateTopBar, transactionId!!)
         }
+        composable(Screen.ExpenseAnalysis.route) { ExpenseAnalysisScreen(viewModelFactory, updateTopBar) }
+        composable(Screen.IncomeAnalysis.route) { IncomeAnalysisScreen(viewModelFactory, updateTopBar) }
     }
 }

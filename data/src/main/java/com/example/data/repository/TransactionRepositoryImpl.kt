@@ -68,8 +68,9 @@ class TransactionRepositoryImpl @Inject constructor(
         transactionDate: String,
         comment: String?
     ) {
+        val temporaryId = generateTemporaryId()
         val newTransaction = TransactionEntity(
-            id = 0,
+            id = temporaryId,
             accountId = accountId,
             categoryId = categoryId,
             amount = amount,
@@ -106,7 +107,9 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTransaction(transactionInput: TransactionInput) {
+        Log.d("EDITTRANSACTION", "Repository получил запрос на обновление")
         val updatedEntity = transactionDao.getTransactionById(transactionInput.transactionId)
+        Log.d("EDITTRANSACTION", "Создана entity: $updatedEntity")
         updatedEntity.copy(
             categoryId = transactionInput.categoryId,
             amount = transactionInput.amount,
@@ -115,6 +118,7 @@ class TransactionRepositoryImpl @Inject constructor(
             pendingSync = true,
         )
         transactionDao.updateTransaction(updatedEntity)
+        Log.d("EDITTRANSACTION", "Запрос к БД выполнен")
     }
 
     override suspend fun deleteTransaction(transactionId: Int): Boolean {
@@ -162,6 +166,10 @@ class TransactionRepositoryImpl @Inject constructor(
                 // Игнорируем ошибки, синхронизация повторится позже
             }
         }
+    }
+
+    private fun generateTemporaryId(): Int {
+        return -System.currentTimeMillis().toInt()
     }
 }
 

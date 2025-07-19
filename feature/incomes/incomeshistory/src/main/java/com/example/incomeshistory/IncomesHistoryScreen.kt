@@ -1,5 +1,6 @@
 package com.example.incomeshistory
 
+import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +30,10 @@ fun IncomesHistoryScreen(
     LaunchedEffect(Unit) {
         updateTopBar(
             TopBarState(
-                title = "Моя история"
+                title = "Моя история",
+                onActionClick = {
+                    navController.navigate("income_analysis")
+                }
             )
         )
     }

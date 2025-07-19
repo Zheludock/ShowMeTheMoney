@@ -49,8 +49,6 @@ fun AddExpenseScreen(
     val viewModel: AddExpenseViewModel = viewModel(factory = viewModelFactory)
 
     val categories = viewModel.expenseCategories
-
-
     var showCategoryDialog by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
@@ -63,10 +61,17 @@ fun AddExpenseScreen(
                 title = "Мои расходы",
                 onActionClick = {
                     viewModel.createTransaction()
-                    navController.popBackStack()
                 }
             )
         )
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.transactionCreated.collect {
+            navController.navigate("expenses") {
+                popUpTo("add_expense")
+            }
+        }
     }
 
     val state = viewModel.state
@@ -99,8 +104,7 @@ fun AddExpenseScreen(
                         value = state.amount,
                         onValueChange = viewModel::onAmountChange,
                         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
             )
@@ -130,8 +134,7 @@ fun AddExpenseScreen(
                     BasicTextField(
                         value = state.comment ?: "",
                         onValueChange = viewModel::onCommentChange,
-                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                        modifier = Modifier.fillMaxWidth()
+                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End)
                     )
                 }
             )

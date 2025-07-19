@@ -2,7 +2,6 @@ package com.example.incomeshistory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.response.ApiResult
 import com.example.domain.usecase.transaction.GetTransactionsUseCase
 import com.example.ui.TransactionItem
 import com.example.ui.toTransactionItem

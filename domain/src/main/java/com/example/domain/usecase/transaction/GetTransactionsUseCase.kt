@@ -1,9 +1,9 @@
 package com.example.domain.usecase.transaction
 
-import com.example.domain.response.ApiResult
 import com.example.domain.model.TransactionDomain
 import com.example.domain.repository.TransactionRepository
 import javax.inject.Inject
+
 /**
  * UseCase для получения списка транзакций за указанный период.
  *

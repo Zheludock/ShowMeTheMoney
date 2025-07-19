@@ -3,7 +3,6 @@ package com.example.addincome
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -63,10 +62,17 @@ fun AddIncomeScreen(
                 title = "Мои доходы",
                 onActionClick = {
                     viewModel.createTransaction()
-                    navController.popBackStack()
                 }
             )
         )
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.transactionCreated.collect {
+            navController.navigate("incomes") {
+                popUpTo("add_income")
+            }
+        }
     }
 
     val state = viewModel.state
@@ -99,8 +105,7 @@ fun AddIncomeScreen(
                         value = state.amount,
                         onValueChange = viewModel::onAmountChange,
                         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
             )
@@ -130,8 +135,7 @@ fun AddIncomeScreen(
                     BasicTextField(
                         value = state.comment ?: "",
                         onValueChange = viewModel::onCommentChange,
-                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                        modifier = Modifier.fillMaxWidth()
+                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End)
                     )
                 }
             )

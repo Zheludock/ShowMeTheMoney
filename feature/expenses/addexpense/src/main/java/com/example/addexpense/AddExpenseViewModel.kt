@@ -9,8 +9,11 @@ import com.example.domain.model.CategoryDomain
 import com.example.domain.usecase.category.GetCategoriesByTypeUseCase
 import com.example.domain.usecase.transaction.CreateTransactionUseCase
 import com.example.ui.AddTransactionState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +22,8 @@ class AddExpenseViewModel @Inject constructor(
     private val createTransactionUseCase: CreateTransactionUseCase,
     private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase
 ) : ViewModel() {
+    private val _transactionCreated = MutableSharedFlow<Unit>()
+    val transactionCreated: SharedFlow<Unit> = _transactionCreated.asSharedFlow()
 
     private val _expenseCategories = MutableStateFlow<List<CategoryDomain>>(emptyList())
     val expenseCategories: StateFlow<List<CategoryDomain>> = _expenseCategories.asStateFlow()
@@ -55,6 +60,10 @@ class AddExpenseViewModel @Inject constructor(
         state = state.copy(comment = comment)
     }
 
+    fun resetState() {
+        state = AddTransactionState()
+    }
+
     fun createTransaction() {
         val amount = state.amount
 
@@ -74,6 +83,8 @@ class AddExpenseViewModel @Inject constructor(
                 transactionDate = state.transactionDate,
                 comment = state.comment
             )
+            _transactionCreated.emit(Unit)
+            resetState()
         }
     }
 }

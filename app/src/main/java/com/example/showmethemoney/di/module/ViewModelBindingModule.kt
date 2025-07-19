@@ -5,6 +5,8 @@ import com.example.account.AccountViewModel
 import com.example.account.editaccount.EditAccountViewModel
 import com.example.addexpense.AddExpenseViewModel
 import com.example.addincome.AddIncomeViewModel
+import com.example.analysis.ExpenseAnalysisViewModel
+import com.example.analysis.IncomeAnalysisViewModel
 import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
 import com.example.category.CategoryViewModel
 import com.example.editexpence.EditExpenseViewModel
@@ -104,4 +106,16 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(EditIncomeViewModel::class)
     abstract fun bindEditIncomeViewModel(viewModel: EditIncomeViewModel): ViewModel
+
+    @Binds
+    @ActivityScope
+    @IntoMap
+    @ViewModelKey(IncomeAnalysisViewModel::class)
+    abstract fun bindIncomeAnalysisViewModel(viewModel: IncomeAnalysisViewModel): ViewModel
+
+    @Binds
+    @ActivityScope
+    @IntoMap
+    @ViewModelKey(ExpenseAnalysisViewModel::class)
+    abstract fun bindExpenseAnalysisViewModel(viewModel: ExpenseAnalysisViewModel): ViewModel
 }

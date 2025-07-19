@@ -54,6 +54,7 @@ dependencies {
     api(project(":feature:settings"))
     api(project(":domain"))
     api(project(":feature:category"))
+    api(project(":feature:analysis"))
     api(project(":feature:incomes"))
     api(project(":feature:incomes:incomeshistory"))
     api(project(":feature:expenses"))

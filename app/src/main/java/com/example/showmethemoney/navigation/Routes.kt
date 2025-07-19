@@ -23,4 +23,6 @@ sealed class Screen(
     object EditAccount : Screen("edit_account")
     object EditExpense : Screen("edit_expense?transactionId={transactionId}")
     object EditIncome : Screen("edit_income?transactionId={transactionId}")
+    object IncomeAnalysis : Screen("income_analysis")
+    object ExpenseAnalysis : Screen("expense_analysis")
 }
