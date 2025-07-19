@@ -9,6 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.example.data.sync.SyncWorker
 import com.example.showmethemoney.ShowMeTheMoneyApp
 import com.example.showmethemoney.di.component.DaggerRepositoryComponent
 import com.example.showmethemoney.di.component.DaggerViewModelComponent
@@ -64,6 +67,8 @@ class MainActivity : ComponentActivity() {
 
         uiConfigurator.configure(this)
 
+        checkSyncStatus()
+
         setContent {
             ShowMeTheMoneyTheme {
                 Surface(
@@ -81,5 +86,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun checkSyncStatus() {
+        WorkManager.getInstance(this)
+            .getWorkInfosByTagLiveData(SyncWorker.WORK_TAG)
     }
 }

@@ -56,22 +56,16 @@ class AccountInitializer @Inject constructor(
 
             if (savedAccountId != null) {
                 val detailsResult = getAccountDetailsUseCase.execute(savedAccountId)
-                if (detailsResult is ApiResult.Success) {
-                    val account = detailsResult.data
-                    AccountManager.selectedAccountId = account.id
-                    AccountManager.updateAcc(account.currency, account.name)
-                    Log.d("AccountInitializer", "Account details loaded from backend")
-                    return
-                }
-                sharedPreferences.edit().remove("account_id").apply()
-                Log.d("AccountInitializer", "Failed to get account details, clearing saved ID")
+                AccountManager.selectedAccountId = detailsResult.id
+                AccountManager.updateAcc(detailsResult.currency, detailsResult.name)
+                Log.d("AccountInitializer", "Account details loaded from backend")
             }
 
             Log.d("AccountInitializer", "No saved account ID, fetching accounts list")
 
             val accountsResult = getAccountsUseCase.execute()
-            if (accountsResult is ApiResult.Success && accountsResult.data.isNotEmpty()) {
-                val account = accountsResult.data.first()
+            if (accountsResult != null) {
+                val account = accountsResult.first()
 
                 with(sharedPreferences.edit()) {
                     putString("account_id", account.id.toString())

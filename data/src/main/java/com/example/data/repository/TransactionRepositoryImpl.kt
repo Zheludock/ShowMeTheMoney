@@ -2,6 +2,7 @@ package com.example.data.repository
 
 import android.util.Log
 import com.example.data.dto.transaction.CreateTransactionRequest
+import com.example.data.dto.transaction.TransactionResponse
 import com.example.data.dto.transaction.toDomain
 import com.example.data.dto.transaction.toEntity
 import com.example.data.retrofit.TransactionApiService
@@ -129,41 +130,104 @@ class TransactionRepositoryImpl @Inject constructor(
     suspend fun syncPendingTransactions() {
         val pending = transactionDao.getPendingSyncTransactions()
 
-        pending.forEach { transaction ->
+        pending.forEach { localTransaction ->
             try {
-                if (transaction.isDeleted) {
-                    val response = apiService.deleteTransaction(transaction.id)
-                    if (response.isSuccessful) {
-                        transactionDao.deleteTransaction(transaction.id)
-                    }
-                } else if (transaction.id < 0) {
-                    val request = CreateTransactionRequest(
-                        accountId = transaction.accountId,
-                        categoryId = transaction.categoryId,
-                        amount = transaction.amount,
-                        transactionDate = transaction.transactionDate,
-                        comment = transaction.comment
-                    )
-                    val response = apiCallHelper.safeApiCall({ apiService.createTransaction(request) })
-                    transactionDao.deleteTransaction(transaction.id)
-                    when (response){
-                        is ApiResult.Success -> transactionDao.insertTransaction(response.data.toEntity())
-                        else -> {}
-                    }
+                val serverTransaction = apiCallHelper.safeApiCall({
+                    localTransaction.id.takeIf { it > 0 }?.let { apiService.getTransactionDetails(it) }
+                })
 
-                } else {
-                    val request = CreateTransactionRequest(
-                        accountId = transaction.accountId,
-                        categoryId = transaction.categoryId,
-                        amount = transaction.amount,
-                        transactionDate = transaction.transactionDate,
-                        comment = transaction.comment
-                    )
-                    val updated = apiService.updateTransaction(transaction.id, request)
-                    transactionDao.updateTransaction(updated.toEntity())
+                when {
+                    localTransaction.isDeleted -> handleDeletedTransaction(localTransaction)
+                    localTransaction.id < 0 -> handleNewTransaction(localTransaction)
+                    else -> handleExistingTransaction(localTransaction, serverTransaction)
                 }
             } catch (e: Exception) {
-                // Игнорируем ошибки, синхронизация повторится позже
+                Log.e("Sync", "Error syncing transaction ${localTransaction.id}", e)
+            }
+        }
+    }
+
+    private suspend fun handleDeletedTransaction(localTransaction: TransactionEntity) {
+        val response = apiService.deleteTransaction(localTransaction.id)
+        if (response.isSuccessful) {
+            transactionDao.deleteTransaction(localTransaction.id)
+        }
+    }
+
+    private suspend fun handleNewTransaction(localTransaction: TransactionEntity) {
+        val request = CreateTransactionRequest(
+            accountId = localTransaction.accountId,
+            categoryId = localTransaction.categoryId,
+            amount = localTransaction.amount,
+            transactionDate = localTransaction.transactionDate,
+            comment = localTransaction.comment
+        )
+
+        when (val response = apiCallHelper.safeApiCall({ apiService.createTransaction(request) })) {
+            is ApiResult.Success -> {
+                transactionDao.deleteTransaction(localTransaction.id)
+                transactionDao.insertTransaction(response.data.toEntity().copy(
+                    pendingSync = false
+                ))
+            }
+            else -> {
+                transactionDao.updateTransaction(localTransaction.copy(
+                    pendingSync = true
+                ))
+            }
+        }
+    }
+
+    private suspend fun handleExistingTransaction(
+        localTransaction: TransactionEntity,
+        serverResult: ApiResult<TransactionResponse?>
+    ) {
+        when (serverResult) {
+            is ApiResult.Success -> {
+                val serverTransaction = serverResult.data
+                serverTransaction?.let { resolveConflict(localTransaction, it) }
+            }
+            else -> {
+                transactionDao.updateTransaction(localTransaction.copy(
+                    pendingSync = true,
+                ))
+            }
+        }
+    }
+
+    private suspend fun resolveConflict(
+        localTransaction: TransactionEntity,
+        serverTransaction: TransactionResponse
+    ) {
+        val localUpdatedAt = localTransaction.updatedAt ?: localTransaction.createdAt
+        val serverUpdatedAt = serverTransaction.updatedAt
+
+        when {
+            localUpdatedAt > serverUpdatedAt -> {
+                val request = CreateTransactionRequest(
+                    accountId = localTransaction.accountId,
+                    categoryId = localTransaction.categoryId,
+                    amount = localTransaction.amount,
+                    transactionDate = localTransaction.transactionDate,
+                    comment = localTransaction.comment
+                )
+
+                val updated = apiService.updateTransaction(localTransaction.id, request)
+                transactionDao.updateTransaction(updated.toEntity().copy(
+                    pendingSync = false
+                ))
+            }
+
+            serverUpdatedAt > localUpdatedAt -> {
+                transactionDao.updateTransaction(serverTransaction.toEntity().copy(
+                    pendingSync = false
+                ))
+            }
+
+            else -> {
+                transactionDao.updateTransaction(localTransaction.copy(
+                    pendingSync = false
+                ))
             }
         }
     }

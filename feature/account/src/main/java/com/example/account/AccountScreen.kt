@@ -27,10 +27,6 @@ import com.example.utils.TopBarState
  * - Показывает контент при успешной загрузке
  * - Отображает ошибку с возможностью повтора при неудачном запросе
  *
- * Состояния:
- * - [ApiResult.Loading] - Показывает [com.example.showmethemoney.ui.components.LoadingIndicator] во время загрузки данных
- * - [ApiResult.Success] - Отображает основной контент через [AccountContent] с полученными данными
- * - [ApiResult.Error] - Показывает [com.example.showmethemoney.ui.components.ErrorView] с сообщением об ошибке и кнопкой повтора
  */
 @Composable
 fun AccountScreen(
@@ -54,11 +50,5 @@ fun AccountScreen(
         )
     }
 
-    when (val state = accountDetailsState) {
-        is ApiResult.Loading -> LoadingIndicator()
-        is ApiResult.Success -> AccountContent(state.data)
-        is ApiResult.Error -> ErrorView(state.error) {
-            viewModel.loadAccountDetails()
-        }
-    }
+    accountDetailsState?.let { AccountContent(it) }
 }

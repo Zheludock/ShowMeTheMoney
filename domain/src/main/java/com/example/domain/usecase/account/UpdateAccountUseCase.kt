@@ -2,7 +2,6 @@ package com.example.domain.usecase.account
 
 import com.example.domain.model.AccountDomain
 import com.example.domain.repository.AccountRepository
-import com.example.domain.response.ApiResult
 import javax.inject.Inject
 
 class UpdateAccountUseCase @Inject constructor(
@@ -11,7 +10,7 @@ class UpdateAccountUseCase @Inject constructor(
     suspend fun execute(id: Int,
                         currency: String,
                         name: String,
-                        balance: String): ApiResult<AccountDomain> {
+                        balance: String): AccountDomain {
         return repository.updateAccount(
             accountId = id,
             currency = currency,

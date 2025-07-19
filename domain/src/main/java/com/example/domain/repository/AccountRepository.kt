@@ -24,7 +24,7 @@ interface AccountRepository {
      *         - Error с ApiError при ошибке
      *         - Loading во время выполнения запроса
      */
-    suspend fun getAccounts(): ApiResult<List<AccountDomain>>
+    suspend fun getAccounts(): List<AccountDomain>
     /**
      * Обновляет данные аккаунта
      * @param accountId ID редактируемого аккаунта
@@ -37,18 +37,18 @@ interface AccountRepository {
         name: String,
         balance: String,
         currency: String
-    ): ApiResult<AccountDomain>
+    ): AccountDomain
 
     /**
      * Получает историю операций и информацию об аккаунте по id аккаунта
      * @param accountId ID аккаунта
      * @return ApiResult с AccountHistoryDomain (содержит историю операций) или ошибкой
      */
-    suspend fun getAccountHistory(accountId: Int): ApiResult<AccountHistoryDomain>
+    suspend fun getAccountHistory(accountId: Int): AccountHistoryDomain
     /**
      * Получает детальную информацию об аккаунте
      * @param accountId ID аккаунта
      * @return ApiResult с AccountDetailsDomain (расширенная информация) или ошибкой
      */
-    suspend fun getAccountDetails(accountId: Int): ApiResult<AccountDetailsDomain>
+    suspend fun getAccountDetails(accountId: Int): AccountDetailsDomain
 }
