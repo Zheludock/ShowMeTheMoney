@@ -59,14 +59,11 @@ class SyncWorker @AssistedInject constructor(
         fun setup(context: Context) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresBatteryNotLow(true)
                 .build()
 
             val syncWorkRequest = PeriodicWorkRequestBuilder<SyncWorker>(
                 15,
                 TimeUnit.MINUTES,
-                15,
-                TimeUnit.MINUTES
             )
                 .setConstraints(constraints)
                 .addTag(WORK_TAG)
