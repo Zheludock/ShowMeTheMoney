@@ -1,4 +1,7 @@
 package com.example.domain.model
+
+import java.util.Date
+
 /**
  * Доменная модель транзакции, содержащая(пока что) все необходимые данные для отображения
  * и бизнес-логики приложения.
@@ -23,7 +26,7 @@ data class TransactionDomain(
     val categoryName: String,
     val categoryId: Int,
     val amount: String,
-    val transactionDate: String,
+    val transactionDate: Date,
     val comment: String?,
     val currency: String,
     val isIncome: Boolean

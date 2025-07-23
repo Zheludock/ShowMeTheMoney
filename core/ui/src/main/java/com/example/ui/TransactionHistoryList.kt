@@ -17,6 +17,7 @@ import com.example.ui.theme.Indicator
 import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import com.example.utils.StringFormatter
+import java.util.Date
 
 /**
  * Компонент для отображения истории транзакций с возможностью выбора периода и подсчётом суммы.
@@ -45,8 +46,8 @@ import com.example.utils.StringFormatter
 @Composable
 fun TransactionHistoryList(
     transactions: List<TransactionItem>,
-    startDate: String,
-    endDate: String,
+    startDate: Date,
+    endDate: Date,
     onStartDateClick: () -> Unit,
     onEndDateClick: () -> Unit,
     onElementClick: (TransactionItem) -> Unit
@@ -57,7 +58,7 @@ fun TransactionHistoryList(
         item {
             UniversalListItem(
                 content = stringResource(R.string.start) to null,
-                trail = DateUtils.formatDateForDisplay(startDate) to null,
+                trail = DateUtils.formatDateToString(startDate) to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -68,7 +69,7 @@ fun TransactionHistoryList(
         item {
             UniversalListItem(
                 content = stringResource(R.string.end) to null,
-                trail = DateUtils.formatDateForDisplay(endDate) to null,
+                trail = DateUtils.formatDateToString(endDate) to null,
                 modifier = Modifier
                     .background(Indicator)
                     .height(56.dp)
@@ -118,12 +119,8 @@ private fun formatTransactionTrail(item: TransactionItem): String {
         item.amount.toDoubleOrNull() ?: 0.0,
         item.accountCurrency ?: AccountManager.selectedAccountCurrency.value
     )
-    val dateStr = item.transactionDate.let { transactionDate ->
-        DateUtils.stringToDate(transactionDate)?.let { date ->
-            "${DateUtils.formatDateForDisplay(DateUtils.formatDate(date))} ${
-                DateUtils.formatTime(date)
-            }"
-        } ?: ""
-    }
+
+    val dateStr = "${DateUtils.formatDateToString(item.transactionDate)} ${DateUtils.formatTime(item.transactionDate)}"
+
     return "$amountStr\n$dateStr"
 }

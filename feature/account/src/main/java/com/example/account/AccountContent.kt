@@ -9,8 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import barchart.BarChart
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.Indicator
+import com.example.utils.AccountManager
 import com.example.utils.StringFormatter
 
 /**
@@ -23,6 +26,7 @@ import com.example.utils.StringFormatter
 @Composable
 fun AccountContent(
     details: AccountDetailsItem,
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -45,6 +49,9 @@ fun AccountContent(
                 modifier = Modifier.background(Indicator)
                     .height(56.dp)
             )
+        }
+        item {
+            BarChart(viewModelFactory, AccountManager.selectedAccountId)
         }
     }
 }

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 class AddIncomeViewModel @Inject constructor(
@@ -51,7 +52,7 @@ class AddIncomeViewModel @Inject constructor(
         state = state.copy(amount = amount)
     }
 
-    fun updateDate(newDate: String) {
+    fun updateDate(newDate: Date) {
         state = state.copy(
             transactionDate = newDate
         )

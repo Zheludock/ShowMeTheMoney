@@ -2,6 +2,7 @@ package com.example.data.room.entityes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(tableName = "account_details")
 data class AccountDetailsEntity(
@@ -9,6 +10,6 @@ data class AccountDetailsEntity(
     val name: String,
     val balance: String,
     val currency: String,
-    val createdAt: String,
-    val updatedAt: String
+    val createdAt: Date,
+    val updatedAt: Date?
 )

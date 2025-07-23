@@ -1,7 +1,6 @@
 package com.example.editexpence
 
 import android.app.TimePickerDialog
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,23 +35,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ui.DatePickerDialog
+import com.example.ui.TransactionTransfer
 import com.example.ui.UniversalListItem
 import com.example.ui.theme.Red
 import com.example.utils.DateUtils
 import com.example.utils.TopBarState
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun EditExpenseScreen(
     viewModelFactory: ViewModelProvider.Factory,
     navController: NavController,
-    updateTopBar: (TopBarState) -> Unit,
-    transactionId: Int
+    updateTopBar: (TopBarState) -> Unit
 ) {
-    val viewModel: EditExpenseViewModel = viewModel(factory = viewModelFactory)
+    val transactionId = TransactionTransfer.editedTransaction.id
+
+    val viewModel: EditExpenseViewModel = viewModel(
+        factory = viewModelFactory,
+        key = "EditExpenseScreen_$transactionId"
+    )
 
     val categories = viewModel.expenseCategories
 
@@ -61,15 +63,12 @@ fun EditExpenseScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
-    val datePickerFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
-
-    LaunchedEffect(Unit) {
-        viewModel.loadTransactionById(transactionId)
+    LaunchedEffect(transactionId) {
+        viewModel.resetState()
         updateTopBar(
             TopBarState(
                 title = "Мои расходы",
                 onActionClick = {
-                    Log.d("EDITTRANSACTION", "Отправил команду на редактирование")
                     viewModel.editTransaction()
                 }
             )
@@ -120,7 +119,7 @@ fun EditExpenseScreen(
         item {
             UniversalListItem(
                 content = "Дата" to null,
-                trail = state.getFormattedDate() to null,
+                trail = DateUtils.formatDateToString(state.transactionDate) to null,
                 onClick = {
                     showDatePicker = true
                 }
@@ -129,7 +128,7 @@ fun EditExpenseScreen(
         item {
             UniversalListItem(
                 content = "Время" to null,
-                trail = state.getFormattedTime() to null,
+                trail = DateUtils.formatTime(state.transactionDate) to null,
                 onClick = {
                     showTimePicker = true
                 }
@@ -168,7 +167,6 @@ fun EditExpenseScreen(
     DatePickerDialog(
         showDialog = showDatePicker,
         onDismissRequest = { showDatePicker = false },
-        dateFormat = datePickerFormat,
         initialDate = state.transactionDate,
         onDateSelected = { newDate ->
             viewModel.updateDate(newDate)
@@ -184,7 +182,7 @@ fun EditExpenseScreen(
                 calendar.set(Calendar.MINUTE, minute)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
-                val updatedDate = DateUtils.utcFormat.format(calendar.time)
+                val updatedDate = calendar.time
                 viewModel.updateDate(updatedDate)
                 showTimePicker = false
             },

@@ -1,22 +1,24 @@
 package com.example.showmethemoney.di.module
 
 import androidx.lifecycle.ViewModel
+import barchart.BarChartViewModel
 import com.example.account.AccountViewModel
 import com.example.account.editaccount.EditAccountViewModel
 import com.example.addexpense.AddExpenseViewModel
 import com.example.addincome.AddIncomeViewModel
 import com.example.analysis.ExpenseAnalysisViewModel
 import com.example.analysis.IncomeAnalysisViewModel
-import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
 import com.example.category.CategoryViewModel
 import com.example.editexpence.EditExpenseViewModel
 import com.example.editincome.EditIncomeViewModel
 import com.example.expenses.ExpensesViewModel
 import com.example.expenseshistory.ExpensesHistoryViewModel
+import com.example.graphics.piechart.PieChartViewModel
 import com.example.incomes.IncomesViewModel
 import com.example.incomeshistory.IncomesHistoryViewModel
-import com.example.showmethemoney.di.util.ViewModelKey
 import com.example.showmethemoney.di.scopes.ActivityScope
+import com.example.showmethemoney.di.util.ViewModelKey
+import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -118,4 +120,16 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(ExpenseAnalysisViewModel::class)
     abstract fun bindExpenseAnalysisViewModel(viewModel: ExpenseAnalysisViewModel): ViewModel
+
+    @Binds
+    @ActivityScope
+    @IntoMap
+    @ViewModelKey(PieChartViewModel::class)
+    abstract fun bindPieChartViewModel(viewModel: PieChartViewModel): ViewModel
+
+    @Binds
+    @ActivityScope
+    @IntoMap
+    @ViewModelKey(BarChartViewModel::class)
+    abstract fun bindBarChartViewModel(viewModel: BarChartViewModel): ViewModel
 }

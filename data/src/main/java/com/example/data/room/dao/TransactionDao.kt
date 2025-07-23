@@ -8,14 +8,26 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.data.room.entityes.TransactionEntity
 import com.example.data.room.entityes.TransactionWithCategoryAndAccount
+import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface TransactionDao {
     @Transaction
-    @Query("SELECT * FROM transactions WHERE accountId = :accountId AND (transactionDate >= :startDate AND transactionDate <= :endDate)")
-    suspend fun getTransactions(accountId: Int,
-                                startDate: String?,
-                                endDate: String?): List<TransactionWithCategoryAndAccount>
+    @Query("""
+    SELECT * FROM transactions
+    WHERE accountId = :accountId
+    AND (:startDate IS NULL OR transactionDate >= :startDate)
+    AND (:endDate IS NULL OR transactionDate <= :endDate)
+    AND isDeleted = 0
+    ORDER BY transactionDate DESC
+""")
+    fun getTransactions(
+        accountId: Int,
+        startDate: Date,
+        endDate: Date
+    ): Flow<List<TransactionWithCategoryAndAccount>>
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransactions(transactions: List<TransactionEntity>)
@@ -45,9 +57,7 @@ interface TransactionDao {
     @Query("SELECT COUNT(*) FROM transactions WHERE accountId = :accountId AND isDeleted = 0")
     suspend fun transactionsCountByAccount(accountId: Int): Int
 
-    @Query("SELECT COUNT(*) FROM transactions WHERE accountId = :accountId AND (:startDate IS NULL OR :endDate IS NULL OR transactionDate BETWEEN :startDate AND :endDate)")
-    suspend fun transactionsCountByAccountAndDate(accountId: Int, startDate: String?, endDate: String?): Int
-
+    @Transaction
     @Query("SELECT * FROM transactions")
     suspend fun getFirstTransaction(): List<TransactionWithCategoryAndAccount>
 }

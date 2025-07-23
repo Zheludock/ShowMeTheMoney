@@ -2,6 +2,8 @@ package com.example.domain.usecase.transaction
 
 import com.example.domain.model.TransactionDomain
 import com.example.domain.repository.TransactionRepository
+import kotlinx.coroutines.flow.Flow
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -19,11 +21,11 @@ import javax.inject.Inject
 class GetTransactionsUseCase @Inject constructor(
     private val repository: TransactionRepository
 ) {
-    suspend fun execute(
+    fun execute(
         accountId: Int,
-        startDate: String,
-        endDate: String
-    ): List<TransactionDomain> {
+        startDate: Date,
+        endDate: Date
+    ): Flow<List<TransactionDomain>> {
         return repository.getTransactions(accountId, startDate, endDate)
     }
 }

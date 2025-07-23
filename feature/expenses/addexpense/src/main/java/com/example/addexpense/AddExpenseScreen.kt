@@ -3,7 +3,6 @@ package com.example.addexpense
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -112,7 +111,7 @@ fun AddExpenseScreen(
         item {
             UniversalListItem(
                 content = "Дата" to null,
-                trail = state.getFormattedDate() to null,
+                trail = DateUtils.formatDateToString(state.transactionDate) to null,
                 onClick = {
                     showDatePicker = true
                 }
@@ -121,7 +120,7 @@ fun AddExpenseScreen(
         item {
             UniversalListItem(
                 content = "Время" to null,
-                trail = state.getFormattedTime() to null,
+                trail = DateUtils.formatTime(Date()) to null,
                 onClick = {
                     showTimePicker = true
                 }
@@ -144,7 +143,6 @@ fun AddExpenseScreen(
     DatePickerDialog(
         showDialog = showDatePicker,
         onDismissRequest = { showDatePicker = false },
-        dateFormat = datePickerFormat,
         initialDate = state.transactionDate,
         onDateSelected = { newDate ->
             viewModel.updateDate(newDate)
@@ -160,7 +158,7 @@ fun AddExpenseScreen(
                 calendar.set(Calendar.MINUTE, minute)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
-                val updatedDate = DateUtils.utcFormat.format(calendar.time)
+                val updatedDate = calendar.time
                 viewModel.updateDate(updatedDate)
                 showTimePicker = false
             },

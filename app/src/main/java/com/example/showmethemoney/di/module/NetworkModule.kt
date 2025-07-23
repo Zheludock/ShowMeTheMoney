@@ -21,7 +21,7 @@ import javax.inject.Singleton
 @Module
 object NetworkModule {
     private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
-    private val TOKEN: String = BuildConfig.API_TOKEN
+    private const val TOKEN: String = BuildConfig.API_TOKEN
     private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
     /**
@@ -33,6 +33,7 @@ object NetworkModule {
     @Singleton
     fun provideGson(): Gson = GsonBuilder()
         .setDateFormat(DATE_FORMAT)
+        .serializeNulls()
         .create()
     /**
      * Предоставляет настроенный экземпляр [OkHttpClient] с:

@@ -1,4 +1,5 @@
 package com.example.data.dto.transaction
+
 /**
  * DTO (Data Transfer Object) для создания новой транзакции.
  * Используется при отправке запроса на создание транзакции на сервер.

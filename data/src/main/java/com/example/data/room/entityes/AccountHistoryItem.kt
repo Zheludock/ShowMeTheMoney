@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(
     tableName = "account_history_item",
@@ -21,6 +22,6 @@ data class AccountHistoryItemEntity(
     val changeType: String,
     val previousStateJson: String?,
     val newStateJson: String,
-    val changeTimestamp: String,
-    val createdAt: String
+    val changeTimestamp: Date,
+    val createdAt: Date
 )

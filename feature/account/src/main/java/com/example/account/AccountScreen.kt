@@ -7,9 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.domain.response.ApiResult
-import com.example.ui.ErrorView
-import com.example.ui.LoadingIndicator
 import com.example.utils.AccountManager
 import com.example.utils.TopBarState
 
@@ -50,5 +47,5 @@ fun AccountScreen(
         )
     }
 
-    accountDetailsState?.let { AccountContent(it) }
+    accountDetailsState?.let { AccountContent(it, viewModelFactory) }
 }

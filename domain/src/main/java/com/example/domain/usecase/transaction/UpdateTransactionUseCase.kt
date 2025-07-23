@@ -3,6 +3,7 @@ package com.example.domain.usecase.transaction
 import android.util.Log
 import com.example.domain.model.TransactionInput
 import com.example.domain.repository.TransactionRepository
+import java.util.Date
 import javax.inject.Inject
 
 class UpdateTransactionUseCase @Inject constructor(private val repository: TransactionRepository) {
@@ -11,7 +12,7 @@ class UpdateTransactionUseCase @Inject constructor(private val repository: Trans
         accountId: Int,
         categoryId: Int,
         amount: String,
-        date: String,
+        date: Date,
         comment: String?
     ) {
         Log.d("EDITTRANSACTION", "Юзкейз получил команду")

@@ -7,19 +7,22 @@ import com.example.domain.usecase.transaction.GetTransactionsAnalysisUseCase
 import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 class ExpenseAnalysisViewModel @Inject constructor(
     private val getTransactionsAnalysisUseCase: GetTransactionsAnalysisUseCase
-): ViewModel() {
-    private val _startDateForUI = MutableStateFlow(DateUtils.getFirstDayOfCurrentMonth())
-    val startDateForUI: StateFlow<String> = _startDateForUI
+) : ViewModel() {
 
-    private val _endDateForUI = MutableStateFlow(DateUtils.formatCurrentDate())
-    val endDateForUI: StateFlow<String> = _endDateForUI
+    private val _startDateForUI = MutableStateFlow(DateUtils.getStartOfCurrentMonth())
+    val startDateForUI: StateFlow<Date> = _startDateForUI
+
+    private val _endDateForUI = MutableStateFlow(DateUtils.endOfDay(Date()))
+    val endDateForUI: StateFlow<Date> = _endDateForUI
 
     private val _stats = MutableStateFlow<List<CategoryStatsDomain>>(emptyList())
     val stats: StateFlow<List<CategoryStatsDomain>> = _stats
@@ -27,23 +30,41 @@ class ExpenseAnalysisViewModel @Inject constructor(
     private val _totalSum = MutableStateFlow("0.0")
     val totalSum: StateFlow<String> = _totalSum
 
-    fun updateStartDate(date: String) {
+    private var currentJob: Job? = null
+
+    fun updateStartDate(date: Date) {
         _startDateForUI.value = date
+        reload()
     }
 
-    fun updateEndDate(date: String) {
+    fun updateEndDate(date: Date) {
         _endDateForUI.value = date
+        reload()
     }
 
-    fun loadTransactions(startDate: String = startDateForUI.value,
-                         endDate: String = endDateForUI.value,
-                         isIncome: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val accountId = AccountManager.selectedAccountId
-            val result = getTransactionsAnalysisUseCase.execute(accountId, startDate, endDate, isIncome)
-                .sortedByDescending { it.amount.toDouble() }
-            _stats.value = result
-            _totalSum.value = result.sumOf { it.amount.toDouble() }.toString()
+    fun loadTransactions(isIncome: Boolean) {
+        currentJob?.cancel()
+
+        val accountId = AccountManager.selectedAccountId
+        val startDate = _startDateForUI.value
+        val endDate = _endDateForUI.value
+
+        currentJob = viewModelScope.launch(Dispatchers.IO) {
+            getTransactionsAnalysisUseCase.execute(accountId, startDate, endDate, isIncome)
+                .collect { result ->
+                    val sorted = result.sortedByDescending { it.amount.toDouble() }
+                    _stats.value = sorted
+                    _totalSum.value = sorted.sumOf { it.amount.toDouble() }.toString()
+                }
         }
+    }
+
+    private fun reload() {
+        loadTransactions(isIncome = false)
+    }
+
+    override fun onCleared() {
+        currentJob?.cancel()
+        super.onCleared()
     }
 }

@@ -64,6 +64,7 @@ dependencies {
     api(project(":feature:incomes:editincome"))
     api(project(":feature:expenses:editexpense"))
     api(project(":feature:account"))
+    api(project(":core:graphics"))
     implementation(project(":core:utils"))
     implementation(project(":data"))
     implementation(project(":core:ui"))

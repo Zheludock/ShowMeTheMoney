@@ -12,7 +12,6 @@ import com.example.domain.model.AccountDomain
 import com.example.domain.model.AccountHistoryDomain
 import com.example.domain.repository.AccountRepository
 import com.example.domain.response.ApiResult
-import com.example.utils.DateUtils
 import java.util.Date
 import javax.inject.Inject
 
@@ -69,7 +68,7 @@ class AccountRepositoryImpl @Inject constructor(
             name = name,
             balance = balance,
             currency = currency,
-            updatedAt = DateUtils.formatToUtc(Date())
+            updatedAt = Date()
         )
         accountDao.updateAccount(updated)
         return updated.toDomain()

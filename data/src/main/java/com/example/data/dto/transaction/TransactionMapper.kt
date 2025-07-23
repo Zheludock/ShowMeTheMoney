@@ -5,6 +5,8 @@ import com.example.data.room.entityes.TransactionEntity
 import com.example.data.room.entityes.TransactionWithCategoryAndAccount
 import com.example.domain.model.CreateTransactionDomain
 import com.example.domain.model.TransactionDomain
+import com.example.utils.DateUtils
+
 /**
  * Преобразует DTO транзакции из API в доменную модель.
  * Выполняет:
@@ -22,7 +24,7 @@ fun TransactionResponse.toDomain(): TransactionDomain {
         categoryName = category.name,
         categoryId = category.id,
         amount = amount,
-        transactionDate = transactionDate,
+        transactionDate = DateUtils.isoStringToDate(transactionDate),
         comment = comment,
         currency = account.currency,
         isIncome = category.isIncome
@@ -35,10 +37,10 @@ fun CreateTransactionResponse.toDomain(): CreateTransactionDomain {
         accountId = accountId,
         categoryId = categoryId,
         amount = amount,
-        transactionDate = transactionDate,
+        transactionDate = DateUtils.isoStringToDate(transactionDate),
         comment = comment,
-        createdAt = createdAt,
-        updatedAt = updatedAt
+        createdAt = DateUtils.isoStringToDate(createdAt),
+        updatedAt = updatedAt?.let { DateUtils.isoStringToDate(it) }
     )
 }
 
@@ -47,10 +49,10 @@ fun TransactionResponse.toEntity() = TransactionEntity(
     accountId = account.id,
     categoryId = category.id,
     amount = amount,
-    transactionDate = transactionDate,
+    transactionDate = DateUtils.isoStringToDate(transactionDate),
     comment = comment,
-    createdAt = createdAt,
-    updatedAt = updatedAt
+    createdAt = DateUtils.isoStringToDate(createdAt),
+    updatedAt = updatedAt?.let { DateUtils.isoStringToDate(it) }
 )
 
 fun TransactionWithCategoryAndAccount.toDomain() = TransactionDomain(
@@ -71,8 +73,8 @@ fun CreateTransactionResponse.toEntity(): TransactionEntity = TransactionEntity(
     accountId = accountId,
     categoryId = categoryId,
     amount = amount,
-    transactionDate = transactionDate,
+    transactionDate = DateUtils.isoStringToDate(transactionDate),
     comment = comment,
-    createdAt = createdAt,
-    updatedAt = updatedAt
+    createdAt = DateUtils.isoStringToDate(createdAt),
+    updatedAt = updatedAt?.let { DateUtils.isoStringToDate(it) }
 )

@@ -15,6 +15,7 @@ import com.example.domain.model.AccountHistoryDomain
 import com.example.domain.model.AccountHistoryItemDomain
 import com.example.domain.model.CategoryStatsDomain
 import com.google.gson.Gson
+import java.util.Date
 
 val gson = Gson()
 
@@ -105,8 +106,8 @@ fun AccountInfo.toAccountDomain(): AccountDomain {
         name = name,
         balance = balance,
         currency = currency,
-        createdAt = "",
-        updatedAt = ""
+        createdAt = Date(),
+        updatedAt = null
     )
 }
 

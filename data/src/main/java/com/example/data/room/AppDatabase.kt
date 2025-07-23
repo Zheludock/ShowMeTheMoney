@@ -2,6 +2,7 @@ package com.example.data.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.data.room.dao.AccountDao
 import com.example.data.room.dao.CategoryDao
 import com.example.data.room.dao.TransactionDao
@@ -11,6 +12,7 @@ import com.example.data.room.entityes.AccountHistoryEntity
 import com.example.data.room.entityes.AccountHistoryItemEntity
 import com.example.data.room.entityes.CategoryEntity
 import com.example.data.room.entityes.CategoryStatsEntity
+import com.example.data.room.entityes.Converters
 import com.example.data.room.entityes.TransactionEntity
 
 @Database(
@@ -26,6 +28,7 @@ import com.example.data.room.entityes.TransactionEntity
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun categoryDao(): CategoryDao
