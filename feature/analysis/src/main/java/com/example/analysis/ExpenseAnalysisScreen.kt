@@ -41,9 +41,6 @@ fun ExpenseAnalysisScreen(
     val totalSum by viewModel.totalSum.collectAsState()
 
     LaunchedEffect(isIncome) {
-        viewModel.loadTransactions(
-            isIncome
-        )
         updateTopBar(
             TopBarState(
                 title = "Анализ"

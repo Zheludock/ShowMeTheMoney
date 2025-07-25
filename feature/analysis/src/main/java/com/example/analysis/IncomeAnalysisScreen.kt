@@ -23,8 +23,6 @@ import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import com.example.utils.StringFormatter
 import com.example.utils.TopBarState
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun IncomeAnalysisScreen(
@@ -39,14 +37,10 @@ fun IncomeAnalysisScreen(
     var showEndDatePicker by remember { mutableStateOf(false) }
     val startDateForUI by viewModel.startDateForUI.collectAsState()
     val endDateForUI by viewModel.endDateForUI.collectAsState()
-    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     val stats by viewModel.stats.collectAsState()
     val totalSum by viewModel.totalSum.collectAsState()
 
-    LaunchedEffect(isIncome) {
-        viewModel.loadTransactions(
-            isIncome
-        )
+    LaunchedEffect(isIncome){
         updateTopBar(
             TopBarState(
                 title = "Анализ"

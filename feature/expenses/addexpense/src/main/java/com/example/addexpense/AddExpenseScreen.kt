@@ -34,10 +34,8 @@ import com.example.ui.DatePickerDialog
 import com.example.ui.UniversalListItem
 import com.example.utils.DateUtils
 import com.example.utils.TopBarState
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun AddExpenseScreen(
@@ -51,8 +49,6 @@ fun AddExpenseScreen(
     var showCategoryDialog by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
-
-    val datePickerFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
     LaunchedEffect(Unit) {
         updateTopBar(
