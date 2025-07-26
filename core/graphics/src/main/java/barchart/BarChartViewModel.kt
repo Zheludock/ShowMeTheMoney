@@ -2,6 +2,7 @@ package barchart
 
 import androidx.lifecycle.ViewModel
 import com.example.domain.usecase.transaction.GetTransactionsUseCase
+import com.example.utils.DateUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
@@ -18,7 +19,7 @@ class BarChartViewModel @Inject constructor(
         val startDate = endDate.minusDays(29)
 
         val startDateDate = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
-        val endDateDate = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val endDateDate = DateUtils.endOfDay(Date())
 
         return getTransactionsUseCase.execute(accountId, startDateDate, endDateDate)
             .map { transactions ->
@@ -27,7 +28,10 @@ class BarChartViewModel @Inject constructor(
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()
                 }.mapValues { entry ->
-                    entry.value.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }
+                    entry.value.sumOf { transaction ->
+                        val amount = transaction.amount.toDoubleOrNull() ?: 0.0
+                        if (transaction.isIncome) amount else -amount
+                    }
                 }
 
                 val result = mutableListOf<DailyTransactionSum>()
