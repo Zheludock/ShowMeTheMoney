@@ -36,12 +36,14 @@ fun AppTopBar(
 
         Screen.EditAccount.route, Screen.AddExpense.route, Screen.AddIncome.route,
             Screen.EditIncome.route, Screen.EditExpense.route -> R.drawable.ic_accept
+
         else -> null
     }
 
     val navigationIcon = when(currentRoute) {
         Screen.ExpenseHistory.route, Screen.IncomeHistory.route, Screen.ExpenseAnalysis.route,
-        Screen.IncomeAnalysis.route, Screen.ColorSelection.route, Screen.About.route -> R.drawable.ic_back
+            Screen.IncomeAnalysis.route, Screen.ColorSelection.route, Screen.About.route,
+            Screen.Haptic.route, Screen.Pin.route,  -> R.drawable.ic_back
 
         Screen.EditAccount.route, Screen.AddExpense.route, Screen.AddIncome.route,
             Screen.EditIncome.route, Screen.EditExpense.route -> R.drawable.ic_close

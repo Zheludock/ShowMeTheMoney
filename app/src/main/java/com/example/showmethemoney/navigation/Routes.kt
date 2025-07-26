@@ -28,4 +28,5 @@ sealed class Screen(
     object ColorSelection : Screen("colorChange")
     object About : Screen("about")
     object Pin : Screen("pin")
+    object Haptic : Screen("haptic")
 }

@@ -14,12 +14,21 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.utils.TopBarState
 
 @Composable
 fun SetupPinScreen(
     viewModelFactory: ViewModelProvider.Factory,
-    navController: NavController
+    navController: NavController,
+    updateTopBar: (TopBarState) -> Unit,
 ) {
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
+                title = "Пароль"
+            )
+        )
+    }
     val viewModel: PinViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.uiState.collectAsState()
 

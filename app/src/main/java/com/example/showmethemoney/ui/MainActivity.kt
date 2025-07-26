@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.WorkManager
 import com.example.data.sync.SyncWorker
+import com.example.settings.haptick.HapticFeedbackManager
+import com.example.settings.haptick.HaptickPreferenceManager
 import com.example.settings.pin.PinCodeManager
 import com.example.settings.pin.PinNavigation
 import com.example.settings.pin.PinViewModel
@@ -65,6 +67,10 @@ class MainActivity : ComponentActivity() {
     lateinit var uiConfigurator: UiConfigurator
     @Inject
     lateinit var pinCodeManager: PinCodeManager
+    @Inject
+    lateinit var hapticFeedbackManager: HapticFeedbackManager
+    @Inject
+    lateinit var preferencesManager: HaptickPreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +106,7 @@ class MainActivity : ComponentActivity() {
                         SplashScreen(
                             accountInitializer = accountInitializer,
                             onSplashFinished = {
-                                MainScreen(viewModelFactory)
+                                MainScreen(viewModelFactory, hapticFeedbackManager, preferencesManager)
                             }
                         )
                     }

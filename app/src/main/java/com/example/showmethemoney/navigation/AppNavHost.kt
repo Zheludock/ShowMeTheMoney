@@ -21,6 +21,9 @@ import com.example.incomeshistory.IncomesHistoryScreen
 import com.example.settings.SettingsScreen
 import com.example.settings.about.AboutScreen
 import com.example.settings.colorselector.ColorSelectionScreen
+import com.example.settings.haptick.HapticFeedbackManager
+import com.example.settings.haptick.HapticSettingsScreen
+import com.example.settings.haptick.HaptickPreferenceManager
 import com.example.settings.pin.SetupPinScreen
 import com.example.utils.TopBarState
 
@@ -39,7 +42,9 @@ import com.example.utils.TopBarState
 fun AppNavHost(
     navController: NavHostController,
     viewModelFactory: ViewModelProvider.Factory,
-    updateTopBar: (TopBarState) -> Unit
+    updateTopBar: (TopBarState) -> Unit,
+    hapticFeedbackManager: HapticFeedbackManager,
+    preferencesManager: HaptickPreferenceManager
 ) {
     NavHost(
         navController = navController,
@@ -59,8 +64,9 @@ fun AppNavHost(
         composable(Screen.EditIncome.route) { EditIncomeScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.ExpenseAnalysis.route) { ExpenseAnalysisScreen(viewModelFactory, updateTopBar) }
         composable(Screen.IncomeAnalysis.route) { IncomeAnalysisScreen(viewModelFactory, updateTopBar) }
-        composable (Screen.ColorSelection.route) { ColorSelectionScreen(updateTopBar) }
-        composable (Screen.About.route) { AboutScreen(updateTopBar) }
-        composable (Screen.Pin.route) { SetupPinScreen (viewModelFactory, navController) }
+        composable(Screen.ColorSelection.route) { ColorSelectionScreen(updateTopBar) }
+        composable(Screen.About.route) { AboutScreen(updateTopBar) }
+        composable(Screen.Pin.route) { SetupPinScreen (viewModelFactory, navController, updateTopBar) }
+        composable(Screen.Haptic.route) { HapticSettingsScreen(hapticFeedbackManager, preferencesManager, updateTopBar) }
     }
 }

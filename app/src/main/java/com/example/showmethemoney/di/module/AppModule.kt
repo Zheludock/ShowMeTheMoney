@@ -7,6 +7,8 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.example.data.sync.SyncWorker
+import com.example.settings.haptick.HapticFeedbackManager
+import com.example.settings.haptick.HaptickPreferenceManager
 import com.example.settings.pin.PinCodeManager
 import dagger.Module
 import dagger.Provides
@@ -63,5 +65,20 @@ class AppModule {
     @Singleton
     fun providePinCodeManager(context: Context): PinCodeManager {
         return PinCodeManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferencesManager(context: Context): HaptickPreferenceManager {
+        return HaptickPreferenceManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHapticFeedbackManager(
+        context: Context,
+        preferencesManager: HaptickPreferenceManager
+    ): HapticFeedbackManager {
+        return HapticFeedbackManager(context, preferencesManager)
     }
 }

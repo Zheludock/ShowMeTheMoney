@@ -84,6 +84,7 @@ fun SettingsScreen(
                     "mainColor" ->  navController.navigate("colorChange")
                     "about" -> navController.navigate("about")
                     "code" -> navController.navigate("pin")
+                    "hatpicks" -> navController.navigate("haptic")
                     else -> {}
                 }}
             )

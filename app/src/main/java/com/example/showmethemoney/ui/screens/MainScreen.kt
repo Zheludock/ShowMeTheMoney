@@ -33,6 +33,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.settings.haptick.HapticFeedbackManager
+import com.example.settings.haptick.HaptickPreferenceManager
 import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.AppNavHost
 import com.example.showmethemoney.navigation.BottomNavItems
@@ -70,7 +72,11 @@ import kotlinx.coroutines.launch
  * - При восстановлении соединения автоматически скрывает снекбар
  */
 @Composable
-fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
+fun MainScreen(
+    viewModelFactory: ViewModelProvider.Factory,
+    hapticFeedbackManager: HapticFeedbackManager,
+    preferencesManager: HaptickPreferenceManager
+) {
 
     val viewModel: NetworkAwareViewModel = viewModel(factory = viewModelFactory)
 
@@ -104,7 +110,8 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                             saveState = true
                         }
                     }
-                }
+                },
+                hapticFeedbackManager = hapticFeedbackManager
             )
         },
         floatingActionButton = {
@@ -146,9 +153,15 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            AppNavHost(updateTopBar = { newState ->
-                topBarState = newState
-            }, navController = navController, viewModelFactory = viewModelFactory)
+            AppNavHost(
+                updateTopBar = { newState ->
+                    topBarState = newState
+                },
+                navController = navController,
+                viewModelFactory = viewModelFactory,
+                hapticFeedbackManager = hapticFeedbackManager,
+                preferencesManager = preferencesManager
+            )
         }
         val message = stringResource(R.string.no_internet_connection)
         LaunchedEffect(isOnline) {

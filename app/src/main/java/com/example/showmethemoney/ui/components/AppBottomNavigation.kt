@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.settings.haptick.HapticFeedbackManager
 import com.example.showmethemoney.navigation.BottomNavItem
 import com.example.showmethemoney.ui.theme.AppFontFamily
 
@@ -31,8 +32,10 @@ import com.example.showmethemoney.ui.theme.AppFontFamily
 fun AppBottomNavigation(
     navItems: List<BottomNavItem>,
     currentRoute: String,
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
+    hapticFeedbackManager: HapticFeedbackManager
 ) {
+
     NavigationBar(
         modifier = Modifier.background(color = MaterialTheme.colorScheme.onBackground)
             .padding(0.dp)
@@ -67,7 +70,8 @@ fun AppBottomNavigation(
                     )
                 },
                 selected = selected,
-                onClick = { onItemClick(item.route) },
+                onClick = { hapticFeedbackManager.performClickFeedback()
+                    onItemClick(item.route) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurface,
