@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -22,10 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
-import com.example.ui.theme.Red
-import com.example.ui.theme.SelectedTextUnderIcons
-import com.example.ui.theme.White
-import com.example.ui.theme.WhiteBG
 
 /**
  * Модальное окно выбора валюты в виде нижнего листа (Bottom Sheet).
@@ -49,7 +46,7 @@ fun ChangeCurrencyModal(
         onDismissRequest = onDismissRequest,
         sheetState = rememberModalBottomSheetState(),
         scrimColor = Color(0x52000000),
-        containerColor = WhiteBG,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = Modifier.background(Color.Transparent)
     ) {
         Column(
@@ -90,13 +87,13 @@ fun ChangeCurrencyModal(
                     Icon(
                         painterResource(R.drawable.ic_close_in_round),
                         modifier = Modifier.size(24.dp),
-                        tint = White,
+                        tint = MaterialTheme.colorScheme.background,
                         contentDescription = "cancel"
                     )
                 },
                 text = stringResource(R.string.Cancel),
                 onClick = { onDismissRequest() },
-                backgroundColor = Red
+                backgroundColor = Color(0xFFE46962)
             )
         }
     }
@@ -133,7 +130,7 @@ fun ModalList(
         }
         Text(
             text = text,
-            color = if (text != "Отмена") SelectedTextUnderIcons else White
+            color = if (text != "Отмена") MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.background
         )
     }
 }

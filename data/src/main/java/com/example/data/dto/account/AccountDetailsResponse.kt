@@ -1,6 +1,8 @@
 package com.example.data.dto.account
 
 import com.example.data.dto.category.CategoryStats
+import java.util.Date
+
 /**
  * Детализированный ответ API по аккаунту.
  * @property id Идентификатор аккаунта.
@@ -19,6 +21,6 @@ data class AccountDetailsResponse(
     val currency: String,
     val incomeStats: List<CategoryStats>,
     val expenseStats: List<CategoryStats>,
-    val createdAt: String,
-    val updatedAt: String
+    val createdAt: Date,
+    val updatedAt: Date?
 )

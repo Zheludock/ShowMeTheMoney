@@ -23,5 +23,5 @@ data class TransactionResponse(
     val transactionDate: String,
     val comment: String?,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String?
 )

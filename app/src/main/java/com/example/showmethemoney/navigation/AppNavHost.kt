@@ -3,10 +3,8 @@ package com.example.showmethemoney.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.account.AccountScreen
 import com.example.account.editaccount.EditAccountScreen
 import com.example.addexpense.AddExpenseScreen
@@ -20,6 +18,8 @@ import com.example.expenses.ExpensesScreen
 import com.example.expenseshistory.ExpensesHistoryScreen
 import com.example.incomes.IncomesScreen
 import com.example.incomeshistory.IncomesHistoryScreen
+import com.example.settings.AboutScreen
+import com.example.settings.ColorSelectionScreen
 import com.example.settings.SettingsScreen
 import com.example.utils.TopBarState
 
@@ -48,39 +48,17 @@ fun AppNavHost(
         composable(Screen.Income.route) { IncomesScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory, updateTopBar) }
         composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController, updateTopBar) }
-        composable(Screen.Settings.route) { SettingsScreen(updateTopBar) }
+        composable(Screen.Settings.route) { SettingsScreen(updateTopBar, navController) }
         composable(Screen.ExpenseHistory.route) { ExpensesHistoryScreen(navController, viewModelFactory, updateTopBar) }
         composable(Screen.IncomeHistory.route) { IncomesHistoryScreen(navController, viewModelFactory, updateTopBar) }
         composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.AddIncome.route) { AddIncomeScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.AddExpense.route) { AddExpenseScreen(viewModelFactory, navController, updateTopBar) }
-        composable(
-            route = Screen.EditExpense.route,
-            arguments = listOf(
-                navArgument("transactionId") {
-                    type = NavType.IntType
-                    nullable = false
-                    defaultValue = -1
-                }
-            )
-        ) { backStackEntry ->
-            val transactionId = backStackEntry.arguments?.getInt("transactionId")
-            EditExpenseScreen(viewModelFactory, navController, updateTopBar, transactionId!!)
-        }
-        composable(
-            route = Screen.EditIncome.route,
-            arguments = listOf(
-                navArgument("transactionId") {
-                    type = NavType.IntType
-                    nullable = false
-                    defaultValue = -1
-                }
-            )
-        ) { backStackEntry ->
-            val transactionId = backStackEntry.arguments?.getInt("transactionId")
-            EditIncomeScreen(viewModelFactory, navController, updateTopBar, transactionId!!)
-        }
+        composable(Screen.EditExpense.route) { EditExpenseScreen(viewModelFactory, navController, updateTopBar) }
+        composable(Screen.EditIncome.route) { EditIncomeScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.ExpenseAnalysis.route) { ExpenseAnalysisScreen(viewModelFactory, updateTopBar) }
         composable(Screen.IncomeAnalysis.route) { IncomeAnalysisScreen(viewModelFactory, updateTopBar) }
+        composable (Screen.ColorSelection.route) { ColorSelectionScreen(updateTopBar) }
+        composable (Screen.About.route) { AboutScreen(updateTopBar) }
     }
 }

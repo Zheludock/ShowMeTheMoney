@@ -1,4 +1,7 @@
 package com.example.domain.model
+
+import java.util.Date
+
 /**
  * Доменная модель элемента истории изменений аккаунта.
  * Содержит информацию об одном изменении состояния аккаунта.
@@ -17,6 +20,6 @@ data class AccountHistoryItemDomain(
     val changeType: String,
     val previousState: AccountDomain?,
     val newState: AccountDomain,
-    val changeTimestamp: String,
-    val createdAt: String
+    val changeTimestamp: Date?,
+    val createdAt: Date
 )

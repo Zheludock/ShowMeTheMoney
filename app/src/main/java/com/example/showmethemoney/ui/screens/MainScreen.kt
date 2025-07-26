@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -38,8 +39,6 @@ import com.example.showmethemoney.navigation.BottomNavItems
 import com.example.showmethemoney.navigation.Screen
 import com.example.showmethemoney.ui.components.AppBottomNavigation
 import com.example.showmethemoney.ui.components.AppTopBar
-import com.example.showmethemoney.ui.theme.IconsGreen
-import com.example.showmethemoney.ui.theme.White
 import com.example.utils.TopBarState
 import kotlinx.coroutines.launch
 
@@ -126,8 +125,8 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                         .shadow(8.dp, CircleShape)
                         .size(56.dp),
                     shape = CircleShape,
-                    containerColor = IconsGreen,
-                    contentColor = White,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     elevation = FloatingActionButtonDefaults.elevation(
                         defaultElevation = 6.dp,
                         pressedElevation = 12.dp

@@ -1,4 +1,7 @@
 package com.example.domain.model
+
+import java.util.Date
+
 /**
  * Детализированная доменная модель банковского счёта, содержащая:
  * - Основную информацию о счёте
@@ -21,6 +24,6 @@ data class AccountDetailsDomain(
     val currency: String,
     val incomeStats: List<CategoryStatsDomain>,
     val expenseStats: List<CategoryStatsDomain>,
-    val createdAt: String,
-    val updatedAt: String
+    val createdAt: Date,
+    val updatedAt: Date?
 )

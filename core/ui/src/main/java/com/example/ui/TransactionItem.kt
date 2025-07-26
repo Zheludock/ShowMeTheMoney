@@ -1,6 +1,7 @@
 package com.example.ui
 
 import com.example.domain.model.TransactionDomain
+import java.util.Date
 
 /**
  * Данные финансовой транзакции.
@@ -22,7 +23,7 @@ data class TransactionItem(
     val comment: String?,
     val amount: String,
     val accountCurrency: String,
-    val transactionDate: String,
+    val transactionDate: Date,
     val isIncome: Boolean
 )
 fun TransactionDomain.toTransactionItem(): TransactionItem {

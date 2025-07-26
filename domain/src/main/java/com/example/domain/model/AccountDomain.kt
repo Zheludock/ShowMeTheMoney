@@ -1,4 +1,7 @@
 package com.example.domain.model
+
+import java.util.Date
+
 /**
  * Доменная модель банковского аккаунта пользователя.
  * Содержит основную информацию о счете и его текущем состоянии.
@@ -17,6 +20,6 @@ data class AccountDomain(
     var name: String,
     var balance : String,
     var currency: String,
-    val createdAt: String,
-    val updatedAt: String,
+    val createdAt: Date,
+    val updatedAt: Date?,
 )

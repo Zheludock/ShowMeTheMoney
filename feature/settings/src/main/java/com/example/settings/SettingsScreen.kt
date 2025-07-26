@@ -7,14 +7,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.ui.UniversalListItem
+import com.example.utils.ThemeManager
 import com.example.utils.TopBarState
 
 /**
@@ -26,7 +32,20 @@ import com.example.utils.TopBarState
  * @param listSettings Список настроек для отображения.
  */
 @Composable
-fun SettingsScreen(updateTopBar: (TopBarState) -> Unit) {
+fun SettingsScreen(
+    updateTopBar: (TopBarState) -> Unit,
+    navController: NavController,
+) {
+
+    val context = LocalContext.current
+
+    var isDarkTheme by remember {
+        mutableStateOf(ThemeManager.isDarkThemeEnabled(context))
+    }
+
+    var selectedColorScheme by remember {
+        mutableStateOf(ThemeManager.getSelectedColorScheme(context))
+    }
 
     LaunchedEffect(Unit) {
         updateTopBar(
@@ -45,26 +64,27 @@ fun SettingsScreen(updateTopBar: (TopBarState) -> Unit) {
                 trail = if (item.isSwitch) {
                     null to {
                         Switch(
-                            checked = false,
-                            onCheckedChange = { /* Изменение темы будет здесь */ },
+                            checked = isDarkTheme,
+                            onCheckedChange = { ThemeManager.setDarkThemeEnabled(context, it)
+                                isDarkTheme = it },
                             modifier = Modifier.padding(end = 8.dp)
                         )
                     }
                 } else {
                     null to {
-                        IconButton(
-                            onClick = { /* TODO */ },
+                        Icon(
+                            painter = painterResource(com.example.ui.R.drawable.ic_arrow_right),
+                            contentDescription = "Подробнее",
                             modifier = Modifier.size(24.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(com.example.ui.R.drawable.ic_arrow_right),
-                                contentDescription = "Подробнее",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
+                        )
                     }
                 },
-                modifier = Modifier.height(56.dp)
+                modifier = Modifier.height(56.dp),
+                onClick = { when (item.name) {
+                    "mainColor" ->  navController.navigate("colorChange")
+                    "about" -> navController.navigate("about")
+                    else -> {}
+                }}
             )
         }
     }

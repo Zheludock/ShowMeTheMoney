@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ui.TransactionList
+import com.example.ui.TransactionTransfer
 import com.example.utils.TopBarState
 
 @Composable
@@ -19,7 +20,7 @@ fun IncomesScreen(
     val viewModel: IncomesViewModel = viewModel(factory = viewModelFactory)
 
     LaunchedEffect(Unit) {
-        viewModel.loadIncomes()
+        viewModel.observeTransactions()
     }
 
     LaunchedEffect(Unit) {
@@ -36,7 +37,8 @@ fun IncomesScreen(
     TransactionList(
         transactions = transactionState,
         onElementClick = { item ->
-            navController.navigate("edit_income?transactionId=${item.id}")
+            TransactionTransfer.editedTransaction = item
+            navController.navigate("edit_income")
         }
     )
 }

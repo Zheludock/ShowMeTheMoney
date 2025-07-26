@@ -1,4 +1,7 @@
 package com.example.data.dto.account
+
+import java.util.Date
+
 /**
  * Элемент истории изменений аккаунта.
  * @property id Уникальный идентификатор изменения.
@@ -15,6 +18,6 @@ data class AccountHistoryItem(
     val changeType: String,
     val previousState: AccountInfo?,
     val newState: AccountInfo,
-    val changeTimestamp: String,
-    val createdAt: String
+    val changeTimestamp: Date,
+    val createdAt: Date
 )

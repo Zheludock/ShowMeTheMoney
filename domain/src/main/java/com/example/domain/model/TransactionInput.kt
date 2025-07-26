@@ -1,4 +1,7 @@
 package com.example.domain.model
+
+import java.util.Date
+
 /**
  * Модель данных для обновления транзакции.
  * Содержит все необходимые поля для изменения существующей транзакции.
@@ -16,6 +19,6 @@ data class TransactionInput(
     val accountId: Int,
     val categoryId: Int,
     val amount: String,
-    val transactionDate: String,
+    val transactionDate: Date,
     val comment: String? = null
 )

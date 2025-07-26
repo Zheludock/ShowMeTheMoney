@@ -2,6 +2,9 @@ package com.example.domain.repository
 
 import com.example.domain.model.TransactionDomain
 import com.example.domain.model.TransactionInput
+import kotlinx.coroutines.flow.Flow
+import java.util.Date
+import kotlin.time.ExperimentalTime
 
 /**
  * Репозиторий для работы с транзакциями.
@@ -17,17 +20,19 @@ import com.example.domain.model.TransactionInput
  * Все методы возвращают ApiResult с соответствующим типом данных.
  */
 interface TransactionRepository {
-    suspend fun getTransactions(
+    @OptIn(ExperimentalTime::class)
+    fun getTransactions(
         accountId: Int,
-        startDate: String?,
-        endDate: String?
-    ): List<TransactionDomain>
+        startDate: Date,
+        endDate: Date
+    ): Flow<List<TransactionDomain>>
 
+    @OptIn(ExperimentalTime::class)
     suspend fun createTransaction(
         accountId: Int,
         categoryId: Int,
         amount: String,
-        transactionDate: String,
+        transactionDate: Date,
         comment: String?
     )
 

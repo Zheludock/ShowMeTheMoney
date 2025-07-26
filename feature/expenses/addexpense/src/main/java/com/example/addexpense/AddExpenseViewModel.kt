@@ -1,5 +1,6 @@
 package com.example.addexpense
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class AddExpenseViewModel @Inject constructor(
@@ -50,7 +53,7 @@ class AddExpenseViewModel @Inject constructor(
         state = state.copy(amount = amount)
     }
 
-    fun updateDate(newDate: String) {
+    fun updateDate(newDate: Date) {
         state = state.copy(
             transactionDate = newDate
         )
@@ -75,11 +78,14 @@ class AddExpenseViewModel @Inject constructor(
             return
         }
 
+        val formattedAmount = String.format(Locale.US, "%.2f", amountParsed)
+        Log.d("OUTPUT", "$formattedAmount")
+
         viewModelScope.launch {
             createTransactionUseCase.execute(
                 accountId = state.accountId,
                 categoryId = state.categoryId,
-                amount = amount,
+                amount = formattedAmount,
                 transactionDate = state.transactionDate,
                 comment = state.comment
             )

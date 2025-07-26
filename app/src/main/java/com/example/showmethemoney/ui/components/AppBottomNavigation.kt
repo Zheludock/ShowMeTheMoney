@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -18,12 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.showmethemoney.navigation.BottomNavItem
 import com.example.showmethemoney.ui.theme.AppFontFamily
-import com.example.showmethemoney.ui.theme.BackgroundBottomBar
-import com.example.showmethemoney.ui.theme.IconsGray
-import com.example.showmethemoney.ui.theme.IconsGreen
-import com.example.showmethemoney.ui.theme.Indicator
-import com.example.showmethemoney.ui.theme.SelectedTextUnderIcons
-import com.example.showmethemoney.ui.theme.TextUnderIcons
+
 /**
  * Компонент нижней навигационной панели приложения.
  *
@@ -38,10 +34,10 @@ fun AppBottomNavigation(
     onItemClick: (String) -> Unit
 ) {
     NavigationBar(
-        modifier = Modifier.background(color = BackgroundBottomBar)
+        modifier = Modifier.background(color = MaterialTheme.colorScheme.onBackground)
             .padding(0.dp)
             .fillMaxWidth(),
-        containerColor = BackgroundBottomBar
+        containerColor = MaterialTheme.colorScheme.onSecondary
     ) {
         navItems.forEach { item ->
             val selected = currentRoute == item.route
@@ -52,9 +48,9 @@ fun AppBottomNavigation(
                         painter = painterResource(id = item.icon),
                         contentDescription = stringResource(item.label),
                         tint = if (selected) {
-                            IconsGreen
+                            MaterialTheme.colorScheme.primary
                         } else {
-                            IconsGray
+                            MaterialTheme.colorScheme.onSurface
                         }
                     )
                 },
@@ -62,9 +58,9 @@ fun AppBottomNavigation(
                     Text(
                         text = stringResource(item.label),
                         style = if (selected) { TextStyle(fontWeight = FontWeight.Medium,
-                            color = SelectedTextUnderIcons)}
+                            color = MaterialTheme.colorScheme.onSurface)}
                         else {TextStyle(fontWeight = FontWeight.Normal,
-                            color = SelectedTextUnderIcons)},
+                            color = MaterialTheme.colorScheme.onSurface)},
                         fontSize = 12.sp,
                         fontFamily = AppFontFamily,
                         maxLines = 1,
@@ -73,11 +69,11 @@ fun AppBottomNavigation(
                 selected = selected,
                 onClick = { onItemClick(item.route) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = IconsGreen,
-                    unselectedIconColor = IconsGray,
-                    selectedTextColor = SelectedTextUnderIcons,
-                    unselectedTextColor = TextUnderIcons,
-                    indicatorColor = Indicator
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+                    selectedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurface,
+                    indicatorColor = MaterialTheme.colorScheme.secondary
                 )
             )
         }

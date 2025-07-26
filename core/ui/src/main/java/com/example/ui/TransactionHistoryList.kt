@@ -8,15 +8,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.ui.theme.Indicator
 import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import com.example.utils.StringFormatter
+import java.util.Date
 
 /**
  * Компонент для отображения истории транзакций с возможностью выбора периода и подсчётом суммы.
@@ -45,8 +46,8 @@ import com.example.utils.StringFormatter
 @Composable
 fun TransactionHistoryList(
     transactions: List<TransactionItem>,
-    startDate: String,
-    endDate: String,
+    startDate: Date,
+    endDate: Date,
     onStartDateClick: () -> Unit,
     onEndDateClick: () -> Unit,
     onElementClick: (TransactionItem) -> Unit
@@ -57,9 +58,9 @@ fun TransactionHistoryList(
         item {
             UniversalListItem(
                 content = stringResource(R.string.start) to null,
-                trail = DateUtils.formatDateForDisplay(startDate) to null,
+                trail = DateUtils.formatDateToString(startDate) to null,
                 modifier = Modifier
-                    .background(Indicator)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .height(56.dp)
                     .padding(bottom = 1.dp),
                 onClick = onStartDateClick
@@ -68,9 +69,9 @@ fun TransactionHistoryList(
         item {
             UniversalListItem(
                 content = stringResource(R.string.end) to null,
-                trail = DateUtils.formatDateForDisplay(endDate) to null,
+                trail = DateUtils.formatDateToString(endDate) to null,
                 modifier = Modifier
-                    .background(Indicator)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .height(56.dp)
                     .padding(bottom = 1.dp),
                 onClick = onEndDateClick
@@ -81,7 +82,7 @@ fun TransactionHistoryList(
                 content = stringResource(R.string.sum) to null,
                 trail = formatTotalAmount(transactions) to null,
                 modifier = Modifier
-                    .background(Indicator)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .height(56.dp)
                     .padding(bottom = 1.dp)
             )
@@ -118,12 +119,8 @@ private fun formatTransactionTrail(item: TransactionItem): String {
         item.amount.toDoubleOrNull() ?: 0.0,
         item.accountCurrency ?: AccountManager.selectedAccountCurrency.value
     )
-    val dateStr = item.transactionDate.let { transactionDate ->
-        DateUtils.stringToDate(transactionDate)?.let { date ->
-            "${DateUtils.formatDateForDisplay(DateUtils.formatDate(date))} ${
-                DateUtils.formatTime(date)
-            }"
-        } ?: ""
-    }
+
+    val dateStr = "${DateUtils.formatDateToString(item.transactionDate)} ${DateUtils.formatTime(item.transactionDate)}"
+
     return "$amountStr\n$dateStr"
 }

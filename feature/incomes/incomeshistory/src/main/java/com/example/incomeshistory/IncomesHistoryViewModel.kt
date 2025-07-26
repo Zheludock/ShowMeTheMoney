@@ -9,39 +9,48 @@ import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 class IncomesHistoryViewModel@Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase
 ) : ViewModel() {
 
-    private val _startDateForUI = MutableStateFlow(DateUtils.getFirstDayOfCurrentMonth())
-    val startDateForUI: StateFlow<String> = _startDateForUI
+    private val _startDateForUI = MutableStateFlow(DateUtils.getStartOfCurrentMonth())
+    val startDateForUI: StateFlow<Date> = _startDateForUI
 
-    private val _endDateForUI = MutableStateFlow(DateUtils.formatCurrentDate())
-    val endDateForUI: StateFlow<String> = _endDateForUI
+    private val _endDateForUI = MutableStateFlow(Date())
+    val endDateForUI: StateFlow<Date> = _endDateForUI
 
     private val _transactions = MutableStateFlow<List<TransactionItem>>(emptyList())
     val transactions: StateFlow<List<TransactionItem>> = _transactions
 
-    fun updateStartDate(date: String) {
+    fun updateStartDate(date: Date) {
         _startDateForUI.value = date
     }
 
-    fun updateEndDate(date: String) {
+    fun updateEndDate(date: Date) {
         _endDateForUI.value = date
     }
 
-    fun loadIncomes(startDate: String = startDateForUI.value,
-                         endDate: String = endDateForUI.value) {
+    init {
         viewModelScope.launch {
-            val accountId = AccountManager.selectedAccountId
-            val result = getTransactionsUseCase.execute(accountId, startDate, endDate)
-                .filter { it.isIncome }
-                .map { it.toTransactionItem() }
-                .sortedByDescending { it.transactionDate }
-            _transactions.value = result
+            combine(_startDateForUI, _endDateForUI) { startDate, endDate ->
+                startDate to endDate
+            }
+                .flatMapLatest { (startDate, endDate) ->
+                    getTransactionsUseCase.execute(AccountManager.selectedAccountId, startDate, endDate)
+                        .catch { e ->
+                            emit(emptyList())
+                        }
+                }
+                .collect { list ->
+                    _transactions.value = list.map { it.toTransactionItem() }.filter { it.isIncome }
+                }
         }
     }
 }

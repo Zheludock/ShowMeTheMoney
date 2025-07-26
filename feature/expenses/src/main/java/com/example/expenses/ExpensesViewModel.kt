@@ -10,28 +10,30 @@ import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 class ExpensesViewModel @Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase
 ): ViewModel() {
-    val startDate = DateUtils.formatCurrentDate()
-    val endDate = DateUtils.formatCurrentDate()
+    val startDate = DateUtils.startOfDay(Date())
+    val endDate = DateUtils.endOfDay(Date())
 
     private val _expenses = MutableStateFlow<List<TransactionItem>>(emptyList())
     val expenses: StateFlow<List<TransactionItem>> = _expenses
 
-    fun loadExpenses(){
+    fun observeTransactions() {
         viewModelScope.launch {
-            val accountId = AccountManager.selectedAccountId
-            val result = getTransactionsUseCase.execute(accountId, startDate, endDate)
-                .filter { !it.isIncome }
-                .map{ it.toTransactionItem() }
-                .sortedByDescending { it.transactionDate }
-            _expenses.value = result
-
-            Log.d("Room", "Данные загружены из Room в количестве ${result.size}")
+            getTransactionsUseCase.execute(AccountManager.selectedAccountId, startDate, endDate)
+                .catch { e ->
+                    // Обработка ошибок, если нужно
+                    Log.e("TransactionsVM", "Error loading transactions", e)
+                }
+                .collect { list ->
+                    _expenses.value = list.map { it.toTransactionItem() }.filter { !it.isIncome }
+                }
         }
     }
 }

@@ -3,8 +3,6 @@ package com.example.ui
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import java.text.SimpleDateFormat
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -12,32 +10,23 @@ import java.util.Date
 fun DatePickerDialog(
     showDialog: Boolean,
     onDismissRequest: () -> Unit,
-    dateFormat: SimpleDateFormat,
-    initialDate: String,
-    boundaryDate: String? = null,
+    initialDate: Date,
+    boundaryDate: Date? = null,
     isStartDatePicker: Boolean = true,
-    onDateSelected: (String) -> Unit,
+    onDateSelected: (Date) -> Unit,
     onClear: (() -> Unit)? = null
 ) {
     if (!showDialog) return
 
-    val parsedInitialDate = remember(initialDate) {
-        dateFormat.parse(initialDate) ?: Date()
-    }
-
-    val parsedBoundaryDate = remember(boundaryDate) {
-        boundaryDate?.let { dateFormat.parse(it) } ?: Date()
-    }
-
     CustomDatePickerDialog(
-        initialDate = parsedInitialDate,
+        initialDate = initialDate,
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 return if (boundaryDate == null) true
                 else if (isStartDatePicker) {
-                    utcTimeMillis <= parsedBoundaryDate.time
+                    utcTimeMillis <= boundaryDate.time
                 } else {
-                    utcTimeMillis >= parsedBoundaryDate.time
+                    utcTimeMillis >= boundaryDate.time
                 }
             }
         },
@@ -49,8 +38,7 @@ fun DatePickerDialog(
             onDismissRequest()
         },
         onConfirm = { newDate ->
-            val formattedDate = dateFormat.format(newDate)
-            onDateSelected(formattedDate)
+            onDateSelected(newDate)
             onDismissRequest()
         }
     )

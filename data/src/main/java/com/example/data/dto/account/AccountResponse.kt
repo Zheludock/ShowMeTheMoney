@@ -1,4 +1,7 @@
 package com.example.data.dto.account
+
+import java.util.Date
+
 /**
  * DTO (Data Transfer Object) для представления банковского счета в API.
  * Содержит полную информацию о банковском счете пользователя.
@@ -17,6 +20,6 @@ data class AccountResponse(
     val name: String,
     val balance: String,
     val currency: String,
-    val createdAt: String,
-    val updatedAt: String
+    val createdAt: Date,
+    val updatedAt: Date?
 )
