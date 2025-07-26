@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,9 +26,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.utils.AppColorScheme
 import com.example.utils.ThemeManager
+import com.example.utils.TopBarState
 
 @Composable
-fun ColorSelectionScreen(onColorSelected: () -> Unit) {
+fun ColorSelectionScreen(
+    updateTopBar: (TopBarState) -> Unit,
+) {
+
+    LaunchedEffect(Unit) {
+        updateTopBar(
+            TopBarState(
+                title = "Выбор основного цвета"
+            )
+        )
+    }
     val context = LocalContext.current
     val selectedColorScheme = remember { mutableStateOf(ThemeManager.getSelectedColorScheme(context)) }
 

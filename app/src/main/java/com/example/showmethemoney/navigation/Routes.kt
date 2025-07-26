@@ -26,4 +26,5 @@ sealed class Screen(
     object IncomeAnalysis : Screen("income_analysis")
     object ExpenseAnalysis : Screen("expense_analysis")
     object ColorSelection : Screen("colorChange")
+    object About : Screen("about")
 }

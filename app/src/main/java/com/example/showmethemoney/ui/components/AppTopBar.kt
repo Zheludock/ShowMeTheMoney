@@ -25,12 +25,15 @@ fun AppTopBar(
     navController: NavController,
     topBarState: TopBarState
 ) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route?.substringBefore("?")
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
 
     val actionIcon = when (currentRoute) {
         Screen.Expenses.route, Screen.Income.route -> R.drawable.ic_history
+
         Screen.Account.route -> R.drawable.ic_edit
+
         Screen.ExpenseHistory.route, Screen.IncomeHistory.route -> R.drawable.ic_history_calendar
+
         Screen.EditAccount.route, Screen.AddExpense.route, Screen.AddIncome.route,
             Screen.EditIncome.route, Screen.EditExpense.route -> R.drawable.ic_accept
         else -> null
@@ -38,9 +41,11 @@ fun AppTopBar(
 
     val navigationIcon = when(currentRoute) {
         Screen.ExpenseHistory.route, Screen.IncomeHistory.route, Screen.ExpenseAnalysis.route,
-        Screen.IncomeAnalysis.route, Screen.ColorSelection.route -> R.drawable.ic_back
+        Screen.IncomeAnalysis.route, Screen.ColorSelection.route, Screen.About.route -> R.drawable.ic_back
+
         Screen.EditAccount.route, Screen.AddExpense.route, Screen.AddIncome.route,
             Screen.EditIncome.route, Screen.EditExpense.route -> R.drawable.ic_close
+
         else -> null
     }
 

@@ -82,6 +82,7 @@ fun SettingsScreen(
                 modifier = Modifier.height(56.dp),
                 onClick = { when (item.name) {
                     "mainColor" ->  navController.navigate("colorChange")
+                    "about" -> navController.navigate("about")
                     else -> {}
                 }}
             )
