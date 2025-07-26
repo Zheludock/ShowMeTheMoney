@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,7 +38,6 @@ import androidx.navigation.NavController
 import com.example.ui.DatePickerDialog
 import com.example.ui.TransactionTransfer
 import com.example.ui.UniversalListItem
-import com.example.ui.theme.Red
 import com.example.utils.DateUtils
 import com.example.utils.TopBarState
 import java.util.Calendar
@@ -152,7 +152,7 @@ fun EditIncomeScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Red
+                    containerColor = Color(0xFFE46962)
                 )
             ) {
                 Text(

@@ -13,7 +13,7 @@ package com.example.settings
 enum class AppSetting(
     val key: String,
     val title: String,
-    val isSwitch: Boolean = false,
+    val isSwitch: Boolean = false
 ) {
     DARK_THEME(
         key = "darkTheme",

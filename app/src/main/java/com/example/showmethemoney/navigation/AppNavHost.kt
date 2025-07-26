@@ -18,6 +18,7 @@ import com.example.expenses.ExpensesScreen
 import com.example.expenseshistory.ExpensesHistoryScreen
 import com.example.incomes.IncomesScreen
 import com.example.incomeshistory.IncomesHistoryScreen
+import com.example.settings.ColorSelectionScreen
 import com.example.settings.SettingsScreen
 import com.example.utils.TopBarState
 
@@ -46,7 +47,7 @@ fun AppNavHost(
         composable(Screen.Income.route) { IncomesScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.Category.route) { CategoryScreen(viewModelFactory, updateTopBar) }
         composable(Screen.Account.route) { AccountScreen(viewModelFactory, navController, updateTopBar) }
-        composable(Screen.Settings.route) { SettingsScreen(updateTopBar) }
+        composable(Screen.Settings.route) { SettingsScreen(updateTopBar, navController) }
         composable(Screen.ExpenseHistory.route) { ExpensesHistoryScreen(navController, viewModelFactory, updateTopBar) }
         composable(Screen.IncomeHistory.route) { IncomesHistoryScreen(navController, viewModelFactory, updateTopBar) }
         composable(Screen.EditAccount.route) { EditAccountScreen(viewModelFactory, navController, updateTopBar) }
@@ -56,5 +57,6 @@ fun AppNavHost(
         composable(Screen.EditIncome.route) { EditIncomeScreen(viewModelFactory, navController, updateTopBar) }
         composable(Screen.ExpenseAnalysis.route) { ExpenseAnalysisScreen(viewModelFactory, updateTopBar) }
         composable(Screen.IncomeAnalysis.route) { IncomeAnalysisScreen(viewModelFactory, updateTopBar) }
+        composable (Screen.ColorSelection.route) { ColorSelectionScreen(onColorSelected = { }) }
     }
 }

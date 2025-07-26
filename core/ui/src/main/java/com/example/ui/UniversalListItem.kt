@@ -23,9 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.example.ui.theme.DividerGray
-import com.example.ui.theme.Indicator
-import com.example.ui.theme.SelectedTextUnderIcons
 
 /**
  * Универсальный компонент элемента списка с поддержкой:
@@ -64,7 +61,7 @@ fun UniversalListItem(
                     Box(
                         modifier = Modifier.padding(end = 16.dp)
                             .clip(CircleShape)
-                            .background(Indicator),
+                            .background(MaterialTheme.colorScheme.secondary),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -90,7 +87,7 @@ fun UniversalListItem(
                             maxLines = 1,
                             style = MaterialTheme.typography.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
-                            color = SelectedTextUnderIcons
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
@@ -114,7 +111,7 @@ fun UniversalListItem(
         }
         HorizontalDivider(
             thickness = 1.dp,
-            color = DividerGray,
+            color = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.zIndex(1f)
         )
     }

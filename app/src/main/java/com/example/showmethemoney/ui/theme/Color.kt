@@ -14,3 +14,4 @@ val DividerGray = Color(0xFFCAC4D0)
 val ItemGray = Color(0xFFECE6F0)
 val WhiteBG = Color(0xFFF7F2FA)
 val Red = Color(0xFFE46962)
+

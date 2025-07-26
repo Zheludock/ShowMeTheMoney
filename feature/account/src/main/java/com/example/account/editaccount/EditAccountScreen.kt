@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -25,11 +26,8 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.account.AccountDetailsItem
-import com.example.domain.response.ApiResult
 import com.example.ui.R
 import com.example.ui.UniversalListItem
-import com.example.ui.theme.DividerGray
 import com.example.utils.AccountManager
 import com.example.utils.StringFormatter
 import com.example.utils.TopBarState
@@ -183,7 +181,7 @@ fun EditAccountScreen(
             )
             HorizontalDivider(
                 thickness = 1.dp,
-                color = DividerGray,
+                color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.zIndex(1f)
             )
         }

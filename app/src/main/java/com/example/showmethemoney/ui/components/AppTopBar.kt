@@ -4,6 +4,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -12,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.showmethemoney.R
 import com.example.showmethemoney.navigation.Screen
-import com.example.showmethemoney.ui.theme.IconsGreen
 import com.example.utils.TopBarState
 
 /**
@@ -32,22 +32,22 @@ fun AppTopBar(
         Screen.Account.route -> R.drawable.ic_edit
         Screen.ExpenseHistory.route, Screen.IncomeHistory.route -> R.drawable.ic_history_calendar
         Screen.EditAccount.route, Screen.AddExpense.route, Screen.AddIncome.route,
-            "edit_income", "edit_expense" -> R.drawable.ic_accept
+            Screen.EditIncome.route, Screen.EditExpense.route -> R.drawable.ic_accept
         else -> null
     }
 
     val navigationIcon = when(currentRoute) {
         Screen.ExpenseHistory.route, Screen.IncomeHistory.route, Screen.ExpenseAnalysis.route,
-        Screen.IncomeAnalysis.route -> R.drawable.ic_back
+        Screen.IncomeAnalysis.route, Screen.ColorSelection.route -> R.drawable.ic_back
         Screen.EditAccount.route, Screen.AddExpense.route, Screen.AddIncome.route,
-            "edit_income", "edit_expense" -> R.drawable.ic_close
+            Screen.EditIncome.route, Screen.EditExpense.route -> R.drawable.ic_close
         else -> null
     }
 
     CenterAlignedTopAppBar(
         title = { Text(text = topBarState.title) },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = IconsGreen
+            containerColor = MaterialTheme.colorScheme.primary
         ),
         actions = {
             actionIcon?.let { iconRes ->

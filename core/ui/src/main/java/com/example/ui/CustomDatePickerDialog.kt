@@ -12,6 +12,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -19,9 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.ui.theme.IconsGreen
-import com.example.ui.theme.Indicator
-import com.example.ui.theme.SelectedTextUnderIcons
 import java.util.Date
 
 /**
@@ -62,10 +60,10 @@ fun CustomDatePickerDialog(
             ) {
                 Button(
                     onClick = onClear,
-                    modifier = Modifier.background(Indicator),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.secondary),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Indicator,
-                        contentColor = SelectedTextUnderIcons
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
                     Text("Clear")
@@ -75,10 +73,10 @@ fun CustomDatePickerDialog(
 
                 Button(
                     onClick = onCancel,
-                    modifier = Modifier.background(Indicator),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.secondary),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Indicator,
-                        contentColor = SelectedTextUnderIcons
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
                     Text("Cancel")
@@ -92,10 +90,10 @@ fun CustomDatePickerDialog(
                             onConfirm(Date(it))
                         }
                     },
-                    modifier = Modifier.background(Indicator),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.secondary),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Indicator,
-                        contentColor = SelectedTextUnderIcons
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
                     Text("OK")
@@ -103,8 +101,8 @@ fun CustomDatePickerDialog(
             }
         },
         colors = DatePickerDefaults.colors(
-            containerColor = Indicator,
-            selectedDayContainerColor = IconsGreen
+            containerColor = MaterialTheme.colorScheme.secondary,
+            selectedDayContainerColor = MaterialTheme.colorScheme.primary
         ),
         modifier = Modifier
     ) {
@@ -115,13 +113,13 @@ fun CustomDatePickerDialog(
                 headline = null,
                 showModeToggle = false,
                 colors = DatePickerDefaults.colors(
-                    containerColor = Indicator,
-                    selectedDayContainerColor = IconsGreen,
-                    selectedYearContainerColor = IconsGreen,
-                    selectedYearContentColor = SelectedTextUnderIcons,
-                    todayContentColor = SelectedTextUnderIcons,
-                    todayDateBorderColor = IconsGreen,
-                    selectedDayContentColor = SelectedTextUnderIcons
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedYearContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedYearContentColor = MaterialTheme.colorScheme.onBackground,
+                    todayContentColor = MaterialTheme.colorScheme.onBackground,
+                    todayDateBorderColor = MaterialTheme.colorScheme.primary,
+                    selectedDayContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         }

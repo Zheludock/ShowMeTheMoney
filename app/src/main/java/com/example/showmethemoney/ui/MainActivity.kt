@@ -5,11 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.data.sync.SyncWorker
 import com.example.showmethemoney.ShowMeTheMoneyApp
@@ -21,6 +20,7 @@ import com.example.showmethemoney.ui.theme.BackgroundMainColor
 import com.example.showmethemoney.ui.theme.ShowMeTheMoneyTheme
 import com.example.showmethemoney.ui.utils.AccountInitializer
 import com.example.showmethemoney.ui.utils.UiConfigurator
+import com.example.utils.ThemeManager
 import javax.inject.Inject
 
 /**
@@ -67,15 +67,19 @@ class MainActivity : ComponentActivity() {
 
         uiConfigurator.configure(this)
 
+        ThemeManager.initialize(this)
+
         checkSyncStatus()
 
         setContent {
-            ShowMeTheMoneyTheme {
+            ShowMeTheMoneyTheme(
+                darkTheme = ThemeManager.isDarkThemeState.value
+            ) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = BackgroundMainColor),
-                    color = MaterialTheme.colorScheme.background,
+                        .background(color = colorScheme.background),
+                    color = colorScheme.background,
                 ) {
                     SplashScreen(
                         accountInitializer = accountInitializer,

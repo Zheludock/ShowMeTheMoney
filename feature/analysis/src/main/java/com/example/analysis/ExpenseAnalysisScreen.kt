@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,7 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.graphics.piechart.PieChart
 import com.example.ui.DatePickerDialog
 import com.example.ui.UniversalListItem
-import com.example.ui.theme.DividerGray
 import com.example.utils.AccountManager
 import com.example.utils.DateUtils
 import com.example.utils.StringFormatter
@@ -81,7 +81,7 @@ fun ExpenseAnalysisScreen(
                 isIncome = false,
                 viewModelFactory = viewModelFactory
             )
-            HorizontalDivider(color = DividerGray)
+            HorizontalDivider(color = MaterialTheme.colorScheme.tertiary)
         }
         items(stats) { item ->
             val percent = ((item.amount.toDouble()/totalSum.toDouble()) * 100).toInt()
