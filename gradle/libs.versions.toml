@@ -1,6 +1,7 @@
 [versions]
 agp = "8.11.0"
 assistedInjectAnnotationsDagger2 = "0.8.1"
+biometric = "1.1.0"
 dagger = "2.56.2"
 kotlin = "2.1.21"
 coreKtx = "1.16.0"
@@ -28,17 +29,20 @@ navigationRuntimeAndroid = "2.9.1"
 roomCommonJvm = "2.7.2"
 roomCompiler = "2.7.2"
 roomRuntimeAndroid = "2.7.2"
+securityCrypto = "1.1.0-alpha06"
 workRuntimeKtx = "2.10.2"
 protoliteWellKnownTypes = "18.0.1"
 uiGraphicsAndroid = "1.8.3"
 
 [libraries]
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-room-compiler-v251 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomCompilerVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 assisted-inject-annotations-dagger2 = { module = "com.squareup.inject:assisted-inject-annotations-dagger2", version.ref = "assistedInjectAnnotationsDagger2" }
 assisted-inject-processor-dagger2 = { module = "com.squareup.inject:assisted-inject-processor-dagger2", version.ref = "assistedInjectAnnotationsDagger2" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }

@@ -1,4 +1,4 @@
-package com.example.settings
+package com.example.settings.about
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

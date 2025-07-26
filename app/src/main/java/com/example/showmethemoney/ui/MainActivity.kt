@@ -3,14 +3,21 @@ package com.example.showmethemoney.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.WorkManager
 import com.example.data.sync.SyncWorker
+import com.example.settings.pin.PinCodeManager
+import com.example.settings.pin.PinNavigation
+import com.example.settings.pin.PinViewModel
 import com.example.showmethemoney.ShowMeTheMoneyApp
 import com.example.showmethemoney.di.component.DaggerRepositoryComponent
 import com.example.showmethemoney.di.component.DaggerViewModelComponent
@@ -50,12 +57,19 @@ import javax.inject.Inject
  * @see MainScreen для структуры основного экрана
  */
 class MainActivity : ComponentActivity() {
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var accountInitializer: AccountInitializer
-    @Inject lateinit var uiConfigurator: UiConfigurator
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var accountInitializer: AccountInitializer
+    @Inject
+    lateinit var uiConfigurator: UiConfigurator
+    @Inject
+    lateinit var pinCodeManager: PinCodeManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        pinCodeManager = PinCodeManager(this)
 
         val repositoryComponent = DaggerRepositoryComponent.factory()
             .create((application as ShowMeTheMoneyApp).coreComponent)
@@ -75,17 +89,26 @@ class MainActivity : ComponentActivity() {
             ShowMeTheMoneyTheme(
                 darkTheme = ThemeManager.isDarkThemeState.value
             ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = colorScheme.background),
-                    color = colorScheme.background,
-                ) {
-                    SplashScreen(
-                        accountInitializer = accountInitializer,
-                        onSplashFinished = {
-                            MainScreen(viewModelFactory)
-                        }
+                var isAuthenticated by remember { mutableStateOf(false) }
+                val isPinSet = remember { pinCodeManager.isPinSet() }
+
+                if (isAuthenticated || !isPinSet) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = colorScheme.background
+                    ) {
+                        SplashScreen(
+                            accountInitializer = accountInitializer,
+                            onSplashFinished = {
+                                MainScreen(viewModelFactory)
+                            }
+                        )
+                    }
+                } else {
+                    val viewModel: PinViewModel = viewModel(factory = viewModelFactory)
+                    PinNavigation(
+                        viewModel =viewModel,
+                        onAuthSuccess = { isAuthenticated = true }
                     )
                 }
             }

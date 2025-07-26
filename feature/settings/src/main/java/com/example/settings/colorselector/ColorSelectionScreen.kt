@@ -1,4 +1,4 @@
-package com.example.settings
+package com.example.settings.colorselector
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

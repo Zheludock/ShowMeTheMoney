@@ -7,6 +7,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.example.data.sync.SyncWorker
+import com.example.settings.pin.PinCodeManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -56,5 +57,11 @@ class AppModule {
                 }
             }
         }
+    }
+
+    @Provides
+    @Singleton
+    fun providePinCodeManager(context: Context): PinCodeManager {
+        return PinCodeManager(context)
     }
 }

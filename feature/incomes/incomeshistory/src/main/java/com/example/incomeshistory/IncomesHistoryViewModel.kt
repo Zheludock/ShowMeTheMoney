@@ -7,6 +7,7 @@ import com.example.ui.TransactionItem
 import com.example.ui.toTransactionItem
 import com.example.utils.AccountManager
 import com.example.utils.DateUtils
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class IncomesHistoryViewModel@Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase
 ) : ViewModel() {

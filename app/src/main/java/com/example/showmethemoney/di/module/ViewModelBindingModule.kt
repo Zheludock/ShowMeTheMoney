@@ -16,6 +16,7 @@ import com.example.expenseshistory.ExpensesHistoryViewModel
 import com.example.graphics.piechart.PieChartViewModel
 import com.example.incomes.IncomesViewModel
 import com.example.incomeshistory.IncomesHistoryViewModel
+import com.example.settings.pin.PinViewModel
 import com.example.showmethemoney.di.scopes.ActivityScope
 import com.example.showmethemoney.di.util.ViewModelKey
 import com.example.showmethemoney.ui.screens.NetworkAwareViewModel
@@ -132,4 +133,9 @@ abstract class ViewModelBindingModule {
     @IntoMap
     @ViewModelKey(BarChartViewModel::class)
     abstract fun bindBarChartViewModel(viewModel: BarChartViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PinViewModel::class)
+    abstract fun bindPinViewModel(viewModel: PinViewModel): ViewModel
 }

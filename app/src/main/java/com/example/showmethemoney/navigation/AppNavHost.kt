@@ -18,9 +18,10 @@ import com.example.expenses.ExpensesScreen
 import com.example.expenseshistory.ExpensesHistoryScreen
 import com.example.incomes.IncomesScreen
 import com.example.incomeshistory.IncomesHistoryScreen
-import com.example.settings.AboutScreen
-import com.example.settings.ColorSelectionScreen
 import com.example.settings.SettingsScreen
+import com.example.settings.about.AboutScreen
+import com.example.settings.colorselector.ColorSelectionScreen
+import com.example.settings.pin.SetupPinScreen
 import com.example.utils.TopBarState
 
 /**
@@ -60,5 +61,6 @@ fun AppNavHost(
         composable(Screen.IncomeAnalysis.route) { IncomeAnalysisScreen(viewModelFactory, updateTopBar) }
         composable (Screen.ColorSelection.route) { ColorSelectionScreen(updateTopBar) }
         composable (Screen.About.route) { AboutScreen(updateTopBar) }
+        composable (Screen.Pin.route) { SetupPinScreen (viewModelFactory, navController) }
     }
 }

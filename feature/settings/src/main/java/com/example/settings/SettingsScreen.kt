@@ -83,6 +83,7 @@ fun SettingsScreen(
                 onClick = { when (item.name) {
                     "mainColor" ->  navController.navigate("colorChange")
                     "about" -> navController.navigate("about")
+                    "code" -> navController.navigate("pin")
                     else -> {}
                 }}
             )
